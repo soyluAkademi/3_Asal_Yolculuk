@@ -210,6 +210,64 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &100304392
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 100304394}
+  - component: {fileID: 100304393}
+  m_Layer: 0
+  m_Name: MeteorSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &100304393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100304392}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2799398d1caeb504dbf06d2ae9e15184, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.Meteors.MeteorSpawner
+  meteorPool: {fileID: 1419577802}
+  spawnRate: 0.5
+  meteorSprites:
+  - {fileID: 21300000, guid: 0fa556d7e0c3cce479b552d0a3292ec2, type: 3}
+  - {fileID: 21300000, guid: 388f039b547512d45ba3bc78bf78897f, type: 3}
+  - {fileID: 21300000, guid: 480a500e32fc2f947ae00fde37c47086, type: 3}
+  - {fileID: 21300000, guid: 50215431b31d4954f940445b237ff7fd, type: 3}
+  - {fileID: 21300000, guid: 10ac12ed21f60a246b3c5f4bc7e45d9d, type: 3}
+  - {fileID: 21300000, guid: 8a9e6cf089a55f94b906f46b6bc53138, type: 3}
+  - {fileID: 21300000, guid: d02a45dc0bc1c524b8372d36b1f02d28, type: 3}
+  baseSpriteCount: 3
+  minViewportY: 0.05
+  maxViewportY: 0.95
+  spawnMargin: 1
+--- !u!4 &100304394
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 100304392}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &127135881
 GameObject:
   m_ObjectHideFlags: 0
@@ -448,6 +506,60 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &618530990
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 618530992}
+  - component: {fileID: 618530991}
+  m_Layer: 0
+  m_Name: LevelManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &618530991
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618530990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b885a5b880a89e49a60e7f65d7a3053, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.Core.LevelManager
+  planetDataList:
+  - {fileID: 11400000, guid: 77c027700e07c944eaeccfff6ef86521, type: 2}
+  - {fileID: 11400000, guid: 4d895fea281be7042bf1f81af1533770, type: 2}
+  - {fileID: 11400000, guid: dd635758b4c68e14f93c2b00f7ac61e6, type: 2}
+  - {fileID: 11400000, guid: ba584b0d9bc181e478d03b00419b524a, type: 2}
+  - {fileID: 11400000, guid: 7a343e1efeef7df44a386b9910faa4c0, type: 2}
+  - {fileID: 11400000, guid: 2dfa4964c278f8944b99616bf3f17624, type: 2}
+  - {fileID: 11400000, guid: a1739544f5a17d44fb173c22856e66f1, type: 2}
+  - {fileID: 11400000, guid: ff2533d184c8b6b45b28911cb3407fb7, type: 2}
+  currentLevelIndex: 0
+--- !u!4 &618530992
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 618530990}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &619394800
 GameObject:
   m_ObjectHideFlags: 0
@@ -485,7 +597,7 @@ MonoBehaviour:
   m_Intensity: 1
   m_LightVolumeIntensity: 1
   m_LightVolumeEnabled: 0
-  m_ApplyToSortingLayers: 00000000756b824a4de81710
+  m_ApplyToSortingLayers: 00000000756b824a4de81710c11c68da
   m_LightCookieSprite: {fileID: 0}
   m_DeprecatedPointLightCookieSprite: {fileID: 0}
   m_LightOrder: 0
@@ -589,6 +701,53 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 60e223b373cd9a347945535b62afe6ed, type: 3}
+--- !u!1 &1419577800
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1419577801}
+  - component: {fileID: 1419577802}
+  m_Layer: 0
+  m_Name: MeteorPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1419577801
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419577800}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1559380220}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1419577802
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1419577800}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 53a3f60a7ef6b0a4991ffa9e6572c6a3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.Pooling.GameObjectPool
+  prefab: {fileID: 2889788467332131124, guid: 46a416123e9ccec409b1696efcde20de, type: 3}
+  defaultCapacity: 16
+  maxSize: 64
 --- !u!1 &1429210602
 GameObject:
   m_ObjectHideFlags: 0
@@ -699,6 +858,39 @@ Transform:
   m_Children: []
   m_Father: {fileID: 2113773167}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1559380219
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1559380220}
+  m_Layer: 0
+  m_Name: Pools
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1559380220
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1559380219}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1419577801}
+  - {fileID: 1971434031}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1971434029
 GameObject:
   m_ObjectHideFlags: 0
@@ -739,12 +931,12 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1971434029}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1559380220}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2047339564
 GameObject:
@@ -824,7 +1016,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 1250061173
-  m_SortingLayer: 1
+  m_SortingLayer: 2
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: b0c89581cb97f4a45ac08d677d55588a, type: 3}
@@ -998,4 +1190,6 @@ SceneRoots:
   - {fileID: 700384184}
   - {fileID: 82513939}
   - {fileID: 2113773167}
-  - {fileID: 1971434031}
+  - {fileID: 100304394}
+  - {fileID: 1559380220}
+  - {fileID: 618530992}

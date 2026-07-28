@@ -27,6 +27,11 @@ namespace PayeGames.AsalYolculuk.Combat
         {
         }
 
+        public void Despawn()
+        {
+            ownerPool.Despawn(gameObject);
+        }
+
         private void Update()
         {
             selfTransform.position += selfTransform.right * speed * Time.deltaTime;
@@ -34,7 +39,7 @@ namespace PayeGames.AsalYolculuk.Combat
             lifetimeTimer += Time.deltaTime;
             if (lifetimeTimer >= lifetime)
             {
-                ownerPool.Despawn(gameObject);
+                Despawn();
             }
         }
     }

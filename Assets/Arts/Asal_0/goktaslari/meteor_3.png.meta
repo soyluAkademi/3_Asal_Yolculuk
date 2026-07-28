@@ -1,15 +1,15 @@
 fileFormatVersion: 2
-guid: d02a45dc0bc1c524b8372d36b1f02d28
+guid: 480a500e32fc2f947ae00fde37c47086
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 808552665895399201
-    second: ChatGPT Image 21 Tem 2026 16_40_39 (3)_0
+      213: 4077613278271595284
+    second: ChatGPT Image 21 Tem 2026 16_53_07 (2)_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
     mipMapMode: 0
-    enableMipMap: 0
+    enableMipMap: 1
     sRGBTexture: 1
     linearTexture: 0
     fadeOut: 0
@@ -46,12 +46,12 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
   spritePivot: {x: 0.5, y: 0.5}
-  spritePixelsToUnits: 100
+  spritePixelsToUnits: 400
   spriteBorder: {x: 0, y: 0, z: 0, w: 0}
   spriteGenerateFallbackPhysicsShape: 1
   alphaUsage: 1
@@ -126,13 +126,13 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: ChatGPT Image 21 Tem 2026 16_40_39 (3)_0
+      name: ChatGPT Image 21 Tem 2026 16_53_07 (2)_0
       rect:
         serializedVersion: 2
-        x: 70
-        y: 78
-        width: 1166
-        height: 1172
+        x: 73
+        y: 79
+        width: 1161
+        height: 1170
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -141,8 +141,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 12fe3e0ad5e883b00800000000000000
-      internalID: 808552665895399201
+      spriteID: 4136bc62ca7969830800000000000000
+      internalID: 4077613278271595284
       vertices: []
       indices: 
       edges: []
@@ -151,7 +151,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -161,7 +161,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      ChatGPT Image 21 Tem 2026 16_40_39 (3)_0: 808552665895399201
+      ChatGPT Image 21 Tem 2026 16_53_07 (2)_0: 4077613278271595284
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
