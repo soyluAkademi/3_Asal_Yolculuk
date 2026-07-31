@@ -7,14 +7,14 @@ namespace PayeGames.AsalYolculuk.Meteors
 {
     public class MeteorSpawner : MonoBehaviour
     {
-        private const float PriorityNumberChance = 0.7f;
-
         [Header("Üretim")]
         [SerializeField] private GameObjectPool meteorPool;
         [SerializeField] private float spawnRate = 1f;
 
         [Header("Meteor Görselleri")]
         [SerializeField] private Sprite[] meteorSprites;
+        [Tooltip("Sprite dizisiyle AYNI sırada olmalı; index eşleşmesiyle her meteora kendi patlama efekti verilir")]
+        [SerializeField] private GameObject[] explosionEffectPrefabs;
         [Tooltip("İlk seviyede kaç görselin kullanılabileceği; her seviyede bir tane daha açılır")]
         [SerializeField] private int baseSpriteCount = 3;
 
@@ -27,14 +27,39 @@ namespace PayeGames.AsalYolculuk.Meteors
 
         private Camera gameCamera;
         private float spawnTimer;
+        private LevelNumberPool numberPool;
 
         private void Awake()
         {
             gameCamera = Camera.main;
         }
 
+        private void OnEnable()
+        {
+            MeteorController.OnMeteorCompleted += HandleMeteorCompleted;
+        }
+
+        private void OnDisable()
+        {
+            MeteorController.OnMeteorCompleted -= HandleMeteorCompleted;
+        }
+
+        /// <summary>Tamamen yok edilen sayı bölüm sonuna kadar tekrar üretilmez.</summary>
+        private void HandleMeteorCompleted(int rootNumber)
+        {
+            GetNumberPool().RegisterCompleted(rootNumber);
+        }
+
+        /// <summary>Bölüm baştan başladığında (canlar bittiğinde) çağrılır.</summary>
+        public void ResetNumberPool()
+        {
+            GetNumberPool().Reset();
+        }
+
         private void Update()
         {
+            if (!GameManager.IsGameplayActive) return;
+
             spawnTimer += Time.deltaTime;
 
             float spawnInterval = 1f / spawnRate;
@@ -55,35 +80,55 @@ namespace PayeGames.AsalYolculuk.Meteors
             GameObject instance = meteorPool.Spawn(spawnPosition, Quaternion.identity);
             if (instance.TryGetComponent(out MeteorController meteorController))
             {
-                meteorController.SetNumber(GenerateNumber());
-                meteorController.SetSprite(GetRandomSprite());
+                int visualIndex = GetRandomVisualIndex();
+                meteorController.SetNumber(GetNumberPool().GetNumber());
+                meteorController.SetVisuals(GetSprite(visualIndex), GetExplosionEffect(visualIndex));
             }
         }
 
-        private Sprite GetRandomSprite()
+        /// <summary>
+        /// Sprite ve patlama efekti dizileri aynı sırada olduğu için tek bir index
+        /// seçilir; böylece her meteor kendi görseline ait efekti kullanır.
+        /// </summary>
+        private int GetRandomVisualIndex()
         {
-            if (meteorSprites == null || meteorSprites.Length == 0) return null;
+            if (meteorSprites == null || meteorSprites.Length == 0) return -1;
 
             int currentLevelIndex = LevelManager.Instance != null ? LevelManager.Instance.CurrentLevelIndex : 0;
             int unlockedCount = Mathf.Clamp(baseSpriteCount + currentLevelIndex, 1, meteorSprites.Length);
 
-            int randomIndex = Random.Range(0, unlockedCount);
-            return meteorSprites[randomIndex];
+            return Random.Range(0, unlockedCount);
         }
 
-        private int GenerateNumber()
+        private Sprite GetSprite(int visualIndex)
+        {
+            if (visualIndex < 0 || visualIndex >= meteorSprites.Length) return null;
+
+            return meteorSprites[visualIndex];
+        }
+
+        private GameObject GetExplosionEffect(int visualIndex)
+        {
+            if (explosionEffectPrefabs == null) return null;
+            if (visualIndex < 0 || visualIndex >= explosionEffectPrefabs.Length) return null;
+
+            return explosionEffectPrefabs[visualIndex];
+        }
+
+        /// <summary>
+        /// Aktif gezegenin sayı havuzunu döner. Gezegen değiştiğinde havuz yeniden
+        /// kurulur; böylece tamamlanan sayı listesi yeni bölüme taşınmaz.
+        /// </summary>
+        private LevelNumberPool GetNumberPool()
         {
             PlanetDataSO planetData = LevelManager.Instance != null ? LevelManager.Instance.CurrentPlanetData : null;
-            if (planetData == null) return Random.Range(2, 100);
 
-            bool usePriorityNumber = planetData.PriorityNumberList.Count > 0 && Random.value < PriorityNumberChance;
-            if (usePriorityNumber)
+            if (numberPool == null || numberPool.PlanetData != planetData)
             {
-                int randomIndex = Random.Range(0, planetData.PriorityNumberList.Count);
-                return planetData.PriorityNumberList[randomIndex];
+                numberPool = new LevelNumberPool(planetData);
             }
 
-            return Random.Range(planetData.MinNumber, planetData.MaxNumber + 1);
+            return numberPool;
         }
     }
 }

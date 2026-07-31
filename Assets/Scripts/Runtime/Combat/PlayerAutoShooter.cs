@@ -1,4 +1,5 @@
 using UnityEngine;
+using PayeGames.AsalYolculuk.Core;
 using PayeGames.AsalYolculuk.Pooling;
 
 namespace PayeGames.AsalYolculuk.Combat
@@ -14,6 +15,8 @@ namespace PayeGames.AsalYolculuk.Combat
 
         private void Update()
         {
+            if (!GameManager.IsGameplayActive) return;
+
             fireTimer += Time.deltaTime;
 
             float fireInterval = 1f / fireRate;

@@ -3,7 +3,19 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 3
-  tags: []
+  tags:
+  - Planet
+  - Enemy
+  - Bonus
+  - Projectile
+  - Score
+  - Health
+  - CoinsText
+  - Coin
+  - PlayerRay
+  - Rocket
+  - Meteor
+  - Bullet
   layers:
   - Default
   - TransparentFX
@@ -11,9 +23,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Player
+  - Enemy
+  - Bullet
   - 
   - 
   - 
@@ -38,17 +50,29 @@ TagManager:
   - 
   - 
   m_SortingLayers:
-  - name: Background
-    uniqueID: 270002253
-    locked: 0
   - name: Default
     uniqueID: 0
     locked: 0
-  - name: Meteor
-    uniqueID: 3664256193
+  - name: Background
+    uniqueID: 1947543829
+    locked: 0
+  - name: Planets
+    uniqueID: 4094135763
+    locked: 0
+  - name: Projectile
+    uniqueID: 1111697911
+    locked: 0
+  - name: Enemy
+    uniqueID: 1152134415
+    locked: 0
+  - name: Bonus
+    uniqueID: 689362467
     locked: 0
   - name: Player
-    uniqueID: 1250061173
+    uniqueID: 2402381985
+    locked: 0
+  - name: VFX
+    uniqueID: 738997965
     locked: 0
   m_RenderingLayers:
   - Default

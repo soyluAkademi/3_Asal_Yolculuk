@@ -11,9 +11,10 @@ GameObject:
   - component: {fileID: 3566561566278587867}
   - component: {fileID: 7477313572613736278}
   - component: {fileID: 3397915910144441590}
-  m_Layer: 0
+  - component: {fileID: 4113252183917469356}
+  m_Layer: 7
   m_Name: Meteor
-  m_TagString: Untagged
+  m_TagString: Meteor
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -31,7 +32,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 225591241768522644}
+  - {fileID: 2486863322731203056}
   - {fileID: 3648357718041467050}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -89,7 +90,29 @@ MonoBehaviour:
   maxRotationSpeed: 90
   despawnMargin: 1
   meteorTxt: {fileID: 8944661043081099573}
-  meteorSpriteRenderer: {fileID: 3340442765362878669}
+  meteorSpriteRenderer: {fileID: 6615852587934406374}
+  explosionEffectPrefab: {fileID: 1157502930425256979, guid: f9a3eef1b3897314b9eb5d6ed7f8a0ca,
+    type: 3}
+  explosionEffectScale: 1
+  fragmentScaleRatio: 0.55
+  fragmentSpawnSpacing: 0.45
+  fragmentSpreadStrength: 0.7
+  fragmentSpeedMultiplier: 1.4
+  fragmentInvulnerableDuration: 0.5
+  bounceEdgePadding: 0.7
+--- !u!210 &4113252183917469356
+SortingGroup:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2889788467332131124}
+  m_Enabled: 1
+  m_SortingLayerID: 1152134415
+  m_SortingLayer: 4
+  m_SortingOrder: 0
+  m_SortAtRoot: 0
+  m_Sort3DAs2D: 0
 --- !u!1 &3270716544461474965
 GameObject:
   m_ObjectHideFlags: 0
@@ -101,7 +124,7 @@ GameObject:
   - component: {fileID: 3648357718041467050}
   - component: {fileID: 8602335168716235295}
   - component: {fileID: 8944661043081099573}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: meteorTxt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -172,7 +195,7 @@ MeshRenderer:
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: -630711103
-  m_SortingLayer: 1
+  m_SortingLayer: 0
   m_SortingOrder: 1
   m_MaskInteraction: 0
   m_AdditionalVertexStreams: {fileID: 0}
@@ -199,7 +222,8 @@ MonoBehaviour:
   m_text: 250
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 58855bcff701d2849bb2e2fc9ef53390, type: 2}
-  m_sharedMaterial: {fileID: 8455487703532348981, guid: 58855bcff701d2849bb2e2fc9ef53390, type: 2}
+  m_sharedMaterial: {fileID: 8455487703532348981, guid: 58855bcff701d2849bb2e2fc9ef53390,
+    type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -271,7 +295,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_renderer: {fileID: 8602335168716235295}
   m_maskType: 0
---- !u!1 &3585753320389813564
+--- !u!1 &7801748215933900787
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -279,8 +303,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 225591241768522644}
-  - component: {fileID: 3340442765362878669}
+  - component: {fileID: 2486863322731203056}
+  - component: {fileID: 6615852587934406374}
   m_Layer: 0
   m_Name: Sprite
   m_TagString: Untagged
@@ -288,13 +312,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &225591241768522644
+--- !u!4 &2486863322731203056
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3585753320389813564}
+  m_GameObject: {fileID: 7801748215933900787}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -303,14 +327,14 @@ Transform:
   m_Children: []
   m_Father: {fileID: 3566561566278587867}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!212 &3340442765362878669
+--- !u!212 &6615852587934406374
 SpriteRenderer:
   serializedVersion: 2
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3585753320389813564}
+  m_GameObject: {fileID: 7801748215933900787}
   m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
@@ -329,7 +353,7 @@ SpriteRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 10754, guid: 0000000000000000f000000000000000, type: 0}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -348,8 +372,8 @@ SpriteRenderer:
   m_AutoUVMaxAngle: 89
   m_LightmapParameters: {fileID: 0}
   m_GlobalIlluminationMeshLod: 0
-  m_SortingLayerID: -630711103
-  m_SortingLayer: 1
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
   m_SortingOrder: 0
   m_MaskInteraction: 0
   m_Sprite: {fileID: 21300000, guid: 0fa556d7e0c3cce479b552d0a3292ec2, type: 3}
@@ -357,7 +381,7 @@ SpriteRenderer:
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
-  m_Size: {x: 4.18, y: 4.18}
+  m_Size: {x: 3.135, y: 3.135}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
