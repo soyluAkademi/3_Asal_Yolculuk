@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using PayeGames.AsalYolculuk.Core;
 
 namespace PayeGames.AsalYolculuk.Player
 {
@@ -52,6 +53,13 @@ namespace PayeGames.AsalYolculuk.Player
 
         private void Update()
         {
+            // Bölüm bittiğinde gemi kontrolü kapanır.
+            if (!GameManager.IsGameplayActive)
+            {
+                currentVelocity = Vector2.zero;
+                return;
+            }
+
             Vector2 input = moveAction.ReadValue<Vector2>();
             Vector2 targetVelocity = input * moveSpeed;
             currentVelocity = Vector2.SmoothDamp(currentVelocity, targetVelocity, ref currentVelocity, smoothTime);

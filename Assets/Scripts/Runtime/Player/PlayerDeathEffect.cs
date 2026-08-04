@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using PayeGames.AsalYolculuk.Combat;
 using PayeGames.AsalYolculuk.Core;
@@ -26,15 +25,14 @@ namespace PayeGames.AsalYolculuk.Player
         [SerializeField] private float explosionScale = 1f;
 
         [Header("Meteor Temizliği")]
+        [Tooltip("Sahnedeki meteorları sırayla patlatan bileşen")]
+        [SerializeField] private MeteorFieldClearer meteorFieldClearer;
         [Tooltip("Gemi patlaması bittikten sonra meteorların patlamaya başlaması için beklenen süre")]
         [SerializeField] private float meteorClearDelay = 0.2f;
-        [Tooltip("Meteorların arka arkaya patlama aralığı (saniye)")]
-        [SerializeField] private float meteorClearInterval = 0.15f;
 
         private Transform selfTransform;
         private Renderer[] shipRenderers;
         private Collider2D[] shipColliders;
-        private readonly List<MeteorController> meteorClearBuffer = new List<MeteorController>();
 
         private void Awake()
         {
@@ -72,38 +70,9 @@ namespace PayeGames.AsalYolculuk.Player
 
             yield return new WaitForSeconds(meteorClearDelay);
 
-            yield return ClearMeteorsSequentially();
-        }
+            if (meteorFieldClearer == null) yield break;
 
-        /// <summary>
-        /// Sahnedeki meteorları soldan sağa doğru, kendi patlama efektleriyle tek tek yok eder.
-        /// Liste kopyalanır; çünkü meteorlar patladıkça aktif meteor listesinden çıkar.
-        /// </summary>
-        private IEnumerator ClearMeteorsSequentially()
-        {
-            meteorClearBuffer.Clear();
-            meteorClearBuffer.AddRange(MeteorController.ActiveMeteors);
-            meteorClearBuffer.Sort(CompareByHorizontalPosition);
-
-            for (int index = 0; index < meteorClearBuffer.Count; index++)
-            {
-                MeteorController meteor = meteorClearBuffer[index];
-                if (meteor == null) continue;
-                if (!meteor.gameObject.activeInHierarchy) continue;
-
-                meteor.DespawnWithExplosion();
-
-                yield return new WaitForSeconds(meteorClearInterval);
-            }
-
-            meteorClearBuffer.Clear();
-        }
-
-        private static int CompareByHorizontalPosition(MeteorController first, MeteorController second)
-        {
-            if (first == null || second == null) return 0;
-
-            return first.transform.position.x.CompareTo(second.transform.position.x);
+            yield return meteorFieldClearer.ClearRoutine();
         }
 
         /// <summary>

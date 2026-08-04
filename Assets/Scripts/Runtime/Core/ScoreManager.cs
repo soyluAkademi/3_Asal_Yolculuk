@@ -19,8 +19,13 @@ namespace PayeGames.AsalYolculuk.Core
         /// <summary>Parametreler: güncel puan, hedef puan.</summary>
         public event Action<int, int> OnScoreChanged;
 
+        /// <summary>Hedef puana ulaşıldığında bir kez tetiklenir. GameManager dinler.</summary>
+        public event Action OnTargetReached;
+
         public int CurrentScore { get; private set; }
         public int TargetScore => targetScore;
+
+        private bool isTargetReached;
 
         private void Awake()
         {
@@ -52,13 +57,30 @@ namespace PayeGames.AsalYolculuk.Core
 
             CurrentScore = Mathf.Max(0, CurrentScore + amount);
             OnScoreChanged?.Invoke(CurrentScore, targetScore);
+
+            TryRaiseTargetReached();
         }
 
         /// <summary>Canlar bittiğinde veya bölüm yeniden başladığında çağrılır.</summary>
         public void ResetScore()
         {
             CurrentScore = 0;
+            isTargetReached = false;
             OnScoreChanged?.Invoke(CurrentScore, targetScore);
+        }
+
+        /// <summary>
+        /// Hedefe ulaşıldığında bölüm sonu akışını başlatır. Bölüm bittikten sonra
+        /// akan puanlar (patlamakta olan meteorlar) event'i tekrar tetiklemesin diye
+        /// bayrakla korunur.
+        /// </summary>
+        private void TryRaiseTargetReached()
+        {
+            if (isTargetReached) return;
+            if (CurrentScore < targetScore) return;
+
+            isTargetReached = true;
+            OnTargetReached?.Invoke();
         }
     }
 }

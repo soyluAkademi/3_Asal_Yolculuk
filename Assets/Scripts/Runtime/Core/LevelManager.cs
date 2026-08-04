@@ -13,6 +13,9 @@ namespace PayeGames.AsalYolculuk.Core
 
         public int CurrentLevelIndex => currentLevelIndex;
 
+        /// <summary>Son gezegendeyiz; bölüm sonunda "devam" yerine oyun sonu akışı çalışır.</summary>
+        public bool IsLastLevel => planetDataList != null && currentLevelIndex >= planetDataList.Length - 1;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -30,9 +33,21 @@ namespace PayeGames.AsalYolculuk.Core
             {
                 if (planetDataList == null || planetDataList.Length == 0) return null;
 
-                int clampedIndex = Mathf.Clamp(currentLevelIndex, 0, planetDataList.Length - 1);
-                return planetDataList[clampedIndex];
+                // Inspector'dan aralık dışı değer girilse bile oynanış bozulmasın.
+                return planetDataList[Mathf.Clamp(currentLevelIndex, 0, planetDataList.Length - 1)];
             }
+        }
+
+        /// <summary>Bir sonraki gezegen; son gezegendeysek null.</summary>
+        public PlanetDataSO NextPlanetData => IsLastLevel ? null : GetPlanetData(currentLevelIndex + 1);
+
+        /// <summary>Sıra dışı index'te null döner (clamp yapılmaz).</summary>
+        public PlanetDataSO GetPlanetData(int levelIndex)
+        {
+            if (planetDataList == null) return null;
+            if (levelIndex < 0 || levelIndex >= planetDataList.Length) return null;
+
+            return planetDataList[levelIndex];
         }
 
         public void SetLevel(int levelIndex)

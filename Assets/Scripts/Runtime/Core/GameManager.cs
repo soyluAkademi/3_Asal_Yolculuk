@@ -35,10 +35,15 @@ namespace PayeGames.AsalYolculuk.Core
 
         private void Start()
         {
-            // HealthManager Awake'inde kurulduğu için abonelik Start'ta yapılır.
+            // HealthManager ve ScoreManager Awake'inde kurulduğu için abonelik Start'ta yapılır.
             if (HealthManager.Instance != null)
             {
                 HealthManager.Instance.OnAllLivesLost += HandleAllLivesLost;
+            }
+
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.OnTargetReached += HandleTargetReached;
             }
 
             // Bir önceki denemeden donmuş zamanla başlanmasın.
@@ -52,6 +57,11 @@ namespace PayeGames.AsalYolculuk.Core
                 HealthManager.Instance.OnAllLivesLost -= HandleAllLivesLost;
             }
 
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.OnTargetReached -= HandleTargetReached;
+            }
+
             if (Instance != this) return;
 
             // Sahne değişiminde donmuş zamanla kalınmasın.
@@ -62,6 +72,11 @@ namespace PayeGames.AsalYolculuk.Core
         private void HandleAllLivesLost()
         {
             SetState(GameState.LevelFailed);
+        }
+
+        private void HandleTargetReached()
+        {
+            SetState(GameState.LevelComplete);
         }
 
         public void SetState(GameState state)

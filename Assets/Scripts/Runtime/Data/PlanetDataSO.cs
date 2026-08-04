@@ -9,6 +9,8 @@ namespace PayeGames.AsalYolculuk.Data
         [Header("Kimlik")]
         [SerializeField] private int planetId;
         [SerializeField] private string planetName;
+        [Tooltip("Harita ve bölüm sonu ekranlarında gösterilen gezegen görseli")]
+        [SerializeField] private Sprite planetSprite;
 
         [Header("Sayı Aralığı")]
         [SerializeField] private int minNumber = 2;
@@ -20,6 +22,10 @@ namespace PayeGames.AsalYolculuk.Data
 
         public int PlanetId => planetId;
         public string PlanetName => planetName;
+        public Sprite PlanetSprite => planetSprite;
+
+        /// <summary>Arayüzde gösterilen numaralı ad: "2. Asteroit Kuşağı".</summary>
+        public string DisplayName => $"{planetId}. {planetName}";
         public int MinNumber => minNumber;
         public int MaxNumber => maxNumber;
         public IReadOnlyList<int> PriorityNumberList => priorityNumberList;

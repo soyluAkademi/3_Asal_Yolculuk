@@ -14,6 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.Data.PlanetDataSO
   planetId: 1
   planetName: "Ba\u015Flang\u0131\xE7 Gezegeni"
+  planetSprite: {fileID: 21300000, guid: c9ae2db7296a36144b2945f3b830bb2b, type: 3}
   minNumber: 4
   maxNumber: 48
   priorityNumberList: 
