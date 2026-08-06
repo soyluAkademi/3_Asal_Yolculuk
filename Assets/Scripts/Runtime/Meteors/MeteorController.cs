@@ -354,6 +354,7 @@ namespace PayeGames.AsalYolculuk.Meteors
             if (ScoreManager.Instance == null) return;
 
             ScoreManager.Instance.AddMeteorScore();
+            ScoreManager.Instance.RegisterDiscoveredPrimes(rootNumber);
         }
 
         /// <returns>Meteor parçalara ayrıldıysa true; ayrılamadıysa false.</returns>

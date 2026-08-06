@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.Data.PlanetDataSO
   planetId: 3
   planetName: Lav Gezegeni
-  planetSprite: {fileID: 21300000, guid: eddc1b5e523d13e469c23b4d073fa749, type: 3}
+  planetSprite: {fileID: 21300000, guid: 0f7be91707cf50b478c51ddc43ec04a4, type: 3}
   minNumber: 11
   maxNumber: 89
   priorityNumberList: 

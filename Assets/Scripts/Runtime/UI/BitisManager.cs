@@ -1,5 +1,7 @@
 using DG.Tweening;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using PayeGames.AsalYolculuk.Core;
 
@@ -26,6 +28,10 @@ namespace PayeGames.AsalYolculuk.UI
         [SerializeField] private Transform gezegenler;
         [Tooltip("Çizgi nesnelerinin parent'ı; her çocuğunda Filled tipinde Image olmalı")]
         [SerializeField] private Transform lines;
+        [Tooltip("Yolculuk boyunca keşfedilen farklı asal sayısının yazılacağı metin")]
+        [SerializeField] private TMP_Text asalSayisiTxt;
+        [Tooltip("Tüm oynayışlar boyunca biriken toplam puanın yazılacağı metin")]
+        [SerializeField] private TMP_Text toplamPuanTxt;
 
         [Header("Panel Girişi")]
         [Tooltip("Son bölüm bittikten sonra panelin gelmesi için beklenen süre")]
@@ -51,6 +57,39 @@ namespace PayeGames.AsalYolculuk.UI
         [Tooltip("Gezegen belirdikten sonra çizginin dolmaya başlaması için beklenen süre")]
         [SerializeField] private float planetToLineDelay = 0.05f;
 
+        [Header("Özet Panelleri")]
+        [Tooltip("Keşfedilen asal sayısı paneli; gezegen sekansından sonra ilk açılır")]
+        [SerializeField] private CanvasGroup asalSayiPanel;
+        [Tooltip("Toplam puan paneli; asal panelinden sonra açılır")]
+        [SerializeField] private CanvasGroup puanPanel;
+        [Tooltip("Son çizgi dolduktan sonra ilk panelin açılması için beklenen süre")]
+        [SerializeField] private float summaryStartDelay = 0.25f;
+        [SerializeField] private float summaryPanelDuration = 0.45f;
+        [SerializeField] private Ease summaryPanelEase = Ease.OutBack;
+        [Tooltip("Paneller arasındaki bekleme süresi")]
+        [SerializeField] private float summaryPanelInterval = 0.15f;
+        [Tooltip("Panelin belirmeye başladığı ölçek oranı (0 = yoktan büyür)")]
+        [SerializeField, Range(0f, 0.9f)] private float summaryPanelStartScale = 0f;
+
+        [Header("Başla Butonu")]
+        [Tooltip("Puan panelinden sonra açılan buton; açıldıktan sonra nabız gibi büyüyüp küçülür")]
+        [SerializeField] private CanvasGroup baslaBtn;
+        [Tooltip("Butonun büyüyeceği ölçek oranı (1.5 = %50 büyür)")]
+        [SerializeField] private float pulseScale = 1.5f;
+        [Tooltip("Tek yönlü büyüme süresi; gidiş-dönüş bunun iki katı sürer")]
+        [SerializeField] private float pulseDuration = 0.6f;
+        [SerializeField] private Ease pulseEase = Ease.InOutSine;
+
+        [Header("Ana Menü Geçişi")]
+        [Tooltip("Butona basıldığında yüklenecek sahne; Build Settings'e ekli olmalı")]
+        [SerializeField] private string mainMenuSceneName = "MainMenu";
+
+        [Header("Sayaç Animasyonu")]
+        [Tooltip("Metnin 0'dan hedef değere sayma süresi")]
+        [SerializeField] private float counterDuration = 0.8f;
+        [Tooltip("Sona doğru yavaşlayan bir ease sayacı daha okunaklı yapar")]
+        [SerializeField] private Ease counterEase = Ease.OutCubic;
+
         private RectTransform rectTransform;
         private CanvasGroup panelCanvasGroup;
         private Vector2 shownAnchoredPosition;
@@ -59,6 +98,17 @@ namespace PayeGames.AsalYolculuk.UI
         private Transform[] planetTransforms;
         private Vector3[] planetBaseScales;
         private Image[] lineImages;
+        // Açılış sırası: asal paneli → puan paneli → başla butonu. Buton da aynı
+        // scale + fade adımını kullandığı için diziye dahil edilir; sayaç metni
+        // olmadığı için sayma adımı onda atlanır.
+        private const int BaslaBtnIndex = 2;
+
+        // Üç dizi de aynı index ile eşleşir: panel, içindeki sayaç metni, hedef değer.
+        private CanvasGroup[] summaryPanels;
+        private Vector3[] summaryBaseScales;
+        private TMP_Text[] summaryTexts;
+        private readonly int[] summaryTargetValues = new int[3];
+        private Tween pulseTween;
         private Sequence activeSequence;
         private Sequence panelSequence;
 
@@ -70,6 +120,7 @@ namespace PayeGames.AsalYolculuk.UI
             CacheAnchoredPositions();
             CachePlanets();
             CacheLines();
+            CacheSummaryPanels();
 
             // Panel ve içindekiler sahnede görünür bırakılır; gizleme runtime'da yapılır.
             ApplyPanelHiddenState();
@@ -88,6 +139,7 @@ namespace PayeGames.AsalYolculuk.UI
         {
             KillActiveSequence();
             KillPanelSequence();
+            KillPulse();
 
             if (GameManager.Instance == null) return;
 
@@ -115,6 +167,8 @@ namespace PayeGames.AsalYolculuk.UI
             KillPanelSequence();
             ResetToHiddenState();
 
+            CacheSummaryValues();
+
             rectTransform.anchoredPosition = hiddenAnchoredPosition;
             panelCanvasGroup.alpha = 0f;
 
@@ -129,6 +183,73 @@ namespace PayeGames.AsalYolculuk.UI
                     PlaySequence();
                 })
                 .SetUpdate(true);
+        }
+
+        /// <summary>
+        /// Başla butonuna bağlanır: yolculuğu kapatıp ana menüye döner.
+        ///
+        /// Sahne değiştiği için sahnedeki tüm manager'lar (puan, can, seviye, keşif)
+        /// yok olur; oyun tekrar başladığında her şey baştan kurulur. Kalıcı olması
+        /// gereken tek veri toplam puandır, o da diske yazılır.
+        /// </summary>
+        public void GoToMainMenu()
+        {
+            // Buton tekrar tekrar tıklanıp sahne iki kez yüklenmesin.
+            if (baslaBtn != null)
+            {
+                baslaBtn.interactable = false;
+                baslaBtn.blocksRaycasts = false;
+            }
+
+            KillPulse();
+            KillActiveSequence();
+            KillPanelSequence();
+
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.SaveTotalScore();
+            }
+
+            // Bölüm duraklatılmışken bitiş paneline gelinmiş olabilir; menü donmasın.
+            Time.timeScale = 1f;
+
+            if (string.IsNullOrWhiteSpace(mainMenuSceneName))
+            {
+                Debug.LogError("[BitisManager] Ana menü sahne adı boş; geçiş yapılamadı.", this);
+                return;
+            }
+
+            SceneManager.LoadScene(mainMenuSceneName);
+        }
+
+        /// <summary>
+        /// Özet panellerini açılış sırasına göre toplar. Slotlardan biri boş
+        /// bırakılırsa o adım sekansta atlanır.
+        /// </summary>
+        private void CacheSummaryPanels()
+        {
+            summaryPanels = new[] { asalSayiPanel, puanPanel, baslaBtn };
+            // Başla butonunda sayaç yok; index hizası bozulmasın diye null bırakılır.
+            summaryTexts = new TMP_Text[] { asalSayisiTxt, toplamPuanTxt, null };
+            summaryBaseScales = new Vector3[summaryPanels.Length];
+
+            for (int index = 0; index < summaryPanels.Length; index++)
+            {
+                CanvasGroup panel = summaryPanels[index];
+                summaryBaseScales[index] = panel == null ? Vector3.one : ResolveBaseScale(panel.transform);
+            }
+        }
+
+        /// <summary>
+        /// Sayaçların sayacağı hedef değerleri okur. Metinler burada yazılmaz;
+        /// panel açıldığında 0'dan bu değerlere doğru sayılır.
+        /// </summary>
+        private void CacheSummaryValues()
+        {
+            if (ScoreManager.Instance == null) return;
+
+            summaryTargetValues[0] = ScoreManager.Instance.DiscoveredPrimeCount;
+            summaryTargetValues[1] = ScoreManager.Instance.TotalScore;
         }
 
         /// <summary>
@@ -236,6 +357,8 @@ namespace PayeGames.AsalYolculuk.UI
                 AppendLineStep(index);
             }
 
+            AppendSummaryPanelSteps();
+
             activeSequence.OnComplete(() => activeSequence = null);
         }
 
@@ -273,7 +396,112 @@ namespace PayeGames.AsalYolculuk.UI
             activeSequence.Append(line.DOFillAmount(1f, lineDuration).SetEase(lineEase));
         }
 
-        /// <summary>Tüm gezegenleri ve çizgileri animasyon öncesi hâline döndürür.</summary>
+        /// <summary>
+        /// Gezegen/çizgi sekansı bittikten sonra özet panellerini sırayla açar:
+        /// her panel aynı anda hem büyür hem görünür hâle gelir.
+        /// </summary>
+        private void AppendSummaryPanelSteps()
+        {
+            if (summaryPanels == null) return;
+
+            bool isFirstPanel = true;
+
+            for (int index = 0; index < summaryPanels.Length; index++)
+            {
+                CanvasGroup panel = summaryPanels[index];
+                if (panel == null) continue;
+
+                // Gecikme yalnızca gerçekten açılacak paneller arasında uygulanır;
+                // boş bırakılan slot sekansta boşluk bırakmaz.
+                float delay = isFirstPanel ? summaryStartDelay : summaryPanelInterval;
+                if (delay > 0f)
+                {
+                    activeSequence.AppendInterval(delay);
+                }
+
+                isFirstPanel = false;
+
+                activeSequence.Append(panel.transform.DOScale(summaryBaseScales[index], summaryPanelDuration).SetEase(summaryPanelEase));
+                activeSequence.Join(panel.DOFade(1f, summaryPanelDuration));
+
+                // Sayaç sekansa eklenmez, panel açılınca bağımsız başlatılır; böylece
+                // sekans sayma bitmeden bir sonraki adıma (butona) geçebilir.
+                int counterIndex = index;
+                activeSequence.AppendCallback(() => StartCounter(counterIndex));
+
+                if (index != BaslaBtnIndex) continue;
+
+                // Buton yerine oturur oturmaz nabız başlar; sekans bu noktada biter.
+                activeSequence.AppendCallback(StartPulse);
+            }
+        }
+
+        /// <summary>
+        /// Başla butonunu sürekli büyütüp küçültür. Yoyo döngüsü olduğu için buton
+        /// her zaman kendi temel ölçeğine geri döner.
+        /// </summary>
+        private void StartPulse()
+        {
+            KillPulse();
+
+            if (baslaBtn == null) return;
+
+            Vector3 baseScale = summaryBaseScales[BaslaBtnIndex];
+            baslaBtn.transform.localScale = baseScale;
+
+            pulseTween = baslaBtn.transform
+                .DOScale(baseScale * pulseScale, pulseDuration)
+                .SetLoops(-1, LoopType.Yoyo)
+                .SetEase(pulseEase)
+                .SetUpdate(true);
+
+            // Tıklama ancak buton tamamen belirdikten sonra açılır.
+            baslaBtn.interactable = true;
+            baslaBtn.blocksRaycasts = true;
+        }
+
+        private void KillPulse()
+        {
+            if (pulseTween == null) return;
+
+            pulseTween.Kill();
+            pulseTween = null;
+        }
+
+        /// <summary>
+        /// Panel yerleştiği anda metni 0'dan hedef değere saymaya başlar. Sekanstan
+        /// bağımsız çalışır: sayma sürerken sekans bir sonraki adıma geçebilir.
+        /// Hedef 0 ise tween oluşturulmaz; metin zaten 0 gösteriyor.
+        /// </summary>
+        private void StartCounter(int index)
+        {
+            if (summaryTexts == null) return;
+
+            TMP_Text label = summaryTexts[index];
+            if (label == null) return;
+
+            int targetValue = summaryTargetValues[index];
+            if (targetValue <= 0) return;
+
+            // DOTween ara değeri kendi tutamadığı için yerel bir değişken üzerinden
+            // okunup yazılır; SetTarget sayesinde tween metinle birlikte kill edilir.
+            int displayedValue = 0;
+
+            DOTween.To(
+                    () => displayedValue,
+                    value =>
+                    {
+                        displayedValue = value;
+                        label.text = value.ToString();
+                    },
+                    targetValue,
+                    counterDuration)
+                .SetEase(counterEase)
+                .SetTarget(label)
+                .SetUpdate(true);
+        }
+
+        /// <summary>Tüm gezegenleri, çizgileri ve özet panellerini animasyon öncesi hâline döndürür.</summary>
         public void ResetToHiddenState()
         {
             int planetCount = planetTransforms != null ? planetTransforms.Length : 0;
@@ -300,6 +528,43 @@ namespace PayeGames.AsalYolculuk.UI
 
                 line.DOKill();
                 line.fillAmount = 0f;
+            }
+
+            KillPulse();
+
+            int summaryCount = summaryPanels != null ? summaryPanels.Length : 0;
+            for (int index = 0; index < summaryCount; index++)
+            {
+                CanvasGroup panel = summaryPanels[index];
+                if (panel == null) continue;
+
+                panel.DOKill();
+                panel.transform.DOKill();
+                panel.alpha = 0f;
+                panel.transform.localScale = summaryBaseScales[index] * summaryPanelStartScale;
+            }
+
+            // Buton belirmeden tıklanabilir kalmasın.
+            if (baslaBtn != null)
+            {
+                baslaBtn.interactable = false;
+                baslaBtn.blocksRaycasts = false;
+            }
+
+            ResetCounterTexts();
+        }
+
+        /// <summary>Sayaç metinlerini başlangıç değeri olan 0'a döndürür.</summary>
+        private void ResetCounterTexts()
+        {
+            int textCount = summaryTexts != null ? summaryTexts.Length : 0;
+            for (int index = 0; index < textCount; index++)
+            {
+                TMP_Text label = summaryTexts[index];
+                if (label == null) continue;
+
+                label.DOKill();
+                label.text = "0";
             }
         }
 

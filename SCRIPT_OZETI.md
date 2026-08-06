@@ -197,9 +197,29 @@ sonra havadaki mermilerin vurduğu meteorlardan gelen puanlar event'i tekrar
 tetikliyordu. `ResetScore()` bayrağı da sıfırlar — aksi halde yeni bölüm anında
 tamamlanmış sayılırdı.
 
-- **Bağlantı:** `MeteorController` (oturum tamamlanınca `AddMeteorScore`
-  çağırır), `ScoreHUDView` (`OnScoreChanged` dinler), `GameManager`
-  (`OnTargetReached` dinler), `LevelFlowController` (`ResetScore`).
+**Toplam puan (kalıcı):** `TotalScore`, tüm oynayışlar boyunca birikir ve
+`PlayerPrefs` (`AsalYolculuk.TotalScore`) üzerinde saklanır. `AddScore` içinden
+**yalnızca pozitif** miktarlar toplama eklenir — ceza puanı toplamı düşürseydi
+bitiş ekranındaki sayaç geri sayardı. `PlayerPrefs.SetInt` yalnızca belleği
+günceller; diske yazma `SaveTotalScore()` ile bölüm sonunda
+(`LevelFlowController`), bitiş panelinde ana menüye dönerken, `OnDestroy`,
+`OnApplicationPause` ve `OnApplicationQuit`'te yapılır (WebGL'de her yazma
+IndexedDB'ye flush ettiği için sık çağrılmaz). `ResetTotalScore()` normal akışta
+kullanılmaz, ileride "ilerlemeyi sıfırla" için vardır.
+
+**Keşfedilen asallar:** `RegisterDiscoveredPrimes(rootNumber)` bir meteor tüm
+parçalarıyla yok edildiğinde `MeteorController` tarafından çağrılır; kök sayının
+asal çarpanları `SortedSet<int>`'e eklenir, yani aynı asal kaç kez çıkarsa çıksın
+bir kez sayılır. Ekrandan kaçan veya gemiye çarpan meteorun çarpanları keşfedilmiş
+sayılmaz. `DiscoveredPrimeCount` (bitiş panelinde gösterilir) ve sıralı liste
+`DiscoveredPrimes` olarak açılır. `ResetScore()` bunları **sıfırlamaz** — bölüm
+puanı sıfırlansa da keşif ve toplam puan tüm yolculuk boyunca birikir.
+
+- **Bağlantı:** `MeteorController` (oturum tamamlanınca `AddMeteorScore` +
+  `RegisterDiscoveredPrimes`), `PrimeMathEngine` (`GetPrimeFactors`),
+  `ScoreHUDView` (`OnScoreChanged` dinler), `GameManager`
+  (`OnTargetReached` dinler), `LevelFlowController` (`SaveTotalScore` +
+  `ResetScore`), `BitisManager` (`DiscoveredPrimeCount`, `TotalScore`).
 
 ### `HealthManager.cs`
 `Assets/Scripts/Runtime/Core/`
@@ -272,7 +292,9 @@ atlanmasını engeller, `IsLastLevel` guard'ı son gezegende çalışmasını ö
 **çıkış bitince** `StartNextLevel()` sırayla şunları yapar:
 
 1. `LevelManager.SetLevel(CurrentLevelIndex + 1)`
-2. `ScoreManager.ResetScore()` — puan **ve** `isTargetReached` bayrağı sıfırlanır
+2. `ScoreManager.SaveTotalScore()` + `ResetScore()` — toplam puan diske yazılır
+   (oyun beklenmedik kapanırsa en fazla bir bölümlük puan kaybolur), ardından
+   bölüm puanı **ve** `isTargetReached` bayrağı sıfırlanır
 3. `HealthManager.ResetHealth()` — canlar ve sönmüş kalp görselleri geri gelir
 4. `MeteorSpawner.ResetNumberPool()` — tamamlanan sayı listesi yeni bölüme taşınmaz
 5. `GameManager.SetState(GameState.Gameplay)` — üretim, ateş ve gemi kontrolü
@@ -616,8 +638,30 @@ yapılır. Sahnede ölçek 0 bırakılmışsa tween 0'dan 0'a gideceği için
 `ResolveBaseScale` birim ölçeğe düşer. Çizgilerin `Image`'i **Filled** tipinde
 olmalıdır — `DOFillAmount` yalnızca o tipte çalışır.
 
+**Özet panelleri:** Gezegen/çizgi sekansı bittikten sonra üç `CanvasGroup` sırayla
+açılır: asal sayı paneli → puan paneli → başla butonu. Üçü de aynı adımı kullandığı
+için tek bir dizide tutulur (`summaryPanels` / `summaryTexts` / `summaryTargetValues`
+aynı index ile eşleşir; butonun sayaç metni `null` bırakılır, o adım atlanır).
+Boş bırakılan slot sekansta boşluk bırakmaz — gecikme yalnızca gerçekten açılacak
+paneller arasında uygulanır.
+
+**Sayaçlar:** Panel yerine oturduğu anda metin 0'dan hedef değere sayar
+(`DOTween.To` + `SetTarget(label)`, böylece `label.DOKill()` sayacı da öldürür).
+Sayaç sekansa **eklenmez**, `AppendCallback` ile bağımsız başlatılır; aksi halde
+sekans sayma bitene kadar bir sonraki panele geçemezdi. Hedef değerler panel
+açılırken `ScoreManager`'dan okunur: `DiscoveredPrimeCount` ve `TotalScore`.
+
+**Başla butonu:** Belirdikten sonra `pulseScale` oranında sonsuz yoyo ile nabız
+atar; tıklanabilirlik ancak buton tamamen belirince açılır. `GoToMainMenu()`
+butona bağlanır — tween'leri öldürür, `ScoreManager.SaveTotalScore()` ile toplam
+puanı diske yazar, `Time.timeScale = 1` yapar (panel duraklamışken açılmış
+olabilir) ve `mainMenuSceneName` sahnesini yükler. Buton ilk tıklamada kapatılır,
+sahne iki kez yüklenmez.
+
 - **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (`IsLastLevel`),
-  DOTween (`DOAnchorPos`, `DOScale`, `DOFade`, `DOFillAmount`).
+  `ScoreManager` (`DiscoveredPrimeCount`, `TotalScore`, `SaveTotalScore`),
+  `SceneManager` (ana menü sahnesi), TextMeshPro,
+  DOTween (`DOAnchorPos`, `DOScale`, `DOFade`, `DOFillAmount`, `DOTween.To`).
 
 ---
 
@@ -663,13 +707,19 @@ Aşağıdakiler `CLAUDE.md`'de hedef mimari olarak tanımlı ama henüz kodlanma
 `PowerUpManager`, `SaveManager`, `UIManager`/`ScreenController`, gezegenlere
 özgü öncelikli sayı listelerinin doldurulması.
 
+Kayıt tarafı notu: toplam puan şu an `ScoreManager` içinde doğrudan `PlayerPrefs`
+ile saklanıyor (`AsalYolculuk.TotalScore`). `SaveManager`/`SaveData` geldiğinde bu
+alan oraya taşınacak; anahtar adı korunursa mevcut oyuncu verisi kaybolmaz.
+
 Can / oyun sonu tarafında eksik kalanlar:
 - **Yeniden başlatma akışı:** Bölüm tamamlama tarafı bitti
   (`LevelFlowController.GoToNextLevel`), fakat ölüm sonrası "tekrar dene" akışı
   (`RestartLevel()`) henüz yok. Reset zinciri hazır; eksik olan `PlayerDeathEffect
   .HideShip()`'in tersi olan bir `RestoreShip()` metodu.
 - **Son bölüm bitişi:** `LevelCompletePanelView` son gezegende bilinçli olarak
-  açılmıyor (`LevelManager.IsLastLevel`); oraya oyun sonu paneli gelecek.
+  açılmıyor (`LevelManager.IsLastLevel`); onun yerine `BitisManager` devreye
+  giriyor. Panelin kendisi bitti; havai fişek/konfeti ve "Sonsuz Yolculuk"
+  girişi eklenmedi (bkz. `YAPILACAKLAR.md` 4.7 ve 5.6).
 - `GameState.Paused` durumu kodda tanımlı ama henüz hiçbir yerden tetiklenmiyor
   (duraklatma menüsüyle gelecek).
 

@@ -66,6 +66,9 @@ namespace PayeGames.AsalYolculuk.Core
         {
             if (ScoreManager.Instance != null)
             {
+                // Bölüm boyunca biriken toplam puan burada diske yazılır; oyun
+                // beklenmedik şekilde kapanırsa en fazla bir bölümlük puan kaybolur.
+                ScoreManager.Instance.SaveTotalScore();
                 ScoreManager.Instance.ResetScore();
             }
 

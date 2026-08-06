@@ -1,6 +1,6 @@
 # Yapılacaklar — Asal Yolculuk
 
-Son güncelleme: 2026-08-06 (oyun sonu paneli eklendi)
+Son güncelleme: 2026-08-06 (oyun sonu paneli içeriği tamamlandı)
 
 Bu dosya projenin tamamlanmamış işlerini önceliklendirilmiş şekilde listeler.
 Mevcut durum için `SCRIPT_OZETI.md`, hedef tasarım için `AsalYolculuk_Senaryo.md`
@@ -26,7 +26,9 @@ yeniden başlatma ve meta katman (ekranlar, kayıt, madenler) henüz yok.
 | Bölüm sonu sunumu (HUD çekilir, gemi taşınır, sahne temizlenir) | ✅ Bitti |
 | Bölüm sonu paneli + bir sonraki bölüme geçiş | ✅ Bitti |
 | Oyun sonu paneli (giriş + yolculuk özeti animasyonu) | ✅ Bitti |
-| Oyun sonu paneli içeriği (puan, butonlar, kutlama) | ❌ Yok |
+| Oyun sonu paneli içeriği (asal/puan sayaçları, ana menü butonu) | ✅ Bitti |
+| Toplam puan + keşfedilen asal takibi (`PlayerPrefs`) | ✅ Bitti |
+| Oyun sonu kutlaması (havai fişek/konfeti) | ❌ Yok (→ 4.7) |
 | `PlanetDataSO` × 8 | ⚠️ min/max dolu, sprite ve öncelikli sayılar eksik |
 | Ölüm sonrası yeniden başlatma | ❌ Yok |
 | Maden (PowerUp / Curse) sistemi | ❌ Yok |
@@ -35,7 +37,9 @@ yeniden başlatma ve meta katman (ekranlar, kayıt, madenler) henüz yok.
 | Dokunmatik input | ❌ Yok |
 | Ses sistemi | ❌ Yok |
 
-Sahne durumu: tek sahne var — `Assets/Scenes/GamePlay.unity`.
+Sahne durumu: `Assets/Scenes/GamePlay.unity` (oyun) ve `Assets/Scenes/MainMenu.unity`.
+İkisi de Build Settings'te ekli. **MainMenu şu an GamePlay'in kopyası** — bitiş
+panelindeki "Başla" butonu buraya dönüyor, içeriği 4.4'te yazılacak.
 
 ---
 
@@ -60,17 +64,15 @@ sonra devam edememe ve gezegen verilerinin eksikliği.
   "Tekrar Dene" paneli → `RestartLevel()`.
   *Dosyalar:* `UI/LevelFailedPanelView.cs` (yeni)
 
-- [ ] **1.4 — Oyun sonu paneli içeriği**
-  Panelin kendisi hazır (`UI/BitisManager.cs`): son gezegende sağdan gelip
-  yolculuk özeti animasyonunu (gezegen → çizgi → gezegen) oynatıyor, gemi
-  ekrandan çıkıp yok oluyor, HUD panelleri kapanıyor. **Eksik olan içerik:**
-  - Toplam puan göstergesi (sayaç animasyonuyla) — `SaveManager` gerektirir (4.1)
-  - "Sonsuz Yolculuk açıldı" butonu → mod girişi (5.6)
-  - Ana Menü butonu
-  - Havai fişek / konfeti (`Prefabs/Effects/FireworkBlue.prefab`,
-    `confetti.prefab` hazır bekliyor)
-  - Eğitsel özet (parçalanan meteor, bulunan asal çarpan sayısı) — sayaçların
-    **şimdiden** tutulmaya başlaması gerekir, yoksa finalde veri olmaz
+- [x] **1.4 — Oyun sonu paneli içeriği** ✅
+  `UI/BitisManager.cs` tamamlandı: son gezegende sağdan geliyor, yolculuk özeti
+  animasyonunu (gezegen → çizgi → gezegen) oynatıyor, ardından keşfedilen asal
+  sayısı ve toplam puan panelleri sayaç animasyonuyla açılıyor, son olarak nabız
+  atan "Başla" butonu geliyor ve ana menü sahnesine dönüyor.
+  Eğitsel sayaç `ScoreManager.RegisterDiscoveredPrimes` ile **oyun boyunca**
+  toplanıyor; toplam puan `PlayerPrefs` üzerinde kalıcı.
+  *Kalanlar başka fazlara taşındı:* havai fişek/konfeti → 4.7,
+  "Sonsuz Yolculuk açıldı" butonu → 5.6.
 
 - [ ] **1.5 — Gezegen sprite'ları**
   `PlanetDataSO.planetSprite` alanı eklendi ama 8 asset'te de boş.
@@ -155,6 +157,8 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 - [ ] **4.1 — `SaveManager` + `SaveData`**
   `maxUnlockedPlanetID`, `completedPlanetIDs`, `totalPointsCollected`,
   `endlessModeHighScore`, ses ayarları. `PlayerPrefs` üzerinde JSON.
+  *Not:* Toplam puan şimdilik `ScoreManager` içinde doğrudan `PlayerPrefs`
+  (`AsalYolculuk.TotalScore`) ile tutuluyor; buraya taşınacak.
   *Dosyalar:* `Core/SaveManager.cs`, `Data/SaveData.cs` (yeni)
 
 - [ ] **4.2 — `GameConfigSO`**
@@ -167,6 +171,10 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 
 - [ ] **4.4 — Ana Menü ekranı**
   Oyuna Başla / Devam Et / Sonsuz Yolculuk / Ses aç-kapa.
+  `Assets/Scenes/MainMenu.unity` oluşturuldu ve Build Settings'e eklendi ama
+  içeriği hâlâ GamePlay kopyası; temizlenip menü arayüzü kurulacak.
+  Bitiş panelindeki "Başla" butonu (`BitisManager.mainMenuSceneName`) buraya
+  yönleniyor.
 
 - [ ] **4.5 — Harita ekranı**
   8 gezegen; tamamlananlar işaretli, kilitliler gri, aktif olan parlayan çerçeveli.
@@ -176,9 +184,11 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 - [ ] **4.6 — Yolculuk (geçiş) ekranı**
   Solda mevcut gezegen, sağda hedef gezegen, ortada gemi + yıldız animasyonu.
 
-- [ ] **4.7 — Bölüm Tamamlandı ekranı**
+- [ ] **4.7 — Bölüm Tamamlandı ekranı + kutlama efekti**
   Havai fişek animasyonu (`Prefabs/Effects/FireworkBlue.prefab`, `confetti.prefab` hazır),
   tamamlanan gezegen adı, toplam puan, açılan yeni gezegen, Devam Et butonu.
+  Aynı kutlama efekti oyun sonu paneline (`BitisManager`) de bağlanacak — 1.4'ten
+  buraya taşındı.
 
 - [ ] **4.8 — In-scene panelleri gerçek ekranlarla değiştir**
   `LevelCompletePanelView` ve Faz 1'de eklenecek başarısızlık paneli, tam ekran
@@ -204,6 +214,9 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 - [ ] **5.6 — Sonsuz Yolculuk modu**
   Asal Krallığı tamamlandıktan sonra açılır. Seçim ekranı (yüksek skor gösterimi),
   oyun ekranında rekor + toplam skor, tüm gezegen mekanikleri aynı anda aktif.
+  Bitiş paneline "Sonsuz Yolculuk açıldı" butonu bu modla birlikte eklenecek
+  (1.4'ten taşındı); `BitisManager`'daki özet panel dizisine yeni bir slot olarak
+  girer.
 
 ---
 
