@@ -1,6 +1,6 @@
 # Yapılacaklar — Asal Yolculuk
 
-Son güncelleme: 2026-08-04 (bölüm sonu akışı eklendi)
+Son güncelleme: 2026-08-06 (oyun sonu paneli eklendi)
 
 Bu dosya projenin tamamlanmamış işlerini önceliklendirilmiş şekilde listeler.
 Mevcut durum için `SCRIPT_OZETI.md`, hedef tasarım için `AsalYolculuk_Senaryo.md`
@@ -25,9 +25,10 @@ yeniden başlatma ve meta katman (ekranlar, kayıt, madenler) henüz yok.
 | Bölüm tamamlama tetikleyicisi (`OnTargetReached`) | ✅ Bitti |
 | Bölüm sonu sunumu (HUD çekilir, gemi taşınır, sahne temizlenir) | ✅ Bitti |
 | Bölüm sonu paneli + bir sonraki bölüme geçiş | ✅ Bitti |
+| Oyun sonu paneli (giriş + yolculuk özeti animasyonu) | ✅ Bitti |
+| Oyun sonu paneli içeriği (puan, butonlar, kutlama) | ❌ Yok |
 | `PlanetDataSO` × 8 | ⚠️ min/max dolu, sprite ve öncelikli sayılar eksik |
 | Ölüm sonrası yeniden başlatma | ❌ Yok |
-| Son bölüm (oyun sonu) akışı | ❌ Yok |
 | Maden (PowerUp / Curse) sistemi | ❌ Yok |
 | Ekran akışı (Ana Menü, Harita, Yolculuk, Sonuç) | ❌ Yok |
 | Kayıt sistemi (`SaveManager`) | ❌ Yok |
@@ -59,9 +60,17 @@ sonra devam edememe ve gezegen verilerinin eksikliği.
   "Tekrar Dene" paneli → `RestartLevel()`.
   *Dosyalar:* `UI/LevelFailedPanelView.cs` (yeni)
 
-- [ ] **1.4 — Son bölüm (oyun sonu) paneli**
-  `LevelCompletePanelView` son gezegende bilinçli olarak açılmıyor
-  (`LevelManager.IsLastLevel`). Oraya oyun sonu paneli gelecek.
+- [ ] **1.4 — Oyun sonu paneli içeriği**
+  Panelin kendisi hazır (`UI/BitisManager.cs`): son gezegende sağdan gelip
+  yolculuk özeti animasyonunu (gezegen → çizgi → gezegen) oynatıyor, gemi
+  ekrandan çıkıp yok oluyor, HUD panelleri kapanıyor. **Eksik olan içerik:**
+  - Toplam puan göstergesi (sayaç animasyonuyla) — `SaveManager` gerektirir (4.1)
+  - "Sonsuz Yolculuk açıldı" butonu → mod girişi (5.6)
+  - Ana Menü butonu
+  - Havai fişek / konfeti (`Prefabs/Effects/FireworkBlue.prefab`,
+    `confetti.prefab` hazır bekliyor)
+  - Eğitsel özet (parçalanan meteor, bulunan asal çarpan sayısı) — sayaçların
+    **şimdiden** tutulmaya başlaması gerekir, yoksa finalde veri olmaz
 
 - [ ] **1.5 — Gezegen sprite'ları**
   `PlanetDataSO.planetSprite` alanı eklendi ama 8 asset'te de boş.
@@ -209,6 +218,9 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 - [ ] **6.5 — Erişilebilirlik** — renk körlüğü için madenlerde simge desteği,
   yüksek kontrast, büyük dokunmatik butonlar
 - [ ] **6.6 — Fonksiyonel test geçişi** (GDD EK-2.9 kontrol listesi)
+- [ ] **6.7 — `SilinecekManager`'ı sil**
+  Geçici test aracı (`Assets/Scripts/Runtime/SilinecekManager.cs` + sahnedeki
+  objesi). Hiçbir sistem referans vermiyor, silmek yeterli.
 
 ---
 

@@ -70,16 +70,27 @@ event'ine `Start`'ta abone olur (manager'ın `Awake`'i garanti çalışmış ols
 ### `PlayerLevelCompleteEffect.cs`
 `Assets/Scripts/Runtime/Player/`
 
-Gemiye eklenir. `GameManager.OnGameStateChanged` dinler:
-- **`LevelComplete`** — gemiyi DOTween `DOMove` ile `levelCompletePosition`
-  (varsayılan `(0, -5)`) konumuna `moveDelay` gecikmeyle yumuşakça taşır. Gemi
-  kontrolü `PlayerShipController` içindeki guard'la zaten kapalı olduğu için
-  input tween'i bozmaz.
-- **`Gameplay`** — tween öldürülür ve gemi `Awake`'te cache'lenen sahne
-  başlangıç konumuna anında geri alınır (yeni bölüm başlangıcı).
+Geminin **kök objesine** eklenir (bir child'a eklenirse oyun sonundaki
+`SetActive(false)` yalnızca o child'ı kapatır). `GameManager.OnGameStateChanged`
+dinler ve üç duruma ayrılır:
 
-- **Bağlantı:** `GameManager` (durum event'i), `PlayerShipController` (dolaylı —
-  guard sayesinde çakışma olmaz), DOTween.
+- **`LevelComplete` + ara bölüm** — gemiyi DOTween `DOMove` ile
+  `levelCompletePosition` (varsayılan `(0, -5)`) konumuna `moveDelay` gecikmeyle
+  yumuşakça taşır. Gemi kontrolü `PlayerShipController` içindeki guard'la zaten
+  kapalı olduğu için input tween'i bozmaz.
+- **`LevelComplete` + son gezegen** (`LevelManager.IsLastLevel`) —
+  `FlyAwayAndDisappear()`: gemi `InBack` ease ile önce hafif geri çekilip
+  ekranın sağından dışarı fırlar, aynı anda `exitScaleRatio` kadar küçülerek
+  uzaklaşır; tween bitince `gameObject.SetActive(false)` ile tamamen kaybolur.
+  Çıkış X'i `Camera.main` viewport'undan hesaplanır (sabit koordinat yok).
+- **`Gameplay`** — tween öldürülür, obje tekrar aktif edilir, gemi `Awake`'te
+  cache'lenen başlangıç konumuna **ve ölçeğine** döner.
+
+Durum aboneliği düz bir C# event'i olduğu için obje pasifken de canlı kalır;
+oyun sonunda kaybolan gemi yeniden başlatmada geri gelebilir.
+
+- **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (`IsLastLevel`),
+  `PlayerShipController` (dolaylı — guard sayesinde çakışma olmaz), DOTween.
 
 ---
 
@@ -577,6 +588,58 @@ tasarımcının paneli elle ekran dışına taşımasına gerek kalmaz.
 
 - **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (gezegen verisi),
   `PlanetDataSO`, `LevelFlowController` (`HideToLeft`), TextMeshPro, DOTween.
+
+### `BitisManager.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Oyun sonu paneli (`bitisPanel`). Panele `LevelCompletePanelView` **eklenmez** —
+o script bölüm sonu paneline aittir ve son gezegende bilinçli olarak açılmaz;
+iki panel bu sayede hiç çakışmaz. `RectTransform` + `CanvasGroup` zorunlu.
+
+**Panel girişi:** `GameManager.OnGameStateChanged` → `LevelComplete` **ve**
+`LevelManager.IsLastLevel` ise `showDelay` sonrası sağdan sola kayarak gelir.
+Konumlandırma `LevelCompletePanelView` ile aynı desende: Inspector'daki yerleşim
+"görünür konum" kabul edilir, gizli konum root canvas genişliğine göre otomatik
+hesaplanır. Giriş tween'i biter bitmez `PlaySequence()` zincirleme tetiklenir —
+sekansın panelin oturmasını beklemesi için elle delay ayarlamak gerekmez.
+
+**Yolculuk özeti sekansı:** `gezegenler` ve `lines` parent'larının çocukları
+hiyerarşi sırasına göre eşleştirilir ve tek bir DOTween `Sequence` kurulur:
+`startDelay → gezegen[0] (scale + alpha birlikte) → planetToLineDelay →
+line[0] doldurma → gezegen[1] → line[1] → ...`
+Çizgi sayısı gezegen sayısından bir eksik olduğu için son gezegende çizgi adımı
+otomatik atlanır (8 gezegen / 7 çizgi kurulumu doğrudan çalışır).
+
+Gezegenlerin hedef ölçeği `Awake`'te sahnedeki ölçekten cache'lenir; bu yüzden
+nesneler sahnede **görünür ve son ölçeklerinde** bırakılır, gizleme runtime'da
+yapılır. Sahnede ölçek 0 bırakılmışsa tween 0'dan 0'a gideceği için
+`ResolveBaseScale` birim ölçeğe düşer. Çizgilerin `Image`'i **Filled** tipinde
+olmalıdır — `DOFillAmount` yalnızca o tipte çalışır.
+
+- **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (`IsLastLevel`),
+  DOTween (`DOAnchorPos`, `DOScale`, `DOFade`, `DOFillAmount`).
+
+---
+
+## Geçici (Silinecek)
+
+### `SilinecekManager.cs`
+`Assets/Scripts/Runtime/`
+
+**GEÇİCİ TEST ARACI — teslimden önce silinecek.** Bitiş akışını tüm bölümleri
+oynamadan denemek için yazıldı. Hiçbir sistem bu sınıfa referans vermez, hiçbir
+event'e abone olmaz; sahnedeki objesiyle birlikte silindiğinde oyun etkilenmez.
+
+- `startAtLastLevel` — `Start`'ta `LevelManager.SetLevel(int.MaxValue)` çağırır.
+  `SetLevel` aralığa clamp'lediği için son bölüme oturur; bu sayede `LevelManager`'a
+  bu araç için tek bir üye bile eklenmedi.
+- `completeLevelKey` (varsayılan F9) — eksik puanı `ScoreManager.AddScore` ile
+  bir kerede ekler, yani normal akışın aynısı çalışır (`OnTargetReached` →
+  `GameManager` → bölüm sonu sunumu). Klavye odağı Game view'da değilse tuş
+  algılanmadığı için `[ContextMenu("Bolumu Tamamla")]` yedeği de vardır.
+
+- **Bağlantı:** `LevelManager`, `ScoreManager`, `GameManager` — hepsi tek yönlü,
+  yalnızca mevcut public API çağrılır.
 
 ---
 
