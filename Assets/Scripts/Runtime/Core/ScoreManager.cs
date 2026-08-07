@@ -164,6 +164,24 @@ namespace PayeGames.AsalYolculuk.Core
         }
 
         /// <summary>
+        /// Bölüm kaybedildiğinde çağrılır: o bölümde kazanılan puan kalıcı toplamdan
+        /// geri alınır, ardından bölüm puanı sıfırlanır. <see cref="AddScore"/> puanı
+        /// toplama anında eklediği için bu olmadan ölüp tekrar oynayarak toplam puan
+        /// şişirilebilirdi. Keşfedilen asallar bilinçli olarak korunur — öğrenme
+        /// kaydıdır, bölüm kaybıyla silinmez.
+        /// </summary>
+        public void RevertLevelScoreFromTotal()
+        {
+            if (CurrentScore > 0)
+            {
+                TotalScore = Mathf.Max(0, TotalScore - CurrentScore);
+                PlayerPrefs.SetInt(TotalScoreKey, TotalScore);
+            }
+
+            ResetScore();
+        }
+
+        /// <summary>
         /// Hedefe ulaşıldığında bölüm sonu akışını başlatır. Bölüm bittikten sonra
         /// akan puanlar (patlamakta olan meteorlar) event'i tekrar tetiklemesin diye
         /// bayrakla korunur.

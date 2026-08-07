@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using PayeGames.AsalYolculuk.Combat;
@@ -30,9 +31,29 @@ namespace PayeGames.AsalYolculuk.Player
         [Tooltip("Gemi patlaması bittikten sonra meteorların patlamaya başlaması için beklenen süre")]
         [SerializeField] private float meteorClearDelay = 0.2f;
 
+        /// <summary>
+        /// Ölüm sekansının tamamı (gemi patlaması + meteor temizliği) bittiğinde tetiklenir.
+        /// Sekansın süresi sahnedeki meteor sayısına göre değiştiği için oyun sonu paneli
+        /// sabit bir gecikme yerine bu event'i bekler.
+        /// </summary>
+        public event Action OnDeathSequenceCompleted;
+
+        [Header("Diriliş")]
+        [Tooltip("Gemi geri geldiğinde kaç saniye hasar almayacağı")]
+        [SerializeField] private float respawnInvulnerableDuration = 1.5f;
+
         private Transform selfTransform;
         private Renderer[] shipRenderers;
         private Collider2D[] shipColliders;
+
+        // Tasarım gereği kapalı bırakılmış bileşenler (ileride kalkan bariyeri gibi)
+        // diriltmede yanlışlıkla açılmasın diye başlangıç durumları saklanır.
+        private bool[] rendererInitialStates;
+        private bool[] colliderInitialStates;
+
+        private PlayerShipController shipController;
+        private PlayerAutoShooter autoShooter;
+        private ShipCollisionHandler collisionHandler;
 
         private void Awake()
         {
@@ -41,6 +62,28 @@ namespace PayeGames.AsalYolculuk.Player
             // Gemi patlama anında gizlenir; obje aktif kalmalı ki patlama coroutine'i devam etsin.
             shipRenderers = GetComponentsInChildren<Renderer>(true);
             shipColliders = GetComponentsInChildren<Collider2D>(true);
+
+            CacheInitialStates();
+
+            // Bileşenler gemide veya bir alt objesinde olabilir.
+            shipController = GetComponentInChildren<PlayerShipController>(true);
+            autoShooter = GetComponentInChildren<PlayerAutoShooter>(true);
+            collisionHandler = GetComponentInChildren<ShipCollisionHandler>(true);
+        }
+
+        private void CacheInitialStates()
+        {
+            rendererInitialStates = new bool[shipRenderers.Length];
+            for (int index = 0; index < shipRenderers.Length; index++)
+            {
+                rendererInitialStates[index] = shipRenderers[index].enabled;
+            }
+
+            colliderInitialStates = new bool[shipColliders.Length];
+            for (int index = 0; index < shipColliders.Length; index++)
+            {
+                colliderInitialStates[index] = shipColliders[index].enabled;
+            }
         }
 
         private void Start()
@@ -70,9 +113,14 @@ namespace PayeGames.AsalYolculuk.Player
 
             yield return new WaitForSeconds(meteorClearDelay);
 
-            if (meteorFieldClearer == null) yield break;
+            // Temizleyici bağlı değilse sekans yine tamamlanmış sayılır; aksi halde
+            // oyun sonu paneli hiç açılmaz ve oyun boş ekranda kilitlenir.
+            if (meteorFieldClearer != null)
+            {
+                yield return meteorFieldClearer.ClearRoutine();
+            }
 
-            yield return meteorFieldClearer.ClearRoutine();
+            OnDeathSequenceCompleted?.Invoke();
         }
 
         /// <summary>
@@ -91,18 +139,47 @@ namespace PayeGames.AsalYolculuk.Player
                 shipColliders[index].enabled = false;
             }
 
-            // Ateşleyici gemide veya bir alt objesinde olabilir.
-            PlayerShipController shipController = GetComponentInChildren<PlayerShipController>(true);
             if (shipController != null)
             {
                 shipController.enabled = false;
             }
 
-            PlayerAutoShooter autoShooter = GetComponentInChildren<PlayerAutoShooter>(true);
             if (autoShooter != null)
             {
                 autoShooter.enabled = false;
             }
+        }
+
+        /// <summary>
+        /// <see cref="HideShip"/>'in tersi: bileşenler <c>Awake</c>'te kaydedilen
+        /// başlangıç durumlarına döner ve gemi kısa bir süre dokunulmaz olur.
+        /// Bölüm yeniden başlatılırken çağrılır.
+        /// </summary>
+        public void RestoreShip()
+        {
+            for (int index = 0; index < shipRenderers.Length; index++)
+            {
+                shipRenderers[index].enabled = rendererInitialStates[index];
+            }
+
+            for (int index = 0; index < shipColliders.Length; index++)
+            {
+                shipColliders[index].enabled = colliderInitialStates[index];
+            }
+
+            if (shipController != null)
+            {
+                shipController.enabled = true;
+            }
+
+            if (autoShooter != null)
+            {
+                autoShooter.enabled = true;
+            }
+
+            if (collisionHandler == null) return;
+
+            collisionHandler.GrantInvulnerability(respawnInvulnerableDuration);
         }
 
         private IEnumerator PlayExplosionSequence()
@@ -112,7 +189,7 @@ namespace PayeGames.AsalYolculuk.Player
             for (int index = 0; index < explosionCount; index++)
             {
                 // İlk patlama tam geminin üzerinde, sonrakiler yakın noktalara saçılır.
-                Vector3 offset = index == 0 ? Vector3.zero : (Vector3)(Random.insideUnitCircle * explosionRadius);
+                Vector3 offset = index == 0 ? Vector3.zero : (Vector3)(UnityEngine.Random.insideUnitCircle * explosionRadius);
                 SpawnExplosion(offset);
 
                 yield return new WaitForSeconds(explosionInterval);

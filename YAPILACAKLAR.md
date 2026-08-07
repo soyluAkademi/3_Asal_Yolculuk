@@ -1,6 +1,6 @@
 # Yapılacaklar — Asal Yolculuk
 
-Son güncelleme: 2026-08-06 (oyun sonu paneli içeriği tamamlandı)
+Son güncelleme: 2026-08-07 (ölüm sonrası yeniden başlatma akışı tamamlandı — Faz 1 bitti)
 
 Bu dosya projenin tamamlanmamış işlerini önceliklendirilmiş şekilde listeler.
 Mevcut durum için `SCRIPT_OZETI.md`, hedef tasarım için `AsalYolculuk_Senaryo.md`
@@ -10,8 +10,9 @@ ve `CLAUDE.md` referans alınır.
 
 ## Mevcut Durum Özeti
 
-Çekirdek gameplay döngüsü ve bölümler arası geçiş çalışıyor; ölüm sonrası
-yeniden başlatma ve meta katman (ekranlar, kayıt, madenler) henüz yok.
+Çekirdek gameplay döngüsü kapandı: bölüm kazanma, kaybetme ve iki durumdan da
+devam etme çalışıyor. Meta katman (ekranlar, kayıt, madenler) ve dokunmatik
+input henüz yok.
 
 | Sistem | Durum |
 |---|---|
@@ -28,9 +29,11 @@ yeniden başlatma ve meta katman (ekranlar, kayıt, madenler) henüz yok.
 | Oyun sonu paneli (giriş + yolculuk özeti animasyonu) | ✅ Bitti |
 | Oyun sonu paneli içeriği (asal/puan sayaçları, ana menü butonu) | ✅ Bitti |
 | Toplam puan + keşfedilen asal takibi (`PlayerPrefs`) | ✅ Bitti |
-| Oyun sonu kutlaması (havai fişek/konfeti) | ❌ Yok (→ 4.7) |
-| `PlanetDataSO` × 8 | ⚠️ min/max dolu, sprite ve öncelikli sayılar eksik |
-| Ölüm sonrası yeniden başlatma | ❌ Yok |
+| Oyun sonu kutlaması (konfeti, sırayla rastgele noktalarda) | ✅ Bitti |
+| `PlanetDataSO` × 8 (min/max, sprite, öncelikli sayılar) | ✅ Bitti |
+| Oyun sonu paneli (`GameOverPanelView`) + gezegen bilgisi | ✅ Bitti |
+| Ölüm sonrası yeniden başlatma + ana menüye dönüş | ✅ Bitti |
+| Bölüm kaybında puanın toplamdan geri alınması | ✅ Bitti |
 | Maden (PowerUp / Curse) sistemi | ❌ Yok |
 | Ekran akışı (Ana Menü, Harita, Yolculuk, Sonuç) | ❌ Yok |
 | Kayıt sistemi (`SaveManager`) | ❌ Yok |
@@ -43,26 +46,40 @@ panelindeki "Başla" butonu buraya dönüyor, içeriği 4.4'te yazılacak.
 
 ---
 
-## 🔴 Faz 1 — Bölüm Döngüsünü Kapat (Kritik)
+## ✅ Faz 1 — Bölüm Döngüsünü Kapat (Tamamlandı)
 
-Bölüm kazanma ve bir sonraki gezegene geçiş tamamlandı. Kalan: kaybedildikten
-sonra devam edememe ve gezegen verilerinin eksikliği.
+Bölüm kazanma, kaybetme ve her ikisinden de devam etme akışı çalışıyor.
 
-- [ ] **1.1 — Gemiyi diriltme**
-  `PlayerDeathEffect.HideShip()` renderer/collider kapatıyor ve controller'ları devre
-  dışı bırakıyor; bunun tersini yapan `RestoreShip()` gerekli.
-  *Dosyalar:* `Player/PlayerDeathEffect.cs`
+- [x] **1.1 — Gemiyi diriltme** ✅
+  `PlayerDeathEffect.RestoreShip()` eklendi. Renderer ve collider'lar `Awake`'te
+  kaydedilen **başlangıç durumlarına** döner (körlemesine hepsi açılmaz — tasarım
+  gereği kapalı duran bir çocuk, ileride kalkan bariyeri gibi, yanlışlıkla görünür
+  olmasın). Gemi dönerken `ShipCollisionHandler.GrantInvulnerability` ile
+  1.5 sn dokunulmaz olur.
+  Ayrıca `OnDeathSequenceCompleted` event'i eklendi: ölüm sekansının süresi
+  sahnedeki meteor sayısına göre değiştiği için panel sabit gecikme yerine bunu
+  bekler.
+  *Dosyalar:* `Player/PlayerDeathEffect.cs`, `Player/ShipCollisionHandler.cs`
 
-- [ ] **1.2 — `LevelFlowController.RestartLevel()`**
-  `GoToNextLevel()` tamamlandı; aynı reset zincirini seviye ilerletmeden kullanan
-  `RestartLevel()` eklenecek (`ResetLevelProgress()` zaten ayrı metot) +
-  `PlayerDeathEffect.RestoreShip()` çağrısı.
-  *Dosyalar:* `Core/LevelFlowController.cs`
+- [x] **1.2 — `LevelFlowController.RestartLevel()` + `GoToMainMenu()`** ✅
+  `RestartLevel()` sahne değiştirmeden, seviye ilerletmeden bölümü baştan kurar.
+  Geçiş **Mask Transitions** paketiyle: ekran kapanır → kapalıyken sıfırlama
+  yapılır (oyuncu geminin ışınlanmasını görmez) → ekran açılır.
+  `GoToMainMenu()` `TransitionManager.LoadLevel` ile `MainMenu` sahnesini yükler.
+  `ResetLevelProgress` artık `revertLevelScore` parametresi alıyor; bölüm
+  kaybında `ScoreManager.RevertLevelScoreFromTotal()` ile o bölümün puanı kalıcı
+  toplamdan geri alınır (ölüp tekrar oynayarak puan şişirme kapandı). Keşfedilen
+  asallar korunur.
+  *Dosyalar:* `Core/LevelFlowController.cs`, `Core/ScoreManager.cs`
 
-- [ ] **1.3 — "Bölüm Başarısız" paneli**
-  `LevelCompletePanelView` ile aynı desende, `LevelFailed` durumunda açılan
-  "Tekrar Dene" paneli → `RestartLevel()`.
-  *Dosyalar:* `UI/LevelFailedPanelView.cs` (yeni)
+- [x] **1.3 — Oyun sonu paneli** ✅
+  `UI/GameOverPanelView.cs`: `LevelCompletePanelView` ile aynı konumlandırma
+  deseni, sağdan sola girer. Kaldığın gezegenin adı ve sprite'ı doldurulur,
+  `hideOnGameOver` dizisindeki sahne nesneleri gizlenir, `Gameplay`'e dönülünce
+  geri gelir. Butonlar: **Tekrar Dene** → `RestartLevel()`,
+  **Ana Menü** → `GoToMainMenu()`.
+  *Not:* Panelde "ulaşılan puan" göstergesi yok — gerekirse sonradan eklenir.
+  *Dosyalar:* `UI/GameOverPanelView.cs` (yeni)
 
 - [x] **1.4 — Oyun sonu paneli içeriği** ✅
   `UI/BitisManager.cs` tamamlandı: son gezegende sağdan geliyor, yolculuk özeti
@@ -71,21 +88,22 @@ sonra devam edememe ve gezegen verilerinin eksikliği.
   atan "Başla" butonu geliyor ve ana menü sahnesine dönüyor.
   Eğitsel sayaç `ScoreManager.RegisterDiscoveredPrimes` ile **oyun boyunca**
   toplanıyor; toplam puan `PlayerPrefs` üzerinde kalıcı.
-  *Kalanlar başka fazlara taşındı:* havai fişek/konfeti → 4.7,
-  "Sonsuz Yolculuk açıldı" butonu → 5.6.
+  Kutlama efekti de eklendi: gezegenler açılmaya başlarken 10 konfeti efekti
+  sırayla, ekranın rastgele noktalarında, gezegen fazına yayılmış aralıklarla
+  çıkıyor (`celebration*` alanları).
+  *Kalan başka faza taşındı:* "Sonsuz Yolculuk açıldı" butonu → 5.6.
 
-- [ ] **1.5 — Gezegen sprite'ları**
-  `PlanetDataSO.planetSprite` alanı eklendi ama 8 asset'te de boş.
-  `Assets/Arts/Asal_0/gezegenler/` altında 6 görsel var, **2 tanesi eksik**.
-  Bölüm sonu paneli ve ileride harita ekranı bu alandan okuyor.
-  *Dosyalar:* `Assets/Scripts/Runtime/ScriptableObjects/Planet_1..8.asset`
+- [x] **1.5 — Gezegen sprite'ları** ✅
+  8 asset'in de `planetSprite` alanı dolu.
 
-- [ ] **1.6 — `priorityNumberList` doldurma (8 gezegen)**
-  Şu an 8 gezegende de liste **boş**; bu yüzden GDD'nin %70 pedagojik sayı kuralı
-  fiilen çalışmıyor, tüm sayılar rastgele aralıktan geliyor. Oyunun eğitsel omurgası
-  bu — kod tarafı hazır, sadece veri eksik.
-  Gezegen bazında zorluk artışına göre (2-3 çarpanlı → 4-5 çarpanlı) liste hazırlanacak.
-  *Dosyalar:* `Assets/Scripts/Runtime/ScriptableObjects/Planet_1..8.asset`
+- [x] **1.6 — `priorityNumberList` doldurma (8 gezegen)** ✅
+  Listeler `PlanetDataGenerator.cs` içine veri olarak girildi; **Tools > Paye Games >
+  Asal Yolculuk > Generate Planet Data** menüsü 8 asset'e birden yazıyor.
+  Sayılar gezegen temasına göre kurgulandı (Lav asal ağırlıklı, Kara Delik yarı-asal,
+  Buz/Fırtına/Kristal çok kademeli bölünme). Araç üretim sırasında her sayıyı
+  aralık ve "en fazla 5 asal çarpan" kuralına karşı doğrulayıp uyarı basıyor.
+  **Not:** Liste tamamen değiştirilir — Inspector'dan elle düzenleme yeniden
+  üretimde kaybolur, kalıcı değişiklik generator'daki dizilerden yapılır.
 
 ---
 
@@ -187,13 +205,15 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 - [ ] **4.7 — Bölüm Tamamlandı ekranı + kutlama efekti**
   Havai fişek animasyonu (`Prefabs/Effects/FireworkBlue.prefab`, `confetti.prefab` hazır),
   tamamlanan gezegen adı, toplam puan, açılan yeni gezegen, Devam Et butonu.
-  Aynı kutlama efekti oyun sonu paneline (`BitisManager`) de bağlanacak — 1.4'ten
-  buraya taşındı.
+  *Not:* Oyun sonu paneli (`BitisManager`) tarafı bitti — konfeti orada çalışıyor;
+  burada kalan iş yalnızca **bölüm sonu** ekranının kendisi ve efektin ona bağlanması.
 
 - [ ] **4.8 — In-scene panelleri gerçek ekranlarla değiştir**
-  `LevelCompletePanelView` ve Faz 1'de eklenecek başarısızlık paneli, tam ekran
-  akışı geldiğinde `ScreenController` yönetimine taşınacak. Panelin gezegen
-  bilgisi doldurma mantığı (`FillPlanetInfo`) yolculuk ekranında aynen kullanılabilir.
+  `LevelCompletePanelView`, `GameOverPanelView` ve `BitisManager`, tam ekran akışı
+  geldiğinde `ScreenController` yönetimine taşınacak. Panellerin gezegen bilgisi
+  doldurma mantığı (`FillPlanetInfo`) yolculuk ekranında aynen kullanılabilir.
+  `GameOverPanelView.GoToMainMenu` şu an doğrudan sahne yüklüyor; ekran akışı
+  gelince buraya bağlanacak.
 
 ---
 
@@ -233,17 +253,17 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 - [ ] **6.6 — Fonksiyonel test geçişi** (GDD EK-2.9 kontrol listesi)
 - [ ] **6.7 — `SilinecekManager`'ı sil**
   Geçici test aracı (`Assets/Scripts/Runtime/SilinecekManager.cs` + sahnedeki
-  objesi). Hiçbir sistem referans vermiyor, silmek yeterli.
+  objesi). Başlangıç bölümü seçimi, **F9** bölümü tamamlar, **F10** canları
+  bitirir. Hiçbir sistem referans vermiyor, silmek yeterli.
 
 ---
 
 ## Önerilen Sıra
 
-**Faz 1 → 2 → 3 → 4 → 5 → 6**
+**Faz 2 → 3 → 4 → 5 → 6** (Faz 1 tamamlandı)
 
-Gerekçe: Faz 1 bitmeden oyun kaybedildikten sonra tekrar başlamıyor ve gezegen
-verileri eksik olduğu için eğitsel omurga fiilen çalışmıyor. Faz 2 oyunu hedef
-platformda oynanabilir hale getiriyor
+Gerekçe: Faz 1 bittiği için oyun baştan sona oynanabiliyor; sıradaki darboğaz
+hedef platform. Faz 2 oyunu oynanabilir hale getiriyor
 (dokunmatik olmadan mobil/tahta testi imkânsız). Faz 3 ve 4 GDD'nin kalan yarısı;
 madenler gameplay'i zenginleştirdiği için ekran akışından önce gelmesi playtest
 açısından daha verimli. Faz 5 ve 6 içerik derinliği ve teslim cilası.

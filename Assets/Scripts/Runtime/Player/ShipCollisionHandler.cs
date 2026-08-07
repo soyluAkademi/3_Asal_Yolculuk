@@ -40,6 +40,16 @@ namespace PayeGames.AsalYolculuk.Player
 
         public bool IsInvulnerable => invulnerableTimer > 0f;
 
+        /// <summary>
+        /// Dışarıdan dokunulmazlık verir; gemi yeniden doğduğunda ilk saniyelerde
+        /// talihsiz bir çarpışmayla can gitmesini engeller. Mevcut pencere daha
+        /// uzunsa kısaltılmaz.
+        /// </summary>
+        public void GrantInvulnerability(float duration)
+        {
+            invulnerableTimer = Mathf.Max(invulnerableTimer, duration);
+        }
+
         private void Update()
         {
             if (invulnerableTimer <= 0f) return;

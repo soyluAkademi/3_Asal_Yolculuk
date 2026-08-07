@@ -1,5 +1,9 @@
+using System.Collections;
+using MaskTransitions;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using PayeGames.AsalYolculuk.Meteors;
+using PayeGames.AsalYolculuk.Player;
 using PayeGames.AsalYolculuk.UI;
 
 namespace PayeGames.AsalYolculuk.Core
@@ -15,6 +19,20 @@ namespace PayeGames.AsalYolculuk.Core
         [SerializeField] private LevelCompletePanelView levelCompletePanel;
         [Tooltip("Yeni bölümde sayı havuzunun sıfırlanması için gerekli")]
         [SerializeField] private MeteorSpawner meteorSpawner;
+
+        [Header("Yeniden Başlatma")]
+        [Tooltip("Üç can bitince açılan oyun sonu paneli")]
+        [SerializeField] private GameOverPanelView gameOverPanel;
+        [Tooltip("Geminin diriltilmesi için gemideki PlayerDeathEffect")]
+        [SerializeField] private PlayerDeathEffect playerDeathEffect;
+
+        [Header("Geçiş (Mask Transitions)")]
+        [Tooltip("Ekranın kapanma/açılma süresi (tek yön)")]
+        [SerializeField] private float transitionHalfDuration = 0.5f;
+        [Tooltip("Ekran kapandıktan sonra sıfırlamanın yapılması için beklenen ek pay")]
+        [SerializeField] private float transitionResetPadding = 0.1f;
+        [Tooltip("Ana menü butonunun yükleyeceği sahne")]
+        [SerializeField] private string mainMenuSceneName = "MainMenu";
 
         private bool isTransitioning;
 
@@ -54,6 +72,96 @@ namespace PayeGames.AsalYolculuk.Core
             isTransitioning = false;
         }
 
+        /// <summary>
+        /// Oyun sonu panelindeki "Tekrar Dene" butonuna bağlanır. Sahne değişmez;
+        /// ekran geçişle kapanır, kapalıyken bölüm sıfırlanıp gemi diriltilir,
+        /// ardından ekran tekrar açılır.
+        /// </summary>
+        public void RestartLevel()
+        {
+            if (isTransitioning) return;
+
+            isTransitioning = true;
+            StartCoroutine(RestartRoutine());
+        }
+
+        private IEnumerator RestartRoutine()
+        {
+            // Geçiş animasyonu ve beklemeler ölçekli zaman kullanır; panel duraklamışken
+            // açılmış olabileceği için zaman burada normale döndürülür.
+            Time.timeScale = 1f;
+
+            bool hasTransition = TransitionManager.Instance != null;
+            if (hasTransition)
+            {
+                TransitionManager.Instance.PlayStartHalfTransition(transitionHalfDuration);
+
+                // Sıfırlama ekran tamamen kapalıyken yapılır; oyuncu geminin
+                // yerine ışınlanmasını ve meteorların silinmesini görmez.
+                yield return new WaitForSeconds(transitionHalfDuration + transitionResetPadding);
+            }
+
+            RestartCurrentLevel();
+
+            if (hasTransition)
+            {
+                TransitionManager.Instance.PlayEndHalfTransition(transitionHalfDuration);
+            }
+
+            isTransitioning = false;
+        }
+
+        /// <summary>
+        /// Seviye ilerletilmeden bölümü baştan kurar. GDD gereği bölüm puanı, tamamlanan
+        /// meteor listesi ve özel sayı listesi başlangıç durumuna döner.
+        /// </summary>
+        private void RestartCurrentLevel()
+        {
+            if (gameOverPanel != null)
+            {
+                gameOverPanel.Hide();
+            }
+
+            ResetLevelProgress(revertLevelScore: true);
+
+            if (playerDeathEffect != null)
+            {
+                playerDeathEffect.RestoreShip();
+            }
+
+            // Durum değişimi HUD panellerini geri getirir ve gemiyi başlangıç
+            // konumuna alır; bu yüzden gemi diriltildikten sonra çağrılır.
+            if (GameManager.Instance == null) return;
+
+            GameManager.Instance.SetState(GameState.Gameplay);
+        }
+
+        /// <summary>
+        /// Oyun sonu panelindeki "Ana Menü" butonuna bağlanır. Kaybedilen bölümün
+        /// puanı toplamdan düşülüp diske yazılır, ardından geçişle sahne yüklenir.
+        /// </summary>
+        public void GoToMainMenu()
+        {
+            if (isTransitioning) return;
+
+            isTransitioning = true;
+            Time.timeScale = 1f;
+
+            if (ScoreManager.Instance != null)
+            {
+                ScoreManager.Instance.RevertLevelScoreFromTotal();
+                ScoreManager.Instance.SaveTotalScore();
+            }
+
+            if (TransitionManager.Instance != null)
+            {
+                TransitionManager.Instance.LoadLevel(mainMenuSceneName);
+                return;
+            }
+
+            SceneManager.LoadScene(mainMenuSceneName);
+        }
+
         private void AdvanceLevel()
         {
             if (LevelManager.Instance == null) return;
@@ -61,15 +169,29 @@ namespace PayeGames.AsalYolculuk.Core
             LevelManager.Instance.SetLevel(LevelManager.Instance.CurrentLevelIndex + 1);
         }
 
-        /// <summary>Puan, can ve sayı havuzunu yeni bölüm için temizler.</summary>
-        private void ResetLevelProgress()
+        /// <summary>
+        /// Puan, can ve sayı havuzunu bölüm için temizler.
+        /// </summary>
+        /// <param name="revertLevelScore">
+        /// Bölüm kaybedildiğinde <c>true</c>: o bölümde kazanılan puan kalıcı toplamdan
+        /// geri alınır. Bölüm tamamlandığında <c>false</c>: kazanılan puan toplamda kalır.
+        /// </param>
+        private void ResetLevelProgress(bool revertLevelScore = false)
         {
             if (ScoreManager.Instance != null)
             {
-                // Bölüm boyunca biriken toplam puan burada diske yazılır; oyun
-                // beklenmedik şekilde kapanırsa en fazla bir bölümlük puan kaybolur.
+                if (revertLevelScore)
+                {
+                    ScoreManager.Instance.RevertLevelScoreFromTotal();
+                }
+                else
+                {
+                    ScoreManager.Instance.ResetScore();
+                }
+
+                // Toplam puan burada diske yazılır; oyun beklenmedik şekilde
+                // kapanırsa en fazla bir bölümlük puan kaybolur.
                 ScoreManager.Instance.SaveTotalScore();
-                ScoreManager.Instance.ResetScore();
             }
 
             if (HealthManager.Instance != null)

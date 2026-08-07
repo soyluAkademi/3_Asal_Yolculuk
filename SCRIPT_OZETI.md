@@ -30,6 +30,9 @@ sorumluluğu bilinçli olarak burada tutulur (meteor kime çarptığını bilmez
 Çarpışmada `meteor.DespawnOnShipHit()` ve `HealthManager.Instance.LoseLife()`
 çağrılır. `invulnerableDuration` (varsayılan 1.5 sn) boyunca sonraki çarpışmalar
 yok sayılır — üst üste gelen meteorlar tek karede birden fazla can götürmesin.
+`GrantInvulnerability(duration)` aynı pencereyi dışarıdan açar (mevcut pencere
+daha uzunsa kısaltmaz); gemi yeniden doğduğunda `PlayerDeathEffect.RestoreShip()`
+bunu çağırır.
 Oyun `Gameplay` durumunda değilse (`GameManager.IsGameplayActive`) hasar alınmaz.
 
 **Hasar geri bildirimi:** Her hasarda `CameraShake.Instance.Shake(shakeDuration,
@@ -48,7 +51,9 @@ oynatılmaz; patlama sekansını `PlayerDeathEffect` devralır. Yani 1. ve 2.
 
 Gemiye eklenir, ölüm sekansının tamamını yönetir. `HealthManager.OnAllLivesLost`
 event'ine `Start`'ta abone olur (manager'ın `Awake`'i garanti çalışmış olsun diye),
-`OnDestroy`'da bırakır. Sekans tek bir coroutine zinciridir:
+`OnDestroy`'da bırakır. `Awake`'te renderer/collider dizilerinin yanı sıra bunların
+**başlangıç `enabled` durumları** ve `PlayerShipController` / `PlayerAutoShooter` /
+`ShipCollisionHandler` referansları da cache'lenir. Sekans tek bir coroutine zinciridir:
 
 1. **`HideShip()`** — gemi ve alt objelerindeki tüm `Renderer` ve `Collider2D`
    bileşenleri kapatılır, `PlayerShipController` ve `PlayerAutoShooter` devre
@@ -63,9 +68,26 @@ event'ine `Start`'ta abone olur (manager'ın `Awake`'i garanti çalışmış ols
    sınıfın içindeydi; bölüm tamamlandığında da gerektiği için `MeteorFieldClearer`
    bileşenine taşındı ve buradan `[SerializeField]` referansla çağrılıyor
    (referans bağlı değilse temizlik atlanır, patlama sekansı yine çalışır).
+5. **`OnDeathSequenceCompleted`** event'i yayınlanır.
+
+**`public event Action OnDeathSequenceCompleted`** — sekansın tamamı bittiğinde
+tetiklenir; `GameOverPanelView` panelin ne zaman açılacağını buradan öğrenir.
+Sabit gecikme kullanılamaz: `ClearRoutine()`'in süresi sahnedeki meteor sayısına
+göre değişir, panel ya patlamaların üstüne biner ya da geç kalırdı. Temizleyici
+referansı bağlı olmasa bile event tetiklenir — aksi halde panel hiç açılmaz ve
+oyun boş ekranda kilitlenirdi.
+
+**`public void RestoreShip()`** — `HideShip()`'in tersi; bölüm yeniden başlatılırken
+`LevelFlowController` çağırır. Renderer ve collider'lar `Awake`'te kaydedilen
+**başlangıç durumlarına** döner (körlemesine hepsi açılmaz; tasarım gereği kapalı
+duran bir çocuk — ileride kalkan bariyeri gibi — yanlışlıkla görünür olmasın).
+Controller'lar açılır ve `ShipCollisionHandler.GrantInvulnerability` ile gemi
+`respawnInvulnerableDuration` (varsayılan 1.5 sn) boyunca dokunulmaz olur.
 
 - **Bağlantı:** `HealthManager` (`OnAllLivesLost`), `MeteorFieldClearer`
-  (sahne temizliği), `PlayerShipController`, `PlayerAutoShooter`.
+  (sahne temizliği), `PlayerShipController`, `PlayerAutoShooter`,
+  `ShipCollisionHandler` (`GrantInvulnerability`), `GameOverPanelView` ve
+  `LevelFlowController` (dinleyici / çağıran).
 
 ### `PlayerLevelCompleteEffect.cs`
 `Assets/Scripts/Runtime/Player/`
@@ -207,6 +229,13 @@ günceller; diske yazma `SaveTotalScore()` ile bölüm sonunda
 IndexedDB'ye flush ettiği için sık çağrılmaz). `ResetTotalScore()` normal akışta
 kullanılmaz, ileride "ilerlemeyi sıfırla" için vardır.
 
+**Bölüm kaybında puan geri alma:** `RevertLevelScoreFromTotal()` o bölümde
+kazanılan puanı (`CurrentScore`) toplamdan düşer (0'ın altına inmez) ve ardından
+`ResetScore()` çağırır. `AddScore` puanı toplama **anında** eklediği için bu
+olmadan ölüp tekrar oynayarak toplam puan şişirilebilirdi. Keşfedilen asallar
+bilinçli olarak korunur — öğrenme kaydıdır, bölüm kaybıyla silinmez.
+`LevelFlowController` hem "Tekrar Dene" hem "Ana Menü" akışında çağırır.
+
 **Keşfedilen asallar:** `RegisterDiscoveredPrimes(rootNumber)` bir meteor tüm
 parçalarıyla yok edildiğinde `MeteorController` tarafından çağrılır; kök sayının
 asal çarpanları `SortedSet<int>`'e eklenir, yani aynı asal kaç kez çıkarsa çıksın
@@ -218,8 +247,9 @@ puanı sıfırlansa da keşif ve toplam puan tüm yolculuk boyunca birikir.
 - **Bağlantı:** `MeteorController` (oturum tamamlanınca `AddMeteorScore` +
   `RegisterDiscoveredPrimes`), `PrimeMathEngine` (`GetPrimeFactors`),
   `ScoreHUDView` (`OnScoreChanged` dinler), `GameManager`
-  (`OnTargetReached` dinler), `LevelFlowController` (`SaveTotalScore` +
-  `ResetScore`), `BitisManager` (`DiscoveredPrimeCount`, `TotalScore`).
+  (`OnTargetReached` dinler), `LevelFlowController` (`SaveTotalScore`,
+  `ResetScore`, `RevertLevelScoreFromTotal`), `BitisManager`
+  (`DiscoveredPrimeCount`, `TotalScore`).
 
 ### `HealthManager.cs`
 `Assets/Scripts/Runtime/Core/`
@@ -303,8 +333,36 @@ atlanmasını engeller, `IsLastLevel` guard'ı son gezegende çalışmasını ö
 Sıralama bilinçlidir: yeni bölüm ancak panel ekrandan tamamen çıktıktan sonra
 başlar, yoksa meteorlar panelin arkasından akmaya başlıyordu.
 
-- **Bağlantı:** `LevelCompletePanelView` (`HideToLeft`), `LevelManager`,
-  `ScoreManager`, `HealthManager`, `MeteorSpawner`, `GameManager`.
+`ResetLevelProgress(bool revertLevelScore)` iki akış tarafından paylaşılır ve
+yalnızca puan davranışında ayrışır: bölüm **tamamlandığında** (`false`) kazanılan
+puan toplamda kalır, bölüm **kaybedildiğinde** (`true`) `RevertLevelScoreFromTotal()`
+ile geri alınır. Can ve sayı havuzu sıfırlaması her iki durumda aynıdır.
+
+**`RestartLevel()`** — oyun sonu panelindeki "Tekrar Dene" butonuna bağlanır.
+Sahne değişmez, seviye **ilerlemez**. Akış bir coroutine'dir:
+`TransitionManager.PlayStartHalfTransition` ile ekran kapanır → ekran kapalıyken
+`RestartCurrentLevel()` çalışır (panel gizlenir, puan geri alınır + sıfırlanır,
+canlar ve sayı havuzu resetlenir, `PlayerDeathEffect.RestoreShip()` gemiyi
+diriltir, `GameManager.SetState(Gameplay)`) → `PlayEndHalfTransition` ile ekran
+açılır. Sıfırlamanın ekran kapalıyken yapılması bilinçlidir: oyuncu geminin
+ışınlanmasını ve panelin kaybolmasını görmez. `SetState(Gameplay)` en sonda
+çağrılır çünkü HUD panellerini geri getiren ve gemiyi başlangıç konumuna alan
+dinleyiciler (`GameplayHUDPanel`, `PlayerLevelCompleteEffect`) bu durumu dinler.
+
+**`GoToMainMenu()`** — oyun sonu panelindeki "Ana Menü" butonuna bağlanır.
+Kaybedilen bölümün puanı toplamdan düşülüp diske yazılır, `Time.timeScale` 1'e
+alınır ve `TransitionManager.LoadLevel(mainMenuSceneName)` ile sahne yüklenir.
+Puanın burada da geri alınması bilinçlidir; aksi halde kaybedip menüye çıkarak
+puan saklamak mümkün olurdu.
+
+`TransitionManager` (Mask Transitions paketi) sahnede yoksa iki akış da geçiş
+animasyonu olmadan çalışır — `RestartLevel` doğrudan sıfırlar, `GoToMainMenu`
+`SceneManager.LoadScene`'e düşer.
+
+- **Bağlantı:** `LevelCompletePanelView` (`HideToLeft`), `GameOverPanelView`
+  (`Hide`), `PlayerDeathEffect` (`RestoreShip`), `LevelManager`, `ScoreManager`,
+  `HealthManager`, `MeteorSpawner`, `GameManager`,
+  `MaskTransitions.TransitionManager`, `SceneManager`.
 
 ### `CameraShake.cs`
 `Assets/Scripts/Runtime/Core/`
@@ -611,6 +669,44 @@ tasarımcının paneli elle ekran dışına taşımasına gerek kalmaz.
 - **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (gezegen verisi),
   `PlanetDataSO`, `LevelFlowController` (`HideToLeft`), TextMeshPro, DOTween.
 
+### `GameOverPanelView.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Üç can da bittiğinde açılan oyun sonu paneli (`gameOverPanel`).
+`RectTransform` + `CanvasGroup` zorunlu.
+
+**Konumlandırma:** `LevelCompletePanelView` ile aynı desen — panel sahnede
+**görünür yerinde** bırakılır, `Awake`'te bu konum cache'lenir, gizli konum root
+canvas genişliğine göre otomatik hesaplanır. Sağdan sola kayarak girer.
+
+**Zamanlama:** Durum event'i yerine `PlayerDeathEffect.OnDeathSequenceCompleted`
+dinlenir. `LevelFailed` durumu ölüm sekansının **başında** geldiği için sabit
+gecikme kullanılamaz; sekansın süresi (gemi patlamaları + meteor temizliği)
+sahnedeki meteor sayısına göre değişir. `playerDeathEffect` referansı bağlı
+değilse güvenlik ağı devreye girer: `LevelFailed`'den `fallbackShowDelay` kadar
+sonra panel yine açılır (patlamaların üstüne binebilir).
+
+`Gameplay` durumuna dönüldüğünde `Hide()` çalışır — panel gizli konuma alınır ve
+gizlenen nesneler geri getirilir; bölüm yeniden başlatıldığında panel kendiliğinden
+toparlanır.
+
+- `hideOnGameOver` (`GameObject[]`) — panel gelirken `SetActive(false)` yapılacak
+  sahne nesneleri. **Gemi bu diziye konmaz:** patlama coroutine'i gemi objesi
+  üzerinde çalışır, kapatmak sekansı yarıda keser (gemi zaten `HideShip()` ile
+  gizlenir). Puan/can HUD panelleri de gerekmez; `GameplayHUDPanel` onları
+  `LevelFailed`'de kendisi çeker.
+- `FillPlanetInfo()` — panel her açıldığında `kaldiginGezegenTxt` alanına
+  `PlanetDataSO.DisplayName`, `gezegenImg` alanına `PlanetSprite` yazılır.
+  Kaynak `LevelManager.CurrentPlanetData`; bölüm kaybedildiğinde seviye
+  ilerlemediği için bu her zaman kaybedilen gezegendir.
+
+Paneldeki iki buton `LevelFlowController` metotlarına bağlanır:
+`tekrarOynaBtn → RestartLevel()`, `anaMenuBtn → GoToMainMenu()`.
+
+- **Bağlantı:** `PlayerDeathEffect` (`OnDeathSequenceCompleted`), `GameManager`
+  (durum event'i), `LevelManager` + `PlanetDataSO` (gezegen bilgisi),
+  `LevelFlowController` (buton hedefi, `Hide`), TextMeshPro, DOTween.
+
 ### `BitisManager.cs`
 `Assets/Scripts/Runtime/UI/`
 
@@ -638,6 +734,22 @@ yapılır. Sahnede ölçek 0 bırakılmışsa tween 0'dan 0'a gideceği için
 `ResolveBaseScale` birim ölçeğe düşer. Çizgilerin `Image`'i **Filled** tipinde
 olmalıdır — `DOFillAmount` yalnızca o tipte çalışır.
 
+**Kutlama efekti:** İlk gezegen belirmeye başladığı anda (`startDelay` bittiğinde)
+sekansa eklenen `AppendCallback` bir coroutine başlatır: `celebrationEffectPrefab`
+(`Prefabs/Effects/confetti.prefab`) `celebrationCount` kez (varsayılan 10),
+**aynı anda değil sırayla**, her seferinde kameranın viewport'unda rastgele bir
+noktada üretilir (`celebrationEdgePadding` kenarlardan pay bırakır,
+`celebrationCameraDistance` 2D düzlemi belirler). Aralık Inspector'dan değil,
+gezegen/çizgi fazının gerçek süresinden hesaplanır (`activeSequence.Duration(false)
+- startDelay`, sekans kurulurken okunur) ve efekt sayısına bölünür — böylece
+efektler süreç boyunca eşit yayılır, gezegenler bitince biter.
+Coroutine `WaitForSecondsRealtime` kullanır çünkü bölüm sonunda `Time.timeScale`
+0 olabilir (panel tween'leri de `SetUpdate(true)`). Efekt ömrü prefab'ın kendi
+Stop Action = Destroy ayarına bırakılır; `celebrationLifetime > 0` verilirse
+`Destroy(effect, süre)` ile zorlanır. Kamera boşsa `Awake`'te `Camera.main`
+çözülür (runtime'da arama yapılmaz). `ResetToHiddenState` ve `OnDestroy`
+coroutine'i durdurur, panel yeniden açılırsa efektler baştan başlar.
+
 **Özet panelleri:** Gezegen/çizgi sekansı bittikten sonra üç `CanvasGroup` sırayla
 açılır: asal sayı paneli → puan paneli → başla butonu. Üçü de aynı adımı kullandığı
 için tek bir dizide tutulur (`summaryPanels` / `summaryTexts` / `summaryTargetValues`
@@ -660,7 +772,8 @@ sahne iki kez yüklenmez.
 
 - **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (`IsLastLevel`),
   `ScoreManager` (`DiscoveredPrimeCount`, `TotalScore`, `SaveTotalScore`),
-  `SceneManager` (ana menü sahnesi), TextMeshPro,
+  `SceneManager` (ana menü sahnesi), `Prefabs/Effects/confetti.prefab`
+  (kutlama efekti), TextMeshPro,
   DOTween (`DOAnchorPos`, `DOScale`, `DOFade`, `DOFillAmount`, `DOTween.To`).
 
 ---
@@ -681,9 +794,14 @@ event'e abone olmaz; sahnedeki objesiyle birlikte silindiğinde oyun etkilenmez.
   bir kerede ekler, yani normal akışın aynısı çalışır (`OnTargetReached` →
   `GameManager` → bölüm sonu sunumu). Klavye odağı Game view'da değilse tuş
   algılanmadığı için `[ContextMenu("Bolumu Tamamla")]` yedeği de vardır.
+- `failLevelKey` (varsayılan F10) — kalan canları `HealthManager.LoseLife()` ile
+  tek tek eksiltir; meteor çarpınca `ShipCollisionHandler`'ın çağırdığı metodun
+  aynısıdır, yani ölüm sekansı ve oyun sonu paneli normal akışla gelir. Gerçek
+  bir çarpışma olmadığı için kamera sarsıntısı ve hasar efekti oynamaz.
+  `[ContextMenu("Canlari Bitir")]` yedeği vardır.
 
-- **Bağlantı:** `LevelManager`, `ScoreManager`, `GameManager` — hepsi tek yönlü,
-  yalnızca mevcut public API çağrılır.
+- **Bağlantı:** `LevelManager`, `ScoreManager`, `HealthManager`, `GameManager` —
+  hepsi tek yönlü, yalnızca mevcut public API çağrılır.
 
 ---
 
@@ -712,14 +830,13 @@ ile saklanıyor (`AsalYolculuk.TotalScore`). `SaveManager`/`SaveData` geldiğind
 alan oraya taşınacak; anahtar adı korunursa mevcut oyuncu verisi kaybolmaz.
 
 Can / oyun sonu tarafında eksik kalanlar:
-- **Yeniden başlatma akışı:** Bölüm tamamlama tarafı bitti
-  (`LevelFlowController.GoToNextLevel`), fakat ölüm sonrası "tekrar dene" akışı
-  (`RestartLevel()`) henüz yok. Reset zinciri hazır; eksik olan `PlayerDeathEffect
-  .HideShip()`'in tersi olan bir `RestoreShip()` metodu.
+- **Yeniden başlatma akışı:** ✅ Tamamlandı — `GameOverPanelView` +
+  `LevelFlowController.RestartLevel()` / `GoToMainMenu()` +
+  `PlayerDeathEffect.RestoreShip()`.
 - **Son bölüm bitişi:** `LevelCompletePanelView` son gezegende bilinçli olarak
   açılmıyor (`LevelManager.IsLastLevel`); onun yerine `BitisManager` devreye
-  giriyor. Panelin kendisi bitti; havai fişek/konfeti ve "Sonsuz Yolculuk"
-  girişi eklenmedi (bkz. `YAPILACAKLAR.md` 4.7 ve 5.6).
+  giriyor. Panelin kendisi ve kutlama efekti bitti; eksik kalan yalnızca
+  "Sonsuz Yolculuk" girişi (bkz. `YAPILACAKLAR.md` 5.6).
 - `GameState.Paused` durumu kodda tanımlı ama henüz hiçbir yerden tetiklenmiyor
   (duraklatma menüsüyle gelecek).
 
@@ -739,4 +856,7 @@ Bölünme tarafında eksik kalanlar:
 Puanlama tarafında eksik kalanlar:
 - Altın Kristal etkisinde meteor başına +10 (×2 çarpan) ve Yıldız Parçası ile
   anında +10 puan (`PowerUpManager` ile birlikte gelecek).
-- Canlar bitince `ScoreManager.ResetScore()` çağrısı (yeniden başlatma akışıyla).
+- `AddMeteorScore` içinde oynanış durumu kontrolü yok: ölüm sekansı sürerken
+  havada kalan mermilerin vurduğu meteorlar hâlâ puan veriyor. Bölüm puanı
+  yeniden başlatmada zaten sıfırlandığı ve toplam puan geri alındığı için
+  görünür bir etkisi kalmadı, yine de guard eklenmesi temiz olur.

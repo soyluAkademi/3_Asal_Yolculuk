@@ -1,3 +1,4 @@
+using System.Collections;
 using DG.Tweening;
 using TMPro;
 using UnityEngine;
@@ -57,6 +58,22 @@ namespace PayeGames.AsalYolculuk.UI
         [Tooltip("Gezegen belirdikten sonra çizginin dolmaya başlaması için beklenen süre")]
         [SerializeField] private float planetToLineDelay = 0.05f;
 
+        [Header("Kutlama Efekti")]
+        [Tooltip("Gezegenler açılırken sahnede patlatılacak partikül prefab'ı (örn. confetti)")]
+        [SerializeField] private GameObject celebrationEffectPrefab;
+        [Tooltip("Sekans boyunca kaç efekt çıkacağı")]
+        [SerializeField, Min(1)] private int celebrationCount = 10;
+        [Tooltip("Efektlerin doğacağı kamera; boş bırakılırsa Camera.main kullanılır")]
+        [SerializeField] private Camera celebrationCamera;
+        [Tooltip("Ekran kenarlarından bırakılacak pay (viewport oranı); efektler bu alanın dışına düşmez")]
+        [SerializeField, Range(0f, 0.45f)] private float celebrationEdgePadding = 0.15f;
+        [Tooltip("Efektin kameradan uzaklığı; 2D kurulumda kamera düzleminin biraz önü")]
+        [SerializeField] private float celebrationCameraDistance = 10f;
+        [Tooltip("Efektin boyut çarpanı")]
+        [SerializeField] private float celebrationScale = 1f;
+        [Tooltip("Efektin kaç saniye sonra yok edileceği; 0 = prefab kendini yok eder")]
+        [SerializeField] private float celebrationLifetime = 0f;
+
         [Header("Özet Panelleri")]
         [Tooltip("Keşfedilen asal sayısı paneli; gezegen sekansından sonra ilk açılır")]
         [SerializeField] private CanvasGroup asalSayiPanel;
@@ -111,11 +128,19 @@ namespace PayeGames.AsalYolculuk.UI
         private Tween pulseTween;
         private Sequence activeSequence;
         private Sequence panelSequence;
+        private Coroutine celebrationRoutine;
+        private float celebrationSpreadDuration;
 
         private void Awake()
         {
             rectTransform = GetComponent<RectTransform>();
             panelCanvasGroup = GetComponent<CanvasGroup>();
+
+            // Efekt kamerası runtime'da aranmasın diye burada bir kez çözülür.
+            if (celebrationCamera == null)
+            {
+                celebrationCamera = Camera.main;
+            }
 
             CacheAnchoredPositions();
             CachePlanets();
@@ -140,6 +165,7 @@ namespace PayeGames.AsalYolculuk.UI
             KillActiveSequence();
             KillPanelSequence();
             KillPulse();
+            StopCelebration();
 
             if (GameManager.Instance == null) return;
 
@@ -350,12 +376,19 @@ namespace PayeGames.AsalYolculuk.UI
             activeSequence = DOTween.Sequence().SetUpdate(true);
             activeSequence.AppendInterval(startDelay);
 
+            // Efektler ilk gezegenle birlikte başlar ve gezegen/çizgi sekansı boyunca sürer.
+            activeSequence.AppendCallback(StartCelebration);
+
             int planetCount = planetTransforms != null ? planetTransforms.Length : 0;
             for (int index = 0; index < planetCount; index++)
             {
                 AppendPlanetStep(index);
                 AppendLineStep(index);
             }
+
+            // Gezegen fazının süresi; efektler bu süreye eşit aralıklarla yayılır.
+            float planetPhaseDuration = Mathf.Max(0f, activeSequence.Duration(false) - startDelay);
+            celebrationSpreadDuration = planetPhaseDuration;
 
             AppendSummaryPanelSteps();
 
@@ -437,6 +470,64 @@ namespace PayeGames.AsalYolculuk.UI
         }
 
         /// <summary>
+        /// Kutlama efektlerini sırayla patlatmaya başlar. Tümü aynı anda değil,
+        /// gezegen sekansı boyunca eşit aralıklarla ve her seferinde ekranın
+        /// rastgele bir noktasında çıkar.
+        /// </summary>
+        private void StartCelebration()
+        {
+            StopCelebration();
+
+            if (celebrationEffectPrefab == null) return;
+            if (celebrationCamera == null) return;
+
+            celebrationRoutine = StartCoroutine(CelebrationRoutine());
+        }
+
+        private IEnumerator CelebrationRoutine()
+        {
+            // Süre gezegen fazına yayılır; faz hesaplanamadıysa efektler arka arkaya çıkar.
+            float interval = celebrationCount > 0 ? celebrationSpreadDuration / celebrationCount : 0f;
+
+            for (int index = 0; index < celebrationCount; index++)
+            {
+                SpawnCelebrationEffect();
+
+                if (interval <= 0f) continue;
+
+                // Bölüm sonunda timeScale 0 olabildiği için gerçek zaman kullanılır.
+                yield return new WaitForSecondsRealtime(interval);
+            }
+
+            celebrationRoutine = null;
+        }
+
+        private void SpawnCelebrationEffect()
+        {
+            Vector3 viewportPoint = new Vector3(
+                Random.Range(celebrationEdgePadding, 1f - celebrationEdgePadding),
+                Random.Range(celebrationEdgePadding, 1f - celebrationEdgePadding),
+                celebrationCameraDistance);
+
+            Vector3 worldPosition = celebrationCamera.ViewportToWorldPoint(viewportPoint);
+
+            GameObject effect = Instantiate(celebrationEffectPrefab, worldPosition, celebrationEffectPrefab.transform.rotation);
+            effect.transform.localScale = celebrationEffectPrefab.transform.localScale * celebrationScale;
+
+            if (celebrationLifetime <= 0f) return;
+
+            Destroy(effect, celebrationLifetime);
+        }
+
+        private void StopCelebration()
+        {
+            if (celebrationRoutine == null) return;
+
+            StopCoroutine(celebrationRoutine);
+            celebrationRoutine = null;
+        }
+
+        /// <summary>
         /// Başla butonunu sürekli büyütüp küçültür. Yoyo döngüsü olduğu için buton
         /// her zaman kendi temel ölçeğine geri döner.
         /// </summary>
@@ -504,6 +595,8 @@ namespace PayeGames.AsalYolculuk.UI
         /// <summary>Tüm gezegenleri, çizgileri ve özet panellerini animasyon öncesi hâline döndürür.</summary>
         public void ResetToHiddenState()
         {
+            StopCelebration();
+
             int planetCount = planetTransforms != null ? planetTransforms.Length : 0;
             for (int index = 0; index < planetCount; index++)
             {

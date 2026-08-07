@@ -13,34 +13,55 @@ namespace PayeGames.AsalYolculuk
     /// </summary>
     public class SilinecekManager : MonoBehaviour
     {
+        /// <summary>Test için elle seçilen başlangıç bölümü (1 tabanlı).</summary>
+        public enum TestLevel
+        {
+            Bolum1 = 1,
+            Bolum2 = 2,
+            Bolum3 = 3,
+            Bolum4 = 4,
+            Bolum5 = 5,
+            Bolum6 = 6,
+            Bolum7 = 7,
+            Bolum8 = 8
+        }
+
         [Header("Başlangıç")]
-        [Tooltip("İşaretliyse oyun son bölümden (son gezegenden) başlar")]
-        [SerializeField] private bool startAtLastLevel;
+        [Tooltip("Play'e basınca başlanacak bölüm")]
+        [SerializeField] private TestLevel startLevel = TestLevel.Bolum1;
 
         [Header("Kısayol")]
         [Tooltip("İşaretliyse aşağıdaki tuş bölümü anında tamamlar")]
         [SerializeField] private bool enableCompleteShortcut = true;
         [Tooltip("Bölümü anında tamamlayan tuş. Çalışmıyorsa Game view'a tıklayıp odağı ver.")]
         [SerializeField] private Key completeLevelKey = Key.F9;
+        [Tooltip("İşaretliyse aşağıdaki tuş kalan tüm canları bitirir")]
+        [SerializeField] private bool enableFailShortcut = true;
+        [Tooltip("Tüm canları anında bitiren tuş. Çalışmıyorsa Game view'a tıklayıp odağı ver.")]
+        [SerializeField] private Key failLevelKey = Key.F10;
 
         private void Start()
         {
             // Tüm manager'ların Awake'i bittikten sonra çalışsın.
-            if (!startAtLastLevel) return;
             if (LevelManager.Instance == null) return;
 
-            // SetLevel aralığa clamp'lediği için son bölüme gitmek üzere
-            // taşan bir değer verilir; LevelManager'a ek üye gerekmez.
-            LevelManager.Instance.SetLevel(int.MaxValue);
+            // Enum 1 tabanlı, LevelManager 0 tabanlı index bekliyor.
+            LevelManager.Instance.SetLevel((int)startLevel - 1);
         }
 
         private void Update()
         {
-            if (!enableCompleteShortcut) return;
             if (Keyboard.current == null) return;
-            if (!Keyboard.current[completeLevelKey].wasPressedThisFrame) return;
 
-            CompleteLevelInstantly();
+            if (enableCompleteShortcut && Keyboard.current[completeLevelKey].wasPressedThisFrame)
+            {
+                CompleteLevelInstantly();
+            }
+
+            if (enableFailShortcut && Keyboard.current[failLevelKey].wasPressedThisFrame)
+            {
+                FailLevelInstantly();
+            }
         }
 
         /// <summary>
@@ -51,6 +72,13 @@ namespace PayeGames.AsalYolculuk
         private void CompleteLevelFromContextMenu()
         {
             CompleteLevelInstantly();
+        }
+
+        /// <summary>Tuş çalışmadığında kullanılacak yedek yol (Inspector ⋮ menüsü).</summary>
+        [ContextMenu("Canlari Bitir")]
+        private void FailLevelFromContextMenu()
+        {
+            FailLevelInstantly();
         }
 
         /// <summary>
@@ -66,6 +94,22 @@ namespace PayeGames.AsalYolculuk
             if (missingScore <= 0) return;
 
             ScoreManager.Instance.AddScore(missingScore);
+        }
+
+        /// <summary>
+        /// Kalan canları tek tek eksiltir; normal akışın aynısı çalışır
+        /// (HealthManager.OnAllLivesLost → GameManager + PlayerDeathEffect → oyun sonu paneli).
+        /// Meteor çarpması taklit edilmediği için kamera sarsıntısı ve hasar efekti oynamaz.
+        /// </summary>
+        private void FailLevelInstantly()
+        {
+            if (HealthManager.Instance == null) return;
+            if (!GameManager.IsGameplayActive) return;
+
+            while (HealthManager.Instance.IsAlive)
+            {
+                HealthManager.Instance.LoseLife();
+            }
         }
     }
 }
