@@ -1,6 +1,8 @@
 using DG.Tweening;
 using MaskTransitions;
+using PayeGames.AsalYolculuk.Core;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
@@ -65,30 +67,11 @@ namespace PayeGames.AsalYolculuk.UI
 
         private void Awake()
         {
-            if (ayarlarBtn != null)
-            {
-                ayarlarBtn.onClick.AddListener(OpenAyarlarPanel);
-            }
-
-            if (exitBtn != null)
-            {
-                exitBtn.onClick.AddListener(CloseAyarlarPanel);
-            }
-
-            if (baslaBtn != null)
-            {
-                baslaBtn.onClick.AddListener(OpenSelectionPanel);
-            }
-
-            if (backBtn != null)
-            {
-                backBtn.onClick.AddListener(CloseSelectionPanel);
-            }
-
-            if (oynaBtn != null)
-            {
-                oynaBtn.onClick.AddListener(StartGameplay);
-            }
+            RegisterButton(ayarlarBtn, OpenAyarlarPanel);
+            RegisterButton(exitBtn, CloseAyarlarPanel);
+            RegisterButton(baslaBtn, OpenSelectionPanel);
+            RegisterButton(backBtn, CloseSelectionPanel);
+            RegisterButton(oynaBtn, StartGameplay);
 
             CacheAnchoredPositions();
             ApplyAyarlarClosedState();
@@ -106,6 +89,23 @@ namespace PayeGames.AsalYolculuk.UI
         {
             KillAyarlarSequence();
             KillSelectionSequence();
+        }
+
+        /// <summary>
+        /// Butonun tıklama davranışını bağlar ve varsa üzerindeki AudioSource'u
+        /// tık sesi olarak çalar. AudioSource referansı Awake'te bir kez cache'lenir;
+        /// tıklama anında GetComponent çağrılmaz.
+        /// </summary>
+        private void RegisterButton(Button button, UnityAction onClick)
+        {
+            if (button == null) return;
+
+            if (button.TryGetComponent(out AudioSource clickSource))
+            {
+                button.onClick.AddListener(() => SoundManager.PlayUiSfx(clickSource));
+            }
+
+            button.onClick.AddListener(onClick);
         }
 
         /// <summary>

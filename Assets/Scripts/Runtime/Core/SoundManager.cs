@@ -107,5 +107,23 @@ namespace PayeGames.AsalYolculuk.Core
             if (src == null || src.clip == null) return;
             src.PlayOneShot(src.clip);
         }
+
+        /// <summary>
+        /// UI elemanlarının üzerindeki AudioSource'u SFX ayarına saygı duyarak çalar.
+        /// SoundManager henüz sahnede yoksa (ör. doğrudan MainMenu'den başlatma)
+        /// PlayerPrefs'teki son ayara düşer.
+        /// </summary>
+        public static void PlayUiSfx(AudioSource src)
+        {
+            if (src == null || src.clip == null) return;
+
+            bool sfxOn = Instance != null
+                ? Instance.SfxOn
+                : PlayerPrefs.GetInt(SfxPrefKey, 1) == 1;
+
+            if (!sfxOn) return;
+
+            src.PlayOneShot(src.clip);
+        }
     }
 }

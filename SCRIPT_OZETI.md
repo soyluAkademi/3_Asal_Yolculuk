@@ -401,7 +401,17 @@ garanti eder.
 sessizce çıkar (guard clause). Oynanış olaylarına (ateş, meteor vurma, can kaybı,
 bölüm tamamlama) **henüz bağlanmadı** — bkz. `YAPILACAKLAR.md` 2.3.
 
-- **Bağlantı:** `SettingsManager` (UI tarafı), `PlayerPrefs`.
+**`static void PlayUiSfx(AudioSource)`** — UI tık sesleri için ortak giriş
+noktası. Butonların **kendi üzerlerindeki** `AudioSource` bileşeni dışarıdan
+verilir; metot yalnızca SFX ayarını uygular ve `PlayOneShot` çağırır. Her butonun
+kendi kaynağını taşıması, buton başına farklı klip/ses ayarı yapılabilmesini
+sağlar (tek merkezi kaynak bunu imkânsız kılardı). Static olmasının sebebi
+`Instance` henüz oluşmamış olabilmesidir: MainMenu sahnesi doğrudan başlatılırsa
+`PlayerPrefs`'teki (`SfxPrefKey`) son ayara düşer, yani ses ayarı hiçbir koşulda
+yok sayılmaz.
+
+- **Bağlantı:** `SettingsManager` ve `MenuManager` (UI tarafı + `PlayUiSfx`),
+  `PlayerPrefs`.
 
 ### `PlanetProgress.cs`
 `Assets/Scripts/Runtime/Core/`
@@ -838,7 +848,15 @@ açık/kapalı hâline göre değiştirilir.
 sorununa karşı güvenlidir. Sınıf yalnızca UI sorumluluğunu taşır, ses mantığı
 tamamen `SoundManager`'dadır.
 
-- **Bağlantı:** `SoundManager` (durum + toggle), `PlayerPrefs` (fallback).
+**Tık sesi:** Her iki butonun üzerindeki `AudioSource` `Awake`'te
+`TryGetComponent` ile cache'lenir (tıklama anında `GetComponent` çağrılmaz) ve
+`SoundManager.PlayUiSfx` ile çalınır. `musicBtn` sesi toggle'dan **önce**,
+`sesBtn` sesi toggle'dan **sonra** çalar: bu sayede ses açıldığında onay sesi
+duyulur, kapatıldığında sessiz kalınır. Ters sırada geri bildirim kullanıcının
+yaptığı işin tersini anlatırdı (kapatınca ses çıkar, açınca çıkmazdı).
+
+- **Bağlantı:** `SoundManager` (durum + toggle + `PlayUiSfx`), `PlayerPrefs`
+  (fallback).
 
 ### `MenuManager.cs`
 `Assets/Scripts/Runtime/UI/`
@@ -846,6 +864,17 @@ tamamen `SoundManager`'dadır.
 Ana menü (`MainMenu` sahnesi) panel akışının tamamını yönetir. Tüm buton
 bağlantıları `Awake`'te koddan kurulur — Inspector'daki OnClick listesine
 ayrıca eklenmemeli, yoksa çift tetiklenir.
+
+**Buton kaydı ve tık sesi:** Beş buton (`ayarlarBtn`, `exitBtn`, `baslaBtn`,
+`backBtn`, `oynaBtn`) tek bir `RegisterButton(Button, UnityAction)` metoduyla
+bağlanır. Metot butonun üzerindeki `AudioSource`'u `TryGetComponent` ile
+**bir kez** cache'leyip `SoundManager.PlayUiSfx` çağrısını listener olarak ekler,
+ardından asıl davranışı bağlar. Ses listener'ının önce eklenmesi bilinçlidir:
+`oynaBtn` sahne geçişini başlatmadan önce sesin tetiklenmesi gerekir. Ses
+bağlantısı `OpenAyarlarPanel` gibi public metotların **içinde değil**, listener
+seviyesindedir — böylece bu metotlar koddan çağrıldığında (ör. geçiş akışları)
+ses çalmaz, yalnızca gerçek tıklamada çalar. `AudioSource` bulunmayan butonlar
+sessizce çalışmaya devam eder.
 
 **Ayarlar paneli:** `ayarlarBtn` → panel `hiddenScale`'den 1'e (`OutBack`)
 büyürken `CanvasGroup` alpha'sı 0→1 solar; **aynı anda** menü buton grubu
@@ -874,8 +903,8 @@ Bağlanmamış referanslar (panel, CanvasGroup, buton) guard'larla sessizce
 atlanır; script eksik referansla da çalışır.
 
 - **Bağlantı:** `SettingsManager` (ayarlar paneli içeriği), `SelectionManager`
-  (seçim paneli içeriği, panel `SetActive` üzerinden dolaylı),
-  `MaskTransitions.TransitionManager`, `SceneManager`, DOTween.
+  (seçim paneli içeriği, panel `SetActive` üzerinden dolaylı), `SoundManager`
+  (`PlayUiSfx`), `MaskTransitions.TransitionManager`, `SceneManager`, DOTween.
 
 ### `SelectionManager.cs`
 `Assets/Scripts/Runtime/UI/`

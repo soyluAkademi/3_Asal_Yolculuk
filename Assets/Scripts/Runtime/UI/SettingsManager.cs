@@ -18,10 +18,16 @@ namespace PayeGames.AsalYolculuk.UI
         [SerializeField] private Sprite musicOnSprite;
         [SerializeField] private Sprite musicOffSprite;
 
+        private AudioSource sesBtnSource;
+        private AudioSource musicBtnSource;
+
         private void Awake()
         {
             sesBtn.onClick.AddListener(OnSesBtnClick);
             musicBtn.onClick.AddListener(OnMusicBtnClick);
+
+            sesBtn.TryGetComponent(out sesBtnSource);
+            musicBtn.TryGetComponent(out musicBtnSource);
         }
 
         private void Start()
@@ -33,10 +39,15 @@ namespace PayeGames.AsalYolculuk.UI
         {
             SoundManager.Instance.ToggleSfx();
             RefreshSprites();
+
+            // Tık sesi toggle'dan SONRA çalar: ses açıldığında onay sesi duyulur,
+            // kapatıldığında sessiz kalır.
+            SoundManager.PlayUiSfx(sesBtnSource);
         }
 
         private void OnMusicBtnClick()
         {
+            SoundManager.PlayUiSfx(musicBtnSource);
             SoundManager.Instance.ToggleMusic();
             RefreshSprites();
         }
