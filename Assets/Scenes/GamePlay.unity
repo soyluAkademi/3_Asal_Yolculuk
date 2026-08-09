@@ -16488,7 +16488,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 137e183ff22c0e243843b1423ec3ed13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.SilinecekManager
-  startLevel: 2
+  startLevel: 1
   enableCompleteShortcut: 1
   completeLevelKey: 102
   enableFailShortcut: 1

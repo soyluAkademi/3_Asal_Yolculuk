@@ -167,6 +167,10 @@ namespace PayeGames.AsalYolculuk.Core
             if (LevelManager.Instance == null) return;
 
             LevelManager.Instance.SetLevel(LevelManager.Instance.CurrentLevelIndex + 1);
+
+            // Yeni gezegen ana menüdeki seçim panelinde kilitsiz görünsün diye
+            // ilerleme SetLevel sonrasındaki (clamp'lenmiş) index'ten okunur.
+            PlanetProgress.Unlock(LevelManager.Instance.CurrentLevelIndex);
         }
 
         /// <summary>

@@ -321,7 +321,10 @@ atlanmasını engeller, `IsLastLevel` guard'ı son gezegende çalışmasını ö
 Önce `levelCompletePanel.HideToLeft(StartNextLevel)` ile panel ekrandan çıkar,
 **çıkış bitince** `StartNextLevel()` sırayla şunları yapar:
 
-1. `LevelManager.SetLevel(CurrentLevelIndex + 1)`
+1. `LevelManager.SetLevel(CurrentLevelIndex + 1)` — ardından
+   `PlanetProgress.Unlock(CurrentLevelIndex)` ile yeni gezegenin kilidi kalıcı
+   olarak açılır (ana menüdeki seçim paneli bunu okur). Index `SetLevel` sonrası
+   okunur, yani clamp'lenmiş değer kaydedilir.
 2. `ScoreManager.SaveTotalScore()` + `ResetScore()` — toplam puan diske yazılır
    (oyun beklenmedik kapanırsa en fazla bir bölümlük puan kaybolur), ardından
    bölüm puanı **ve** `isTargetReached` bayrağı sıfırlanır
@@ -361,7 +364,7 @@ animasyonu olmadan çalışır — `RestartLevel` doğrudan sıfırlar, `GoToMai
 
 - **Bağlantı:** `LevelCompletePanelView` (`HideToLeft`), `GameOverPanelView`
   (`Hide`), `PlayerDeathEffect` (`RestoreShip`), `LevelManager`, `ScoreManager`,
-  `HealthManager`, `MeteorSpawner`, `GameManager`,
+  `HealthManager`, `MeteorSpawner`, `GameManager`, `PlanetProgress`,
   `MaskTransitions.TransitionManager`, `SceneManager`.
 
 ### `CameraShake.cs`
@@ -375,6 +378,51 @@ her çağrıda önceki tween `DOKill` edilip pozisyon `Awake`'te cache'lenen
 `basePosition`'a çekilir, tween bitiminde de aynı pozisyona sıfırlanır.
 
 - **Bağlantı:** `ShipCollisionHandler` (hasar anında çağırır), DOTween.
+
+### `SoundManager.cs`
+`Assets/Scripts/Runtime/Core/`
+
+Ses altyapısının tek giriş noktası. Singleton + `DontDestroyOnLoad` ile sahneler
+arası yaşar (`SoundManager.Instance`); `[RequireComponent(typeof(AudioSource))]`
+ile gelen kaynak arka plan müziğini, Inspector'dan bağlanan `dogruSource` /
+`yanlisSource` ise SFX'leri çalar.
+
+Ayarlar `PlayerPrefs` üzerinde saklanır: `music_on` ve `sfx_on` (1 = açık,
+0 = kapalı). `Awake`'te okunur, `SetMusic` / `SetSfx` / `ToggleMusic` /
+`ToggleSfx` ile değiştirilip anında diske yazılır. Durum dışarıya `MusicOn` ve
+`SfxOn` property'leri olarak açılır.
+
+Müzik kapatılırken `Stop()` değil `Pause()` / `UnPause()` kullanılır — müzik
+kaldığı yerden devam eder. `Awake`'teki `source.Stop()` + `playOnAwake = false`,
+Inspector'da Play On Awake açık kalsa bile PlayerPrefs kararının uygulanmasını
+garanti eder.
+
+`DogruSesiCikar()` / `YanlisSesiCikar()` SFX kapalıysa veya clip bağlı değilse
+sessizce çıkar (guard clause). Oynanış olaylarına (ateş, meteor vurma, can kaybı,
+bölüm tamamlama) **henüz bağlanmadı** — bkz. `YAPILACAKLAR.md` 2.3.
+
+- **Bağlantı:** `SettingsManager` (UI tarafı), `PlayerPrefs`.
+
+### `PlanetProgress.cs`
+`Assets/Scripts/Runtime/Core/`
+
+`MonoBehaviour` değil, statik yardımcı sınıf. Gezegen kilit ilerlemesini
+`PlayerPrefs` (`AsalYolculuk.MaxUnlockedPlanetIndex`) üzerinde saklar.
+**Tek bir değer** tutulur: açılmış en yüksek gezegen index'i (0 tabanlı,
+varsayılan 0 — ilk gezegen oyunun başında açıktır). Kilitler sırayla açıldığı
+için tek sayı yeterlidir; gezegen başına ayrı bayrak tutmak "sırası gelmeden
+açılmama" kuralını sessizce bozabilirdi.
+
+- `MaxUnlockedIndex`, `IsUnlocked(int)`.
+- `Unlock(int)` — değer yalnızca **ileri** gider; daha düşük index yok sayılır,
+  böylece bölüm tekrar oynandığında ilerleme geri alınmaz.
+- `ResetProgress()` — normal akışta kullanılmaz, "ilerlemeyi sıfırla" ve test için.
+
+`SaveManager` geldiğinde bu alan oraya taşınacak; anahtar adı korunursa mevcut
+oyuncu ilerlemesi kaybolmaz (bkz. `YAPILACAKLAR.md` 4.1).
+
+- **Bağlantı:** `LevelFlowController` (`AdvanceLevel` içinde `Unlock`),
+  `SelectionManager` (kilit sprite'larını okur), `PlayerPrefs`.
 
 ---
 
@@ -775,6 +823,77 @@ sahne iki kez yüklenmez.
   `SceneManager` (ana menü sahnesi), `Prefabs/Effects/confetti.prefab`
   (kutlama efekti), TextMeshPro,
   DOTween (`DOAnchorPos`, `DOScale`, `DOFade`, `DOFillAmount`, `DOTween.To`).
+
+### `SettingsManager.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Ayarlar panelindeki ses (SFX) ve müzik butonlarını yönetir. Butonların
+`onClick` bağlantıları `Awake`'te koddan kurulur (Inspector'daki OnClick
+listesine ayrıca eklenmemeli, yoksa çift tetiklenir); tıklamada
+`SoundManager.Instance.ToggleSfx()` / `ToggleMusic()` çağrılır ve ikon sprite'ı
+açık/kapalı hâline göre değiştirilir.
+
+`RefreshSprites()`, `SoundManager.Instance` henüz yoksa `PlayerPrefs`'ten
+(`SoundManager.SfxPrefKey` / `MusicPrefKey`) fallback okur — execution order
+sorununa karşı güvenlidir. Sınıf yalnızca UI sorumluluğunu taşır, ses mantığı
+tamamen `SoundManager`'dadır.
+
+- **Bağlantı:** `SoundManager` (durum + toggle), `PlayerPrefs` (fallback).
+
+### `MenuManager.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Ana menü (`MainMenu` sahnesi) panel akışının tamamını yönetir. Tüm buton
+bağlantıları `Awake`'te koddan kurulur — Inspector'daki OnClick listesine
+ayrıca eklenmemeli, yoksa çift tetiklenir.
+
+**Ayarlar paneli:** `ayarlarBtn` → panel `hiddenScale`'den 1'e (`OutBack`)
+büyürken `CanvasGroup` alpha'sı 0→1 solar; **aynı anda** menü buton grubu
+(`butonlarPanelCanvasGroup`) alpha 1→0 söner ve etkileşimi kapanır. Panel
+içindeki `exitBtn` → animasyon tersine oynar, bitince panel `SetActive(false)`
+yapılır ve menü butonları geri açılır.
+
+**Seçim paneli geçişi:** `baslaBtn` → `selectionPanel` sağdaki ekran dışı
+konumdan merkeze kayarken, aynı sequence içinde `butonlarPanel` sola doğru
+ekrandan çıkar. `backBtn` bu geçişi tersine oynatır ve panel gizli konumuna
+dönüp kapanır. Ekran dışı konumlar `Awake`'te root canvas genişliğine göre
+hesaplanır (`hiddenExtraMargin` payıyla) — `LevelCompletePanelView` ile aynı
+desen, yani paneller sahnede **görünür yerlerinde** bırakılır, elle ekran
+dışına taşınmaz.
+
+**Oyuna geçiş:** `oynaBtn` → `StartGameplay()`. `TransitionManager.Instance`
+varsa `LoadLevel(gameplaySceneName)` ile maske geçişi yapılır, yoksa
+`SceneManager.LoadScene`'e düşülür (`LevelFlowController.GoToMainMenu` ile aynı
+desen). `isLoadingScene` bayrağı çift tıklamada sahnenin iki kez yüklenmesini
+engeller.
+
+Ayarlar ve seçim geçişleri **ayrı sequence** alanlarında tutulur
+(`ayarlarSequence` / `selectionSequence`); biri diğerini kesmez, `OnDestroy`'da
+ikisi de `Kill` edilir. Tween'ler `SetUpdate(true)` ile unscaled çalışır.
+Bağlanmamış referanslar (panel, CanvasGroup, buton) guard'larla sessizce
+atlanır; script eksik referansla da çalışır.
+
+- **Bağlantı:** `SettingsManager` (ayarlar paneli içeriği), `SelectionManager`
+  (seçim paneli içeriği, panel `SetActive` üzerinden dolaylı),
+  `MaskTransitions.TransitionManager`, `SceneManager`, DOTween.
+
+### `SelectionManager.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Seçim panelindeki 8 gezegen kilidini kayıtlı ilerlemeye göre günceller.
+`lockImages` (`Image[]`) dizisindeki sıra gezegen sırasıdır (index 0 = 1.
+gezegen); `lockedSprite` / `unlockedSprite` Inspector'dan verilir.
+
+`OnEnable`'da `RefreshLocks()` çalışır — `MenuManager` paneli `SetActive(true)`
+ile açtığı için her açılışta ilerleme tazelenir, oyundan menüye dönüldüğünde
+yeni açılan gezegen doğru görünür. Kilit durumu `i <= PlanetProgress
+.MaxUnlockedIndex` ile belirlenir; sıradaki gezegen bitirilmeden bir sonraki
+hiçbir koşulda açık görünmez. Boş slot veya atanmamış sprite sessizce atlanır.
+
+Gezegene tıklayıp o bölümden başlama akışı **henüz yok**; `oynaBtn` her zaman
+`LevelManager`'ın mevcut index'iyle başlatır.
+
+- **Bağlantı:** `PlanetProgress` (ilerleme kaynağı), `MenuManager` (paneli açan).
 
 ---
 

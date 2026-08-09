@@ -38,7 +38,8 @@ input henüz yok.
 | Ekran akışı (Ana Menü, Harita, Yolculuk, Sonuç) | ❌ Yok |
 | Kayıt sistemi (`SaveManager`) | ❌ Yok |
 | Dokunmatik input | ❌ Yok |
-| Ses sistemi | ❌ Yok |
+| Ses sistemi (`SoundManager` + ayarlar UI) | 🟡 Altyapı bitti, olaylara bağlanmadı |
+| Ana menü ayarlar paneli (`MenuManager`) | ✅ Bitti |
 
 Sahne durumu: `Assets/Scenes/GamePlay.unity` (oyun) ve `Assets/Scenes/MainMenu.unity`.
 İkisi de Build Settings'te ekli. **MainMenu şu an GamePlay'in kopyası** — bitiş
@@ -122,12 +123,18 @@ Bölüm kazanma, kaybetme ve her ikisinden de devam etme akışı çalışıyor.
   buffer olarak geçiliyor. Hareket hissini bozuyor; ayrı bir `smoothVelocity` alanı gerekli.
   *Dosyalar:* `Player/PlayerShipController.cs`
 
-- [ ] **2.3 — Ses sistemi**
-  `Assets/Sounds/` dolu ama sahnede hiçbir ses çalmıyor. `SoundManager` (müzik + SFX,
-  `PlayerPrefs` ile kalıcı aç/kapa, sahneler arası yaşayan) kurulacak.
-  Bağlanacak olaylar: ateş, meteor vurma, parçalanma, yok olma, can kaybı,
-  maden toplama, bölüm tamamlama.
-  *Not:* Bunun için hazır `unity-ses-sistemi` skill'i mevcut.
+- [ ] **2.3 — Ses sistemi** 🟡 Altyapı bitti
+  `unity-ses-sistemi` skill'i ile `SoundManager` (müzik + SFX, `PlayerPrefs` ile
+  kalıcı aç/kapa, `DontDestroyOnLoad` ile sahneler arası yaşayan) ve ayarlar
+  panelindeki müzik/ses butonlarını yöneten `SettingsManager` eklendi.
+  *Dosyalar:* `Core/SoundManager.cs`, `UI/SettingsManager.cs`
+
+  Kalanlar:
+  - Sahne kurulumu: `SoundManager` objesi + müzik/SFX `AudioSource` clip atamaları.
+  - Oynanış olaylarına bağlama: ateş, meteor vurma, parçalanma, yok olma,
+    can kaybı, maden toplama, bölüm tamamlama. `SoundManager` şu an yalnızca
+    doğru/yanlış SFX API'si sunuyor; bu olaylar için genel bir `PlaySfx(clip)`
+    girişi eklenecek.
 
 - [ ] **2.4 — Duraklatma (Pause)**
   `GameState.Paused` enum'da tanımlı ama hiçbir yerden tetiklenmiyor.
@@ -187,10 +194,24 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 - [ ] **4.3 — `UIManager` / `ScreenController`**
   Ekranlar arası geçiş yönetimi.
 
-- [ ] **4.4 — Ana Menü ekranı**
+- [ ] **4.4 — Ana Menü ekranı** 🟡 Ayarlar paneli bitti
   Oyuna Başla / Devam Et / Sonsuz Yolculuk / Ses aç-kapa.
-  `Assets/Scenes/MainMenu.unity` oluşturuldu ve Build Settings'e eklendi ama
-  içeriği hâlâ GamePlay kopyası; temizlenip menü arayüzü kurulacak.
+  **Ayarlar paneli tamam:** `MenuManager` ayarlar butonuyla paneli scale +
+  `CanvasGroup` fade ile açıyor, panel içindeki `exitBtn` ile kapatıyor; panel
+  açılırken menü buton grubu sönüyor, kapanırken geri geliyor. Panel içeriğini
+  `SettingsManager` (müzik/ses toggle) yönetiyor.
+  **Seçim paneli tamam:** `baslaBtn` ile panel sağdan merkeze kayıyor, menü
+  butonları sola çıkıyor; `backBtn` tersini yapıyor. `oynaBtn` →
+  `TransitionManager.LoadLevel` ile `GamePlay` sahnesi yükleniyor.
+  **Gezegen kilitleri tamam:** `PlanetProgress` (PlayerPrefs
+  `AsalYolculuk.MaxUnlockedPlanetIndex`) ilerlemeyi kalıcı tutuyor,
+  `LevelFlowController.AdvanceLevel` bölüm geçişinde kilidi açıyor,
+  `SelectionManager` panel açılışında sprite'ları güncelliyor.
+  *Dosyalar:* `UI/MenuManager.cs`, `UI/SettingsManager.cs`,
+  `UI/SelectionManager.cs`, `Core/PlanetProgress.cs`
+  Kalanlar: gezegene tıklayıp o bölümden başlama (şu an `oynaBtn` her zaman
+  `LevelManager`'ın mevcut index'iyle başlıyor), Devam Et / Sonsuz Yolculuk
+  girişleri.
   Bitiş panelindeki "Başla" butonu (`BitisManager.mainMenuSceneName`) buraya
   yönleniyor.
 
