@@ -27,7 +27,10 @@ namespace PayeGames.AsalYolculuk
         }
 
         [Header("Başlangıç")]
-        [Tooltip("Play'e basınca başlanacak bölüm")]
+        [Tooltip("İşaretliyse oyuncunun kaldığı bölümden devam edilir (normal oyun davranışı). " +
+                 "Belirli bir bölümü test etmek için kaldır.")]
+        [SerializeField] private bool useSavedProgress = true;
+        [Tooltip("Play'e basınca başlanacak bölüm; yalnızca Use Saved Progress kapalıyken geçerli")]
         [SerializeField] private TestLevel startLevel = TestLevel.Bolum1;
 
         [Header("Kısayol")]
@@ -42,6 +45,10 @@ namespace PayeGames.AsalYolculuk
 
         private void Start()
         {
+            // Normal akışta LevelManager kaldığı bölümü Awake'inde yüklemiştir;
+            // buradan müdahale edilirse o kayıt ezilir.
+            if (useSavedProgress) return;
+
             // Tüm manager'ların Awake'i bittikten sonra çalışsın.
             if (LevelManager.Instance == null) return;
 

@@ -9,6 +9,7 @@ namespace PayeGames.AsalYolculuk.Core
 
         [Header("Seviye / Gezegen Listesi")]
         [SerializeField] private PlanetDataSO[] planetDataList;
+        [Tooltip("Yalnızca editör varsayılanı; oyun başlarken kayıtlı ilerleme bunun üzerine yazar.")]
         [SerializeField] private int currentLevelIndex;
 
         public int CurrentLevelIndex => currentLevelIndex;
@@ -25,6 +26,19 @@ namespace PayeGames.AsalYolculuk.Core
             }
 
             Instance = this;
+
+            LoadSavedLevel();
+        }
+
+        /// <summary>
+        /// Oyuncunun kaldığı bölümden başlatır. Kilitler sırayla açıldığı için
+        /// açılmış en yüksek gezegen, aynı zamanda oyuncunun henüz bitirmediği
+        /// bölümdür; ayrı bir "kalınan bölüm" kaydı tutmaya gerek yoktur.
+        /// Sahnedeki <see cref="currentLevelIndex"/> yalnızca editör varsayılanıdır.
+        /// </summary>
+        private void LoadSavedLevel()
+        {
+            SetLevel(PlanetProgress.MaxUnlockedIndex);
         }
 
         public PlanetDataSO CurrentPlanetData
