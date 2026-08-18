@@ -1,7 +1,8 @@
 # Yapılacaklar — Asal Yolculuk
 
-Son güncelleme: 2026-08-18 (maden altyapısı, HUD göstergesi ve **5 ödül madeninin
-tamamı** bitti; sıradaki iş 3 ceza madeni)
+Son güncelleme: 2026-08-18 (**Faz 3 maden sistemi tamamlandı** — 5 ödül + 2 ceza;
+Kaos Çekirdeği bilinçli olarak kapsam dışı bırakıldı. Kalan: ağırlıklı maden
+seçimi ve 3 eksik görsel.)
 
 Bu dosya projenin tamamlanmamış işlerini önceliklendirilmiş şekilde listeler.
 Mevcut durum için `SCRIPT_OZETI.md`, hedef tasarım için `AsalYolculuk_Senaryo.md`
@@ -37,7 +38,7 @@ input henüz yok.
 | Bölüm kaybında puanın toplamdan geri alınması | ✅ Bitti |
 | Maden (PowerUp / Curse) altyapısı + HUD göstergesi | ✅ Bitti |
 | Ödül madenleri (5/5) | ✅ Bitti |
-| Ceza madenleri (0/3) | ❌ Yok |
+| Ceza madenleri (2/2, Kaos Çekirdeği kapsam dışı) | ✅ Bitti |
 | Ekran akışı (Ana Menü, Harita, Yolculuk, Sonuç) | ❌ Yok |
 | Kayıt sistemi (`SaveManager`) | ❌ Yok |
 | Dokunmatik input | ❌ Yok |
@@ -120,10 +121,10 @@ Bölüm kazanma, kaybetme ve her ikisinden de devam etme akışı çalışıyor.
   Yeni Input System `Pointer` üzerinden sürükleme eklenecek, klavye fallback kalacak.
   *Dosyalar:* `Player/PlayerShipController.cs`
 
-- [ ] **2.2 — `SmoothDamp` kullanım hatası**
-  `PlayerShipController.cs:63` — `Vector2.SmoothDamp(currentVelocity, targetVelocity,
-  ref currentVelocity, smoothTime)` çağrısında aynı değişken hem kaynak hem velocity
-  buffer olarak geçiliyor. Hareket hissini bozuyor; ayrı bir `smoothVelocity` alanı gerekli.
+- [x] **2.2 — `SmoothDamp` kullanım hatası** ✅
+  Aynı değişken hem kaynak hem velocity buffer olarak geçiliyordu; ayrı bir
+  `smoothVelocity` alanı eklendi. Hareketin hissi değiştiği için `Smooth Time`
+  (varsayılan 0.12) test edilip yeniden ayarlanabilir.
   *Dosyalar:* `Player/PlayerShipController.cs`
 
 - [ ] **2.3 — Ses sistemi** 🟡 Altyapı bitti
@@ -182,21 +183,23 @@ projede kararlaştırıldı; aşağıda parantez içinde belirtilmiştir.
         kaydırma `ShieldMatEffect` ile `_Offset` vektör özelliği üzerinden
         yapılır (`_BaseMap`/`SetTextureOffset` bu shader'da çalışmaz).
 
-- [ ] **3.3 — Ceza madenleri** 0/3 ← **SIRADAKİ İŞ**
-  Altyapı hazır: spawn (zamanlayıcı bazlı), toplama, süre yönetimi ve HUD
-  göstergesi çalışıyor. Her ceza için yapılacak yalnızca üç şey:
-  `Effects/` altına bir sınıf, `PowerUpManager.CreateEffect` içine bir `case`,
-  bir `MineDataSO` asset'i + `MineSpawner.curseMines` dizisine eklemek.
-  - [ ] `MeteorCaller` — Meteor Çağırıcı (*10 sn meteor üretimi ×2*) — en kolayı,
-        `MeteorSpawner`'a `MeteorController.SpeedMultiplier` benzeri bir üretim
-        çarpanı eklenerek yapılır
-  - [ ] `GravityStone` — Yerçekimi Taşı (*10 sn gemi hızı %50 + sürekli aşağı çekim*)
-        — `PlayerShipController`'a dokunur, `PowerUpManager`'a yeni bir etki
-        hedefi referansı gerekir
-  - [ ] `ChaosCore` — Kaos Çekirdeği (*10 sn meteor sayıları gizlenir, "?"
-        gösterilir*) — `MeteorController.meteorTxt`'e dokunur; ekranda **uçmakta
-        olan** meteorların da yazısı değişmeli, yani `ActiveMeteors` üzerinden
-        toplu güncelleme veya static bir bayrak gerekir
+- [x] **3.3 — Ceza madenleri** ✅ 2/2
+  - [x] `MeteorCaller` — Meteor Çağırıcı: 10 sn meteor üretimi ×2 ✅
+        Çarpan gezegenin kendi üretim hızının **üzerine** biner, böylece ceza
+        ileri gezegenlerde otomatik olarak daha sert hissedilir.
+  - [x] `GravityStone` — Yerçekimi Taşı: 10 sn gemi hızı ×0.5 + sürekli aşağı
+        çekim ✅ Gemi ekrandan çıkamaz (`ClampToScreen` dikeyi de sınırlıyor).
+        Çekim, geminin güncel hızının en fazla %70'i olabilir (`MaxPullRatio`) —
+        aksi halde gemi hiç yukarı çıkamaz, ceza değil felç olurdu. Çekim
+        `SmoothDamp`'in dışında doğrudan konuma uygulanır; hız vektörüne
+        eklenseydi yumuşatma onu geri emer, etki hissedilmezdi.
+  - [~] `ChaosCore` — Kaos Çekirdeği: **kapsam dışı bırakıldı.**
+        Planlanan etki "10 sn meteor sayıları gizlenir, `?` gösterilir"di.
+        Eğitsel oyunun asıl içeriğini (sayı okuma + çarpan bulma) geçici olarak
+        kapattığı için vazgeçildi. `EffectType` enum'unda GDD izlenebilirliği
+        için duruyor; `MineDataSO`'da seçilirse etki üretilmez ve Console uyarı
+        verir. İleride istenirse `MeteorController`'a static bir bayrak +
+        `ActiveMeteors` üzerinden toplu yazı tazeleme ile eklenebilir.
 
 - [x] **3.4 — Maden spawn + toplama** ✅
   Havuzlanmış tek `Mine` prefab'ı 8 madeni de temsil ediyor; hangi maden olduğu

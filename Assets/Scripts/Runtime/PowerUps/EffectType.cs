@@ -15,6 +15,10 @@ namespace PayeGames.AsalYolculuk.PowerUps
         Shield,
 
         // Cezalar
+        // ChaosCore senaryoda geçer ama bilinçli olarak uygulanmadı: etkisi
+        // meteor sayılarını gizlemek olacaktı, bu da eğitsel içeriği geçici
+        // olarak kapatıyordu. Enum'da kalması GDD ile izlenebilirlik içindir;
+        // MineDataSO'da seçilirse etki üretilmez ve Console uyarı verir.
         ChaosCore,
         GravityStone,
         MeteorCaller,

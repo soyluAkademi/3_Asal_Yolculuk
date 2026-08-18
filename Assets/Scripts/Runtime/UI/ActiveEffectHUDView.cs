@@ -11,6 +11,10 @@ namespace PayeGames.AsalYolculuk.UI
     /// </summary>
     public class ActiveEffectHUDView : MonoBehaviour
     {
+        // Süreli maden sayısı: 8 madenin 7'sinin süresi var (Yıldız Parçası anlık).
+        // Teorik olarak hepsi aynı anda aktif olabilir.
+        private const int RequiredSlotCount = 7;
+
         [Header("Kutucuklar")]
         [Tooltip("Soldan sağa sıralı slot'lar. Süreli maden sayısı kadar olmalı (7)")]
         [SerializeField] private ActiveEffectSlotView[] slots;
@@ -27,10 +31,7 @@ namespace PayeGames.AsalYolculuk.UI
         {
             HideAllSlots();
 
-            if (slots == null || slots.Length == 0)
-            {
-                Debug.LogWarning("[ActiveEffectHUDView] Slots dizisi boş; gösterge çalışmaz.", this);
-            }
+            ValidateSlots();
 
             if (PowerUpManager.Instance == null)
             {
@@ -51,14 +52,55 @@ namespace PayeGames.AsalYolculuk.UI
             PowerUpManager.Instance.OnEffectEnded -= HandleEffectEnded;
         }
 
+        /// <summary>
+        /// Slot dizisini denetler. Eksik veya boş bırakılmış slot, etkiyi sessizce
+        /// yutar: ilk etki görünür, ikinci ve sonrakiler kaybolur. Bu, "bazı madenler
+        /// HUD'da çıkmıyor" şeklinde teşhisi zor bir belirti üretir.
+        /// </summary>
+        private void ValidateSlots()
+        {
+            if (slots == null || slots.Length == 0)
+            {
+                Debug.LogWarning("[ActiveEffectHUDView] Slots dizisi boş; gösterge çalışmaz.", this);
+                return;
+            }
+
+            int emptyCount = 0;
+            for (int index = 0; index < slots.Length; index++)
+            {
+                if (slots[index] == null) emptyCount++;
+            }
+
+            if (emptyCount > 0)
+            {
+                Debug.LogWarning($"[ActiveEffectHUDView] Slots dizisinde {emptyCount} boş " +
+                    "eleman var; o sıraya düşen etkiler gösterilemez.", this);
+            }
+
+            if (slots.Length >= RequiredSlotCount) return;
+
+            Debug.LogWarning($"[ActiveEffectHUDView] Slot sayısı {slots.Length}; " +
+                $"aynı anda {RequiredSlotCount} süreli etki aktif olabilir. " +
+                "Fazlası gösterilemez.", this);
+        }
+
         private void HandleEffectStarted(MineDataSO data)
         {
             if (data == null) return;
             if (shownEffects.Contains(data)) return;
 
             shownEffects.Add(data);
+
+            if (shownEffects.Count > SlotCount)
+            {
+                Debug.LogWarning($"[ActiveEffectHUDView] '{data.DisplayName}' gösterilemedi: " +
+                    $"{shownEffects.Count} etki aktif ama yalnızca {SlotCount} slot var.", this);
+            }
+
             RefreshSlots();
         }
+
+        private int SlotCount => slots != null ? slots.Length : 0;
 
         private void HandleEffectEnded(MineDataSO data)
         {

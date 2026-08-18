@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using PayeGames.AsalYolculuk.Combat;
 using PayeGames.AsalYolculuk.Core;
+using PayeGames.AsalYolculuk.Meteors;
 using PayeGames.AsalYolculuk.Player;
 using PayeGames.AsalYolculuk.PowerUps.Effects;
 
@@ -22,6 +23,10 @@ namespace PayeGames.AsalYolculuk.PowerUps
         [SerializeField] private PlayerAutoShooter playerShooter;
         [Tooltip("Koruma Kalkanı bariyeri bunun üzerinden açılır")]
         [SerializeField] private ShipCollisionHandler shipCollisionHandler;
+        [Tooltip("Meteor Çağırıcı üretim sıklığını bunun üzerinden artırır")]
+        [SerializeField] private MeteorSpawner meteorSpawner;
+        [Tooltip("Yerçekimi Taşı gemi hızını ve aşağı çekimi bunun üzerinden değiştirir")]
+        [SerializeField] private PlayerShipController playerShipController;
 
         /// <summary>Süreli bir etki başladığında tetiklenir; HUD göstergesi dinler.</summary>
         public event Action<MineDataSO> OnEffectStarted;
@@ -192,8 +197,34 @@ namespace PayeGames.AsalYolculuk.PowerUps
                 EffectType.PlasmaFuel => CreatePlasmaFuelEffect(data),
                 EffectType.TimeCrystal => new TimeCrystalEffect(data),
                 EffectType.Shield => CreateShieldEffect(data),
+                EffectType.MeteorCaller => CreateMeteorCallerEffect(data),
+                EffectType.GravityStone => CreateGravityStoneEffect(data),
                 _ => null,
             };
+        }
+
+        private IActiveEffect CreateGravityStoneEffect(MineDataSO data)
+        {
+            if (playerShipController == null)
+            {
+                Debug.LogWarning("[PowerUpManager] Yerçekimi Taşı çalışmadı: " +
+                    "Player Ship Controller referansı Inspector'dan bağlanmamış.");
+                return null;
+            }
+
+            return new GravityStoneEffect(data, playerShipController);
+        }
+
+        private IActiveEffect CreateMeteorCallerEffect(MineDataSO data)
+        {
+            if (meteorSpawner == null)
+            {
+                Debug.LogWarning("[PowerUpManager] Meteor Çağırıcı çalışmadı: " +
+                    "Meteor Spawner referansı Inspector'dan bağlanmamış.");
+                return null;
+            }
+
+            return new MeteorCallerEffect(data, meteorSpawner);
         }
 
         private IActiveEffect CreateShieldEffect(MineDataSO data)

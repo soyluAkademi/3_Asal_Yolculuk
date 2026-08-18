@@ -7796,7 +7796,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &613436942
 RectTransform:
   m_ObjectHideFlags: 0
@@ -16054,8 +16054,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fbe438a5589fbe745add1594bfa7e567, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.PowerUps.PowerUpManager
-  playerShooter: {fileID: 0}
-  shipCollisionHandler: {fileID: 0}
+  playerShooter: {fileID: 2113773169}
+  shipCollisionHandler: {fileID: 2113773170}
+  meteorSpawner: {fileID: 100304393}
+  playerShipController: {fileID: 2113773168}
 --- !u!1 &1213933526
 GameObject:
   m_ObjectHideFlags: 0
@@ -16239,7 +16241,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1295002992
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17216,7 +17218,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1368935230
 RectTransform:
   m_ObjectHideFlags: 0
@@ -17772,7 +17774,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 137e183ff22c0e243843b1423ec3ed13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.SilinecekManager
-  startLevel: 2
+  startLevel: 3
   enableCompleteShortcut: 1
   completeLevelKey: 102
   enableFailShortcut: 1
@@ -17843,10 +17845,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: db6f3d409db4a5341b39976568ce1e9f, type: 2}
   - {fileID: 11400000, guid: ef778404c29152749bc33797375ac5fd, type: 2}
   - {fileID: 11400000, guid: c97d8b20580c35141bee3e8b63816342, type: 2}
-  curseMines: []
+  curseMines:
+  - {fileID: 11400000, guid: 44dd9068d1cade243b7fc25dc7dc0810, type: 2}
+  - {fileID: 11400000, guid: 6ab31505a4a88ef44a94619cc2d3b383, type: 2}
   rewardDropChance: 1
-  minCurseInterval: 15
-  maxCurseInterval: 20
+  minCurseInterval: 3
+  maxCurseInterval: 5
   minViewportY: 0.1
   maxViewportY: 0.9
   spawnMargin: 1
@@ -31943,6 +31947,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.PowerUps.PowerUpManager
   playerShooter: {fileID: 2113773169}
   shipCollisionHandler: {fileID: 2113773170}
+  meteorSpawner: {fileID: 100304393}
+  playerShipController: {fileID: 0}
 --- !u!1 &2130079105
 GameObject:
   m_ObjectHideFlags: 0
@@ -41913,7 +41919,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!23 &4989546299349597484
 MeshRenderer:
   m_ObjectHideFlags: 0

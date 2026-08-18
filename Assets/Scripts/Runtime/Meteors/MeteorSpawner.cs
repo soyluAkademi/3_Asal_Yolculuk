@@ -29,6 +29,9 @@ namespace PayeGames.AsalYolculuk.Meteors
 
         private Camera gameCamera;
         private float spawnTimer;
+
+        // Meteor Çağırıcı cezası bunu geçici olarak artırır.
+        private float spawnRateMultiplier = 1f;
         private LevelNumberPool numberPool;
 
         private void Awake()
@@ -79,11 +82,31 @@ namespace PayeGames.AsalYolculuk.Meteors
         }
 
         /// <summary>
+        /// Meteor Çağırıcı gibi etkiler için üretim hızı çarpanı (2 = iki kat sık).
+        /// Gezegenin kendi hızının <b>üzerine</b> uygulanır; böylece ceza ileri
+        /// gezegenlerde otomatik olarak daha sert hissedilir.
+        /// </summary>
+        public void SetSpawnRateMultiplier(float multiplier)
+        {
+            spawnRateMultiplier = Mathf.Max(0f, multiplier);
+        }
+
+        public void ResetSpawnRateMultiplier()
+        {
+            spawnRateMultiplier = 1f;
+        }
+
+        /// <summary>
         /// Aktif gezegenin üretim hızı (saniyedeki meteor sayısı). Bölüm ilerledikçe
         /// artar; gezegen verisi bağlı değilse Inspector'daki yedek değere düşülür,
         /// böylece gezegensiz test sahneleri eskisi gibi çalışır.
         /// </summary>
         private float GetSpawnRate()
+        {
+            return GetBaseSpawnRate() * spawnRateMultiplier;
+        }
+
+        private float GetBaseSpawnRate()
         {
             PlanetDataSO planetData = LevelManager.Instance != null ? LevelManager.Instance.CurrentPlanetData : null;
             if (planetData == null) return spawnRate;

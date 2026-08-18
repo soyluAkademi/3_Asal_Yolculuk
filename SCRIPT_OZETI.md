@@ -15,11 +15,24 @@ Gemiyi klavyeden (yeni Input System, kod içinde tanımlı WASD + ok tuşları
 composite'i) hareket ettirir. Transform tabanlı, `SmoothDamp` ile yumuşatılmış
 hareket (Rigidbody yok). `Camera.main` ile kamerayı otomatik bulur (Inspector'dan
 atama yok). Yatayda `minViewportX` / `maxViewportX` ile hareket alanı sınırlanır
-(0 = ekranın solu, 1 = ekranın sağı); dikeyde tüm ekran serbest. `Update` başında
+(0 = ekranın solu, 1 = ekranın sağı); dikeyde tüm ekran serbest ama `ClampToScreen`
+konumu her karede ekran içinde tutar. `Update` başında
 `GameManager.IsGameplayActive` guard'ı vardır; bölüm bitince kontrol kapanır ve
-`currentVelocity` sıfırlanır (bölüm sonu tween'i input ile çakışmasın).
+hız alanları sıfırlanır (bölüm sonu tween'i input ile çakışmasın).
 
-- **Bağlantı:** `GameManager` (guard).
+Geminin hızı (`currentVelocity`) ile `SmoothDamp`'in iç tamponu (`smoothVelocity`)
+**ayrı** alanlardır. Önceden aynı değişken ikisi için de geçiriliyordu; `SmoothDamp`
+kendi durumunu geminin hızının üstüne yazdığı için yumuşatma bozuluyordu.
+
+**Yerçekimi Taşı desteği:** `SetMoveSpeedMultiplier` / `ResetMoveSpeedMultiplier`
+hareket hızını, `SetDownwardPull` / `ResetDownwardPull` sürekli aşağı çekimi
+ayarlar. Çekim iki koruma altındadır:
+- `GetClampedPull` çekimi geminin **güncel** hızının `MaxPullRatio` (%70) kadarıyla
+  sınırlar; aksi halde çekim hızı geçer, gemi hiç yukarı çıkamaz ve ceza felce döner.
+- Çekim `SmoothDamp`'in **dışında** doğrudan konuma uygulanır. Hız vektörüne
+  eklenseydi yumuşatma onu her karede geri emer, etki hissedilmezdi.
+
+- **Bağlantı:** `GameManager` (guard), `GravityStoneEffect` (hız çarpanı + çekim).
 
 ### `ShipCollisionHandler.cs`
 `Assets/Scripts/Runtime/Player/`
@@ -763,6 +776,11 @@ olur ve tamamlanan sayıyı havuza bildirir. `ResetNumberPool()` public'tir;
 canlar bitip bölüm yeniden başladığında çağrılacaktır. `Update` başında
 `GameManager.IsGameplayActive` guard'ı vardır; canlar bitince üretim durur.
 
+**Üretim hızı çarpanı (Meteor Çağırıcı):** `SetSpawnRateMultiplier` /
+`ResetSpawnRateMultiplier` gezegenin kendi hızının **üzerine** bir çarpan uygular
+(`GetSpawnRate()` = `GetBaseSpawnRate()` × çarpan). Çarpan sabit bir değer yerine
+oran olduğu için ceza ileri gezegenlerde otomatik olarak sertleşir.
+
 `Awake`'te `MeteorController.ResetSpeedMultiplier()` çağrılır: hız çarpanı static
 olduğu için sahne değişiminde (ve Editor'da domain reload kapalıysa) önceki
 oturumdan yavaşlamış hâlde kalabilirdi — oyuncu Zaman Kristali aktifken ölüp
@@ -967,6 +985,37 @@ verilmez — yoksa oyuncu ateş etmeyi bırakıp meteorların üzerine sürerek 
 toplardı, bu da çarpanları çözmeden puan almak demek olurdu.
 
 - **Bağlantı:** `ShipCollisionHandler`.
+
+### `Effects/MeteorCallerEffect.cs`
+`Assets/Scripts/Runtime/PowerUps/Effects/`
+
+**Meteor Çağırıcı (ceza) — 10 sn.** `MeteorSpawner.SetSpawnRateMultiplier(
+data.Multiplier)` ile meteor üretim sıklığını iki katına çıkarır. Çarpan
+gezegenin **kendi** üretim hızının üzerine bindiği için ceza ileri gezegenlerde
+otomatik olarak daha sert hissedilir; sabit bir değer yazılsaydı bu ölçekleme
+kaybolurdu.
+
+- **Bağlantı:** `MeteorSpawner`.
+
+### `Effects/GravityStoneEffect.cs`
+`Assets/Scripts/Runtime/PowerUps/Effects/`
+
+**Yerçekimi Taşı (ceza) — 10 sn.** Geminin hareket hızını
+`data.Multiplier` katına düşürür (0.5) ve `data.Amount` birim/saniye aşağı çeker.
+
+Gemi ekrandan **çıkamaz**: `PlayerShipController.ClampToScreen` konumu her karede
+dikeyde de sınırlar, çekim gemiyi en fazla alt kenara yapıştırır. Ayrıca çekim
+geminin güncel hızının %70'ini geçemez (`MaxPullRatio`) — aksi halde gemi hiç
+yukarı çıkamaz ve ceza değil felç olurdu.
+
+- **Bağlantı:** `PlayerShipController`.
+
+### Uygulanmayan: `ChaosCore`
+`EffectType` enum'unda tanımlı ama **bilinçli olarak yazılmadı.** Planlanan etki
+meteor sayılarını 10 sn gizlemekti; bu, eğitsel oyunun asıl içeriğini geçici
+olarak kapattığı için vazgeçildi. Enum'da kalması GDD ile izlenebilirlik
+içindir; `MineDataSO`'da seçilirse `CreateEffect` `null` döner ve Console'a uyarı
+yazılır. Ayrıntı: `YAPILACAKLAR.md` 3.3.
 
 ---
 
@@ -1339,13 +1388,13 @@ kaldığı için değişiklikler oyuna hiç yansımaz.
 Aşağıdakiler `CLAUDE.md`'de hedef mimari olarak tanımlı ama henüz kodlanmadı:
 `SaveManager`, `GameConfigSO`, `UIManager`/`ScreenController`.
 
-**Maden sistemi:** Altyapı ve HUD göstergesi bitti; **8 madenin 5'i yazıldı.**
-Yazılanlar: Yıldız Parçası, Altın Kristal, Plazma Yakıtı, Zaman Kristali,
-Koruma Kalkanı — yani **tüm ödüller**. Kalan 3 ceza (`ChaosCore`,
-`GravityStone`, `MeteorCaller`) için `PowerUpManager.CreateEffect` içine birer
-`case` ve `Effects/` altına birer sınıf eklenecek; spawn, toplama, süre yönetimi
-ve HUD tarafında yapılacak bir şey yok. Kararlaştırılan etkiler ve kalan
-maddeler (ağırlıklı drop seçimi, 3 eksik görsel) `YAPILACAKLAR.md` 3.2/3.3/3.7/3.8.
+**Maden sistemi tamamlandı.** 5 ödül (Yıldız Parçası, Altın Kristal, Plazma
+Yakıtı, Zaman Kristali, Koruma Kalkanı) + 2 ceza (Meteor Çağırıcı, Yerçekimi
+Taşı). `ChaosCore` bilinçli olarak kapsam dışı bırakıldı (yukarıya bakınız).
+
+Maden tarafında kalan iki iş `YAPILACAKLAR.md` 3.7 ve 3.8'de: **ağırlıklı maden
+seçimi** (şu an bir maden düştüğünde hangisi olacağı eşit olasılıkla seçiliyor;
+Koruma Kalkanı ile Yıldız Parçası aynı sıklıkta çıkıyor) ve **3 eksik görsel**.
 
 Kayıt tarafı notu: toplam puan şu an `ScoreManager` içinde doğrudan `PlayerPrefs`
 ile saklanıyor (`AsalYolculuk.TotalScore`). `SaveManager`/`SaveData` geldiğinde bu
