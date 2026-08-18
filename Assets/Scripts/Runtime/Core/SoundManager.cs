@@ -13,6 +13,8 @@ namespace PayeGames.AsalYolculuk.Core
         [Header("SFX Sources")]
         [SerializeField] private AudioSource dogruSource;
         [SerializeField] private AudioSource yanlisSource;
+        [Tooltip("Oynanış olaylarının (maden toplama, patlama vb.) tek seferlik seslerini çalan ortak kaynak")]
+        [SerializeField] private AudioSource gameplaySource;
 
         private AudioSource source;
 
@@ -99,6 +101,20 @@ namespace PayeGames.AsalYolculuk.Core
         public void YanlisSesiCikar()
         {
             PlaySfxSource(yanlisSource);
+        }
+
+        /// <summary>
+        /// Oynanış olaylarının tek seferlik sesini çalar (maden toplama, patlama,
+        /// can kaybı vb.). Klip çağrı bazlı geldiği için ortak bir kaynak kullanılır;
+        /// olay başına ayrı AudioSource tutmak sahneyi gereksiz şişirirdi.
+        /// </summary>
+        public void PlaySfx(AudioClip clip)
+        {
+            if (!SfxOn) return;
+            if (clip == null) return;
+            if (gameplaySource == null) return;
+
+            gameplaySource.PlayOneShot(clip);
         }
 
         private void PlaySfxSource(AudioSource src)

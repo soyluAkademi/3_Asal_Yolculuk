@@ -48,6 +48,10 @@ namespace PayeGames.AsalYolculuk.Core
 
         private bool isTargetReached;
 
+        // Altın Kristal gibi etkiler meteor puanını geçici olarak değiştirir.
+        private int meteorScoreOverride;
+        private bool hasMeteorScoreOverride;
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -86,7 +90,24 @@ namespace PayeGames.AsalYolculuk.Core
 
         public void AddMeteorScore()
         {
-            AddScore(scorePerMeteor);
+            AddScore(hasMeteorScoreOverride ? meteorScoreOverride : scorePerMeteor);
+        }
+
+        /// <summary>
+        /// Meteor başına verilen puanı geçici olarak sabitler (Altın Kristal etkisi:
+        /// 5 yerine 10). Etki bitince <see cref="ClearMeteorScoreOverride"/> ile
+        /// normale döner. Değer çarpan değil sabit puandır; GDD "10 puan" diyor ve
+        /// rakam maden veri dosyasından geliyor.
+        /// </summary>
+        public void SetMeteorScoreOverride(int score)
+        {
+            meteorScoreOverride = Mathf.Max(0, score);
+            hasMeteorScoreOverride = true;
+        }
+
+        public void ClearMeteorScoreOverride()
+        {
+            hasMeteorScoreOverride = false;
         }
 
         /// <summary>
@@ -160,6 +181,11 @@ namespace PayeGames.AsalYolculuk.Core
         {
             CurrentScore = 0;
             isTargetReached = false;
+
+            // Güvenlik ağı: bölüm bir etki aktifken bitse bile yeni bölüm normal
+            // puanla başlar (PowerUpManager de etkileri ayrıca temizler).
+            ClearMeteorScoreOverride();
+
             OnScoreChanged?.Invoke(CurrentScore, targetScore);
         }
 

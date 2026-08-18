@@ -20,15 +20,37 @@ namespace PayeGames.AsalYolculuk.Meteors
 
         /// <summary>
         /// Bir ana meteor tüm parçalarıyla birlikte yok edildiğinde tetiklenir.
-        /// Parametre: ana meteorun sayısı. Havuzdan gelen meteorlara Inspector'dan
-        /// dinleyici bağlanamayacağı için static tutulur; `MeteorSpawner` dinler.
+        /// Parametreler: ana meteorun sayısı ve son parçanın yok olduğu konum.
+        /// Konum, ödül madeninin tam o noktada düşebilmesi için taşınır.
+        /// Havuzdan gelen meteorlara Inspector'dan dinleyici bağlanamayacağı için
+        /// static tutulur; `MeteorSpawner` ve `MineSpawner` dinler.
         /// </summary>
-        public static event Action<int> OnMeteorCompleted;
+        public static event Action<int, Vector3> OnMeteorCompleted;
 
         // Sahnede o an aktif olan meteorlar. Oyuncu öldüğünde hepsi sırayla patlatılır.
         private static readonly List<MeteorController> ActiveMeteorList = new List<MeteorController>();
 
         public static IReadOnlyList<MeteorController> ActiveMeteors => ActiveMeteorList;
+
+        /// <summary>
+        /// Tüm meteorların hareket hızına uygulanan ortak çarpan (Zaman Kristali:
+        /// 0.5). Her meteor kendi hızını bununla çarptığı için ekranda uçmakta olan
+        /// meteorlar da anında etkilenir; hız değerlerini tek tek güncellemek
+        /// gerekmez. Meteorlar havuzdan geldiği için static tutulur.
+        /// <see cref="Time.timeScale"/> bilinçli olarak kullanılmaz — o gemiyi,
+        /// mermileri ve arka planı da yavaşlatırdı.
+        /// </summary>
+        public static float SpeedMultiplier { get; private set; } = 1f;
+
+        public static void SetSpeedMultiplier(float multiplier)
+        {
+            SpeedMultiplier = Mathf.Max(0f, multiplier);
+        }
+
+        public static void ResetSpeedMultiplier()
+        {
+            SpeedMultiplier = 1f;
+        }
 
         [Header("Hareket")]
         [SerializeField] private float minMoveSpeed = 2f;
@@ -187,7 +209,7 @@ namespace PayeGames.AsalYolculuk.Meteors
         {
             TickInvulnerability();
 
-            selfTransform.position += moveDirection * (moveSpeed * Time.deltaTime);
+            selfTransform.position += moveDirection * (moveSpeed * SpeedMultiplier * Time.deltaTime);
             selfTransform.Rotate(Vector3.forward, rotationSpeed * Time.deltaTime);
 
             BounceOnVerticalEdges();
@@ -349,7 +371,7 @@ namespace PayeGames.AsalYolculuk.Meteors
         /// <summary>Ana meteor tamamen yok edildi: puan verilir ve sayısı duyurulur.</summary>
         private void CompleteMeteor(int rootNumber)
         {
-            OnMeteorCompleted?.Invoke(rootNumber);
+            OnMeteorCompleted?.Invoke(rootNumber, selfTransform.position);
 
             if (ScoreManager.Instance == null) return;
 

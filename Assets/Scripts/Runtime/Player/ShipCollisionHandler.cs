@@ -24,6 +24,11 @@ namespace PayeGames.AsalYolculuk.Player
         [Tooltip("Efektin boyut çarpanı")]
         [SerializeField] private float damageEffectScale = 1f;
 
+        [Header("Koruma Kalkanı")]
+        [Tooltip("Kalkan aktifken açılan bariyer objesi (görsel + ShieldBarrier collider'ı). " +
+            "Sahnede KAPALI başlamalı")]
+        [SerializeField] private GameObject shieldVisual;
+
         [Header("Kamera Sarsıntısı")]
         [Tooltip("Hasar alındığında kameranın sarsılma süresi (saniye)")]
         [SerializeField] private float shakeDuration = 0.25f;
@@ -32,6 +37,7 @@ namespace PayeGames.AsalYolculuk.Player
 
         private Transform selfTransform;
         private float invulnerableTimer;
+        private bool isShieldActive;
 
         private void Awake()
         {
@@ -57,11 +63,34 @@ namespace PayeGames.AsalYolculuk.Player
             invulnerableTimer = Mathf.Max(0f, invulnerableTimer - Time.deltaTime);
         }
 
+        /// <summary>
+        /// Koruma Kalkanını açar/kapatır. Kalkan aktifken meteorlar yine patlar
+        /// (puan verilmez) ama can eksilmez. Dokunulmazlık penceresinden ayrı
+        /// tutulur: kalkanın görseli ve HUD'da sayılan bir süresi vardır.
+        /// </summary>
+        public void SetShieldActive(bool isActive)
+        {
+            isShieldActive = isActive;
+
+            if (shieldVisual == null) return;
+
+            shieldVisual.SetActive(isActive);
+        }
+
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (IsInvulnerable) return;
             if (!GameManager.IsGameplayActive) return;
             if (!other.TryGetComponent(out MeteorController meteor)) return;
+
+            // Meteorlar normalde geminin dışındaki bariyerde (ShieldBarrier) patlar;
+            // burası güvenlik ağıdır: hızlı bir meteor bariyeri atlayıp doğrudan
+            // gemiye değerse yine can eksilmemeli.
+            if (isShieldActive)
+            {
+                meteor.DespawnOnShipHit();
+                return;
+            }
 
             invulnerableTimer = invulnerableDuration;
 

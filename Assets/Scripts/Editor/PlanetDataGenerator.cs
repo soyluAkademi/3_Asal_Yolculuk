@@ -9,7 +9,7 @@ namespace PayeGames.AsalYolculuk.EditorTools
 {
     public static class PlanetDataGenerator
     {
-        private const string OutputFolder = "Assets/Scripts/Runtime/ScriptableObjects";
+        private const string OutputFolder = "Assets/Scripts/Runtime/ScriptableObjects/Planets";
 
         /// <summary>
         /// GDD kuralı: bir meteor en fazla 5 asal çarpana ayrılabilir.
@@ -83,16 +83,29 @@ namespace PayeGames.AsalYolculuk.EditorTools
             429, 442, 455, 456, 462, 483, 494, 500, 506, 510, 527, 533,
         };
 
+        // Maden kademeli açılımı: 1. gezegende hiç maden yok (oyuncu önce temel
+        // döngüyü öğrenir), 2.'de yalnızca ödüller, 3.'ten itibaren cezalar da girer.
+        // Kristal Gezegeni GDD'de "yoğun maden kullanımı" olarak tanımlı, Asal
+        // Krallığı ise tüm mekaniklerin birleştiği final bölgesi.
+        private static readonly MineSettings NoMines = new MineSettings(false, false, 1f);
+        private static readonly MineSettings RewardsOnly = new MineSettings(true, false, 1f);
+        private static readonly MineSettings AllMines = new MineSettings(true, true, 1f);
+        private static readonly MineSettings DenseMines = new MineSettings(true, true, 2f);
+        private static readonly MineSettings FinalMines = new MineSettings(true, true, 1.5f);
+
+        // Meteor üretim hızı (saniyedeki meteor sayısı). Artış sona doğru bilinçli
+        // olarak yavaşlar: ileri gezegenlerde sayılar da büyüdüğü ve daha çok parçaya
+        // ayrıldığı için sıklık aynı tempoda artarsa final bölüm oynanamaz hale gelir.
         private static readonly PlanetDefinition[] Planets =
         {
-            new PlanetDefinition(1, "Başlangıç Gezegeni", 4, 48, Planet1Numbers),
-            new PlanetDefinition(2, "Asteroit Kuşağı", 24, 90, Planet2Numbers),
-            new PlanetDefinition(3, "Lav Gezegeni", 11, 89, Planet3Numbers),
-            new PlanetDefinition(4, "Buz Gezegeni", 48, 120, Planet4Numbers),
-            new PlanetDefinition(5, "Fırtına Gezegeni", 60, 180, Planet5Numbers),
-            new PlanetDefinition(6, "Kara Delik Sınırı", 72, 200, Planet6Numbers),
-            new PlanetDefinition(7, "Kristal Gezegeni", 100, 240, Planet7Numbers),
-            new PlanetDefinition(8, "Asal Krallığı", 150, 540, Planet8Numbers),
+            new PlanetDefinition(1, "Başlangıç Gezegeni", 4, 48, 0.4f, Planet1Numbers, NoMines),
+            new PlanetDefinition(2, "Asteroit Kuşağı", 24, 90, 0.55f, Planet2Numbers, RewardsOnly),
+            new PlanetDefinition(3, "Lav Gezegeni", 11, 89, 0.7f, Planet3Numbers, AllMines),
+            new PlanetDefinition(4, "Buz Gezegeni", 48, 120, 0.82f, Planet4Numbers, AllMines),
+            new PlanetDefinition(5, "Fırtına Gezegeni", 60, 180, 0.92f, Planet5Numbers, AllMines),
+            new PlanetDefinition(6, "Kara Delik Sınırı", 72, 200, 1.02f, Planet6Numbers, AllMines),
+            new PlanetDefinition(7, "Kristal Gezegeni", 100, 240, 1.1f, Planet7Numbers, DenseMines),
+            new PlanetDefinition(8, "Asal Krallığı", 150, 540, 1.2f, Planet8Numbers, FinalMines),
         };
 
         [MenuItem("Tools/Paye Games/Asal Yolculuk/Generate Planet Data")]
@@ -175,7 +188,9 @@ namespace PayeGames.AsalYolculuk.EditorTools
             serializedObject.FindProperty("planetName").stringValue = definition.PlanetName;
             serializedObject.FindProperty("minNumber").intValue = definition.MinNumber;
             serializedObject.FindProperty("maxNumber").intValue = definition.MaxNumber;
+            serializedObject.FindProperty("meteorSpawnRate").floatValue = definition.MeteorSpawnRate;
             WritePriorityNumbers(serializedObject, definition.PriorityNumbers);
+            WriteMineSettings(serializedObject, definition.Mines);
             serializedObject.ApplyModifiedProperties();
 
             EditorUtility.SetDirty(planetData);
@@ -197,23 +212,52 @@ namespace PayeGames.AsalYolculuk.EditorTools
             }
         }
 
+        /// <summary>
+        /// Gezegenin maden ayarlarını asset'e yazar. Sayı listesi gibi bu alanlar da
+        /// tamamen değiştirilir; kalıcı değişiklik yukarıdaki tanımlardan yapılır.
+        /// </summary>
+        private static void WriteMineSettings(SerializedObject serializedObject, MineSettings mines)
+        {
+            serializedObject.FindProperty("areRewardMinesEnabled").boolValue = mines.AreRewardsEnabled;
+            serializedObject.FindProperty("areCurseMinesEnabled").boolValue = mines.AreCursesEnabled;
+            serializedObject.FindProperty("mineRateMultiplier").floatValue = mines.RateMultiplier;
+        }
+
+        private readonly struct MineSettings
+        {
+            public MineSettings(bool areRewardsEnabled, bool areCursesEnabled, float rateMultiplier)
+            {
+                AreRewardsEnabled = areRewardsEnabled;
+                AreCursesEnabled = areCursesEnabled;
+                RateMultiplier = rateMultiplier;
+            }
+
+            public bool AreRewardsEnabled { get; }
+            public bool AreCursesEnabled { get; }
+            public float RateMultiplier { get; }
+        }
+
         private readonly struct PlanetDefinition
         {
             public PlanetDefinition(int planetId, string planetName, int minNumber,
-                int maxNumber, int[] priorityNumbers)
+                int maxNumber, float meteorSpawnRate, int[] priorityNumbers, MineSettings mines)
             {
                 PlanetId = planetId;
                 PlanetName = planetName;
                 MinNumber = minNumber;
                 MaxNumber = maxNumber;
+                MeteorSpawnRate = meteorSpawnRate;
                 PriorityNumbers = priorityNumbers;
+                Mines = mines;
             }
 
             public int PlanetId { get; }
             public string PlanetName { get; }
             public int MinNumber { get; }
             public int MaxNumber { get; }
+            public float MeteorSpawnRate { get; }
             public int[] PriorityNumbers { get; }
+            public MineSettings Mines { get; }
         }
     }
 }

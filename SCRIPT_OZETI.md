@@ -42,9 +42,20 @@ hareket ederken efekt de onunla gider. Son canda hasar efekti bilinçli olarak
 oynatılmaz; patlama sekansını `PlayerDeathEffect` devralır. Yani 1. ve 2.
 çarpışmada hasar efekti, 3.'te ölüm sekansı çalışır.
 
+**Koruma Kalkanı:** `SetShieldActive(bool)` `shieldVisual` objesini açıp kapatır
+ve `isShieldActive` bayrağını çevirir. Kalkanlıyken çarpan meteor yine patlar
+ama **ne can eksilir ne de dokunulmazlık penceresi başlar** — kalkan zaten
+korurken 1.5 sn'lik pencereyi harcamanın anlamı yok, kalkan bitince oyuncu tam
+korumayla devam eder. Meteorlar normalde geminin dışındaki `ShieldBarrier`'da
+patlar; buradaki kontrol, bariyeri tek karede atlayan hızlı meteorlar için
+güvenlik ağıdır. Bariyer objesi sahnede **kapalı** başlamalıdır (`PlayerDeathEffect`
+başlangıç durumlarını kaydettiği için, açık başlarsa gemi her dirilişte kalkanlı
+görünür).
+
 - **Bağlantı:** `MeteorController` (`DespawnOnShipHit`), `HealthManager`
   (can eksiltme + `IsAlive` kontrolü), `GameManager` (durum kontrolü),
-  `CameraShake`, dolaylı olarak `PlayerDeathEffect`.
+  `CameraShake`, dolaylı olarak `PlayerDeathEffect`, `ShieldEffect`
+  (`SetShieldActive`), `ShieldBarrier` (açılan obje).
 
 ### `PlayerDeathEffect.cs`
 `Assets/Scripts/Runtime/Player/`
@@ -88,6 +99,56 @@ Controller'lar açılır ve `ShipCollisionHandler.GrantInvulnerability` ile gemi
   (sahne temizliği), `PlayerShipController`, `PlayerAutoShooter`,
   `ShipCollisionHandler` (`GrantInvulnerability`), `GameOverPanelView` ve
   `LevelFlowController` (dinleyici / çağıran).
+
+### `MineCollector.cs`
+`Assets/Scripts/Runtime/Player/`
+
+Geminin üzerinden geçen madeni toplar: `MineController.Collect()` çağırır.
+`ShipCollisionHandler`'dan **ayrı bir bileşen** olması bilinçlidir — o sınıfın
+sorumluluğu hasar almaktır ve bir dokunulmazlık penceresi vardır; maden toplama
+ondan bağımsız çalışmalıdır (kalkanlıyken ve hasar aldıktan hemen sonra da maden
+toplanabilmeli). Geminin mevcut `Collider2D`'sini kullanır, ek alan yoktur.
+
+- **Bağlantı:** `MineController` (`Collect`), `GameManager` (guard).
+
+### `ShieldBarrier.cs`
+`Assets/Scripts/Runtime/Player/`
+
+Koruma Kalkanı bariyerinin çarpışma tarafı. Gemi altında ayrı bir obje olarak
+durur ve **yalnızca kalkan aktifken açıktır** — bu yüzden "kalkan açık mı"
+kontrolü yapmaz; objenin kendisi kalkanın anahtarıdır. Kendi `CircleCollider2D`'
+sine giren meteoru `DespawnOnShipHit()` ile patlatır (puan verilmez).
+
+Bariyerin yarıçapı gemininkinden büyük olduğu için meteor buraya önce değer,
+gemi collider'ına ulaşamadan yok olur. **Gemi collider'ı bilinçli olarak açık
+bırakılır:** `MineCollector` onu kullanıyor, kapatılsaydı kalkanlıyken maden
+toplanamazdı.
+
+*Not:* Kullanılan hazır paket 3D için hazırlanmıştır; üzerindeki `SphereCollider`
+2D fizikle **hiç** etkileşmez. Bariyer objesinde `CircleCollider2D` (trigger)
+olmalıdır.
+
+- **Bağlantı:** `MeteorController` (`DespawnOnShipHit`), `GameManager` (guard),
+  `ShipCollisionHandler` (objeyi açıp kapatan).
+
+### `ShieldMatEffect.cs`
+`Assets/Scripts/Runtime/Player/`
+
+Kalkan materyalinin `_Offset` vektör özelliğini sürekli kaydırarak akan enerji
+görüntüsü üretir. Salt görseldir.
+
+Üç noktaya dikkat edilmiştir:
+- **`sharedMaterial` değil `material`** kullanılır; `sharedMaterial` materyal
+  **asset'ini** kalıcı değiştirir ve Play'den çıkınca offset kaymış kalırdı.
+  Üretilen kopya `OnDestroy`'da yok edilir (sızıntı olmasın).
+- Offset `% 1` ile sarmalanır; sürekli artan `float` dakikalar sonra hassasiyet
+  kaybedip titremeye başlardı.
+- Özellik adı serialize edilir ve `HasProperty` ile denetlenir; yoksa Console'a
+  uyarı yazılır. Hologram shader'ında doğru ad **`_Offset`**'tir — bu, doku
+  ayarlarındaki tiling/offset **değil**, shader'ın kendi vektör özelliğidir
+  (`SetTextureOffset` bu materyalde hiçbir şey yapmaz).
+
+- **Bağlantı:** Yok (bağımsız görsel bileşen).
 
 ### `PlayerLevelCompleteEffect.cs`
 `Assets/Scripts/Runtime/Player/`
@@ -156,13 +217,25 @@ tekrar kullanılabilir.
 ### `PlayerAutoShooter.cs`
 `Assets/Scripts/Runtime/Combat/`
 
-Gemiye eklenen otomatik ateş component'i. `fireRate` (saniyede kaç mermi)
-aralığında `bulletPool.Spawn(firePoint.position, firePoint.rotation)` çağırır.
-`bulletPool` ve `firePoint` referansları Inspector'dan elle atanır. `Update`
-başında `GameManager.IsGameplayActive` guard'ı vardır; canlar bitince ateş durur.
+Gemiye eklenen otomatik ateş component'i. `fireRate` (saniyede kaç atış)
+aralığında `Fire()` çalışır.
+
+**Çoklu atış:** Tek `firePoint` yerine `firePoints` **dizisi** tutulur.
+Normalde yalnızca **Element 0** (merkez) ateş eder; Plazma Yakıtı etkisi
+`SetActiveFirePointCount(3)` ile diğerlerini de açar, `ResetFirePointCount()`
+tekrar 1'e döner. Dizide o kadar nokta yoksa var olan sayıyla sınırlanır.
+
+Merminin yönü noktanın **kendi rotasyonundan** gelir (`Bullet` kendi
+`transform.right` yönünde ilerler), yani yelpaze açısı Inspector'da noktalar
+döndürülerek ayarlanır — kodda açı hesabı yoktur. Nokta sayısını artırmak için
+diziye eleman eklemek ve `MineDataSO.Amount`'u büyütmek yeterlidir.
+
+`Update` başında `GameManager.IsGameplayActive` guard'ı vardır; canlar bitince
+ateş durur.
 
 - **Bağlantı:** `GameObjectPool` (hangi pool'dan mermi alacağını belirler),
-  dolaylı olarak `Bullet.cs` (pool'un ürettiği prefab), `GameManager` (guard).
+  dolaylı olarak `Bullet.cs` (pool'un ürettiği prefab), `GameManager` (guard),
+  `PlasmaFuelEffect` (atış noktası sayısı).
 
 ---
 
@@ -228,6 +301,14 @@ günceller; diske yazma `SaveTotalScore()` ile bölüm sonunda
 `OnApplicationPause` ve `OnApplicationQuit`'te yapılır (WebGL'de her yazma
 IndexedDB'ye flush ettiği için sık çağrılmaz). `ResetTotalScore()` normal akışta
 kullanılmaz, ileride "ilerlemeyi sıfırla" için vardır.
+
+**Geçici meteor puanı (Altın Kristal):** `SetMeteorScoreOverride(int)` /
+`ClearMeteorScoreOverride()` meteor başına verilen puanı geçici olarak sabitler
+(5 → 10). `AddMeteorScore()` bayrağa bakıp hangisini kullanacağına karar verir.
+Çarpan değil sabit değer kullanılır; GDD "10 puan" diyor ve rakam
+`MineDataSO.Amount`'tan gelir. `ResetScore()` override'ı da temizler — bölüm bir
+etki aktifken bitse bile yeni bölüm normal puanla başlasın (`PowerUpManager`
+zaten etkileri temizliyor, bu ikinci güvence).
 
 **Bölüm kaybında puan geri alma:** `RevertLevelScoreFromTotal()` o bölümde
 kazanılan puanı (`CurrentScore`) toplamdan düşer (0'ın altına inmez) ve ardından
@@ -398,8 +479,14 @@ Inspector'da Play On Awake açık kalsa bile PlayerPrefs kararının uygulanmas�
 garanti eder.
 
 `DogruSesiCikar()` / `YanlisSesiCikar()` SFX kapalıysa veya clip bağlı değilse
-sessizce çıkar (guard clause). Oynanış olaylarına (ateş, meteor vurma, can kaybı,
-bölüm tamamlama) **henüz bağlanmadı** — bkz. `YAPILACAKLAR.md` 2.3.
+sessizce çıkar (guard clause).
+
+**`PlaySfx(AudioClip)`** — oynanış olaylarının tek seferlik sesi için genel
+giriş. Klip çağrı bazlı geldiği için ortak bir kaynak (`gameplaySource`,
+Inspector'dan bağlanır) üzerinden `PlayOneShot` yapılır; olay başına ayrı
+`AudioSource` tutmak sahneyi gereksiz şişirirdi. Şu an yalnızca maden toplama
+(`MineDataSO.pickupClip`) kullanıyor; ateş, meteor vurma, can kaybı ve bölüm
+tamamlama **henüz bağlanmadı** — bkz. `YAPILACAKLAR.md` 2.3.
 
 **`static void PlayUiSfx(AudioSource)`** — UI tık sesleri için ortak giriş
 noktası. Butonların **kendi üzerlerindeki** `AudioSource` bileşeni dışarıdan
@@ -447,14 +534,24 @@ AsalYolculuk > Planet Data`). `planetId`, `planetName`, `planetSprite`,
 alanlarını içerir. GDD'deki (`AsalYolculuk_Senaryo.md`) gezegen sayı aralıkları
 tablosuna göre 8 gezegen için asset üretilir (`Planet_1`...`Planet_8`).
 
+**Zorluk ayarları:** `meteorSpawnRate` bölümün meteor üretim hızıdır (saniyedeki
+meteor sayısı; 0.4 = 2.5 sn'de bir meteor). Bölüm ilerledikçe 0.4'ten 1.2'ye
+çıkar, ama artış sona doğru bilinçli olarak yavaşlar — ileri gezegenlerde
+sayılar da büyüyüp daha çok parçaya ayrıldığı için sıklık aynı tempoda artarsa
+final bölüm oynanamaz hale gelir. Değerlerin tek kaynağı `PlanetDataGenerator`.
+Maden ayarları (`areRewardMinesEnabled`, `areCurseMinesEnabled`,
+`mineRateMultiplier`) da aynı şekilde gezegen başına tutulur.
+
 `DisplayName` property'si arayüzde gösterilen numaralı adı üretir
 (`"2. Asteroit Kuşağı"`). Numaralandırma bilinçli olarak veri katmanındadır;
 bölüm sonu paneli, harita ekranı vb. aynı biçimi tekrar kurmak zorunda kalmaz.
 Sprite gezegen başına tek tek atanır (dizi **değil**) — dizi olsaydı eşleşme
 `planetDataList` sırasına bağlı olur, sıra değişince sessizce bozulurdu.
 
-- **Bağlantı:** `LevelManager` (listede tutulur), `MeteorSpawner` (sayı
-  üretirken okur), `LevelCompletePanelView` (`DisplayName` + `PlanetSprite`).
+- **Bağlantı:** `LevelManager` (listede tutulur), `MeteorSpawner` (sayı ve
+  üretim hızı için okur), `MineSpawner` (maden ayarları),
+  `LevelCompletePanelView` (`DisplayName` + `PlanetSprite`),
+  `PlanetDataGenerator` (asset'leri üretir).
 
 ---
 
@@ -549,20 +646,33 @@ bilmez. Aynı metot `PlayerDeathEffect` sahneyi temizlerken de kullanılır.
 `explosionEffectPrefab`'ı üretir (efekt kendini yok eder). Ölçek, meteorun
 `baseScale`'e oranıyla çarpılır — küçülen parçalar küçük patlar.
 
-**Tamamlanma duyurusu:** `public static event Action<int> OnMeteorCompleted`.
-Ana meteor tüm parçalarıyla yok edildiğinde `CompleteMeteor(rootNumber)`
-çalışır; önce event yayınlanır, sonra `ScoreManager.AddMeteorScore()` çağrılır.
-Root sayı, oturumu olmayan (tek vuruşta ölen asal) meteorda kendi `number`'ı,
-bölünmüş meteorda `session.RootNumber`'dır. Event'in **static** olmasının
-sebebi meteorların havuzdan gelmesi — prefab örneklerine Inspector'dan
-dinleyici bağlanamaz. Parçası ekrandan kaçan meteorda oturum `Cancel()`
-edildiği için event hiç tetiklenmez.
+**Tamamlanma duyurusu:** `public static event Action<int, Vector3>
+OnMeteorCompleted`. Ana meteor tüm parçalarıyla yok edildiğinde
+`CompleteMeteor(rootNumber)` çalışır; önce event yayınlanır, sonra
+`ScoreManager.AddMeteorScore()` çağrılır. Root sayı, oturumu olmayan (tek
+vuruşta ölen asal) meteorda kendi `number`'ı, bölünmüş meteorda
+`session.RootNumber`'dır. İkinci parametre son parçanın yok olduğu **konumdur**;
+`MineSpawner` ödül madenini tam o noktada düşürebilsin diye taşınır. Event'in
+**static** olmasının sebebi meteorların havuzdan gelmesi — prefab örneklerine
+Inspector'dan dinleyici bağlanamaz. Parçası ekrandan kaçan meteorda oturum
+`Cancel()` edildiği için event hiç tetiklenmez.
+
+**Ortak hız çarpanı (Zaman Kristali):** `public static float SpeedMultiplier`
+tüm meteorların hareket hızına uygulanır; `SetSpeedMultiplier` /
+`ResetSpeedMultiplier` ile değiştirilir. Her meteor kendi hızını bu çarpanla
+çarptığı için ekranda **uçmakta olan** meteorlar da anında etkilenir, hız
+değerlerini tek tek güncellemek gerekmez. `Time.timeScale` bilinçli olarak
+kullanılmaz — o gemiyi, mermileri, arka planı ve HUD tween'lerini de
+yavaşlatırdı. Static olduğu için sahne değişiminde hayatta kalır; bu yüzden
+`MeteorSpawner.Awake` içinde ayrıca sıfırlanır.
 
 - **Bağlantı:** `GameObjectPool`/`IPoolable` (hem kendi despawn'ı hem parça
   spawn'ı için), `Bullet` (trigger çarpışması), `PrimeMathEngine`
   (`IsPrime`, `GetPrimeFactors`), `MeteorSession` (parça tamamlanma takibi),
   `ScoreManager` (puan verme), `MeteorSpawner` (`OnMeteorCompleted` dinleyicisi),
-  `ShipCollisionHandler` (`DespawnOnShipHit`), `PlayerDeathEffect`
+  `MineSpawner` (`OnMeteorCompleted` — ödül düşürme), `TimeCrystalEffect`
+  (hız çarpanı), `ShieldBarrier` / `ShipCollisionHandler` (`DespawnOnShipHit`),
+  `PlayerDeathEffect`
   (`ActiveMeteors` + `DespawnWithExplosion`), `UnityEngine.Rendering.SortingGroup`.
 
 ### `MeteorSession.cs`
@@ -639,8 +749,12 @@ eder — puan verilmez, oturumlar `Cancel()` edilir.
 ### `MeteorSpawner.cs`
 `Assets/Scripts/Runtime/Meteors/`
 
-`spawnRate` aralığında ekranın sağ kenarından (viewport dışı, `spawnMargin`
-kadar tampon) rastgele dikey konumda meteor üretir. Meteorun sayısını
+Ekranın sağ kenarından (viewport dışı, `spawnMargin` kadar tampon) rastgele
+dikey konumda meteor üretir. **Üretim hızı bölüme göre değişir:** `GetSpawnRate()`
+aktif gezegenin `PlanetDataSO.MeteorSpawnRate` değerini okur (saniyedeki meteor
+sayısı; üretim aralığı `1 / hız`). Inspector'daki `spawnRate` yalnızca yedektir —
+gezegen verisi bağlı değilken (test sahneleri) devreye girer. Hız 0 veya altındaysa
+üretim durur; `1 / 0` ile sonsuz aralığa düşülmez. Meteorun sayısını
 `LevelNumberPool`'dan alıp `SetNumber` ile yazdırır. `GetNumberPool()` aktif
 `PlanetDataSO`'yu her çağrıda kontrol eder; gezegen değişince havuzu yeniden
 kurar, böylece tamamlanan sayı listesi bir sonraki bölüme taşınmaz.
@@ -648,6 +762,11 @@ kurar, böylece tamamlanan sayı listesi bir sonraki bölüme taşınmaz.
 olur ve tamamlanan sayıyı havuza bildirir. `ResetNumberPool()` public'tir;
 canlar bitip bölüm yeniden başladığında çağrılacaktır. `Update` başında
 `GameManager.IsGameplayActive` guard'ı vardır; canlar bitince üretim durur.
+
+`Awake`'te `MeteorController.ResetSpeedMultiplier()` çağrılır: hız çarpanı static
+olduğu için sahne değişiminde (ve Editor'da domain reload kapalıysa) önceki
+oturumdan yavaşlamış hâlde kalabilirdi — oyuncu Zaman Kristali aktifken ölüp
+menüye çıkıp geri dönseydi meteorlar yavaş başlardı.
 
 **Görsel + efekt eşleşmesi:** `meteorSprites[]` (Inspector'da basitten karmaşığa
 sıralı) ve `explosionEffectPrefabs[]` dizileri **aynı sırada** tutulur.
@@ -660,6 +779,194 @@ particle ile patlar.
 - **Bağlantı:** `GameObjectPool`, `MeteorController` (spawn + tamamlanma
   event'i), `LevelNumberPool` (sayı üretimi), `LevelManager`, `PlanetDataSO`,
   `GameManager` (guard).
+
+---
+
+## PowerUps (Maden Sistemi)
+
+Ödül ve ceza madenleri. GDD 8 maden tanımlar ama yalnızca 3'ünün etkisini
+yazar (Altın Kristal, Yıldız Parçası, Koruma Kalkanı); kalan 5'inin etkisi bu
+projede kararlaştırıldı (bkz. `YAPILACAKLAR.md` 3.2/3.3).
+
+### `EffectType.cs`
+`Assets/Scripts/Runtime/PowerUps/`
+
+8 maden türünü tutan enum ve `EffectTypeExtensions.IsReward(this EffectType)`.
+Ödül/ceza ayrımı bilinçli olarak **enum sırasına değil** açık bir `switch`
+listesine dayanır; enum sırası değişince ayrım sessizce bozulmasın. Ayrımın
+veri dosyasında bayrak olarak tutulmamasının sebebi de bu — yanlış
+işaretlenemesin.
+
+- **Bağlantı:** `MineDataSO`, `PowerUpManager`, `MineSpawner`, `ActiveEffectHUDView`.
+
+### `IActiveEffect.cs`
+`Assets/Scripts/Runtime/PowerUps/`
+
+Bir madenin oyuna uyguladığı etkinin arayüzü: `Type`, `Duration`,
+`ApplyEffect()`, `TickEffect(float)`, `RemoveEffect()`. `Duration == 0` anlık
+etki demektir; `PowerUpManager` bunları aktif listeye hiç almaz, uygulayıp
+bırakır. `CLAUDE.md`'deki tanıma `Duration` eklenmiştir — süreyi etkinin kendisi
+bilmeli, yöneticinin tahmin etmesi gerekmemeli.
+
+- **Bağlantı:** `PowerUpManager` (tek kullanıcısı), `Effects/` altındaki sınıflar.
+
+### `MineDataSO.cs`
+`Assets/Scripts/Runtime/PowerUps/`
+
+Maden başına veri (`Create > PayeGames > AsalYolculuk > Mine Data`):
+`effectType`, `displayName`, `icon`, `duration`, `amount`, `multiplier`,
+`pickupEffectPrefab`, `pickupClip`. `IsReward` doğrudan `EffectTypeExtensions`'a
+delege eder.
+
+`amount` ve `multiplier` bilinçli olarak **genel amaçlıdır**; her etki kendine
+uygun olanı okur: Yıldız Parçası `Amount` (puan), Altın Kristal `Amount` (meteor
+başına puan), Plazma Yakıtı `Amount` (atış noktası sayısı), Zaman Kristali
+`Multiplier` (hız katsayısı). Etki başına ayrı alan açmak SO'yu şişirirdi.
+
+Sahnedeki maden prefab'ı **tek** ve nötrdür; hangi maden olduğu üretim anında
+`MineController.SetData` ile atanır. Bu yüzden ikon prefab'da değil burada
+tutulur — aksi halde 8 ayrı prefab ve 8 ayrı havuz gerekirdi.
+
+- **Bağlantı:** `MineController` (görsel + ses), `MineSpawner` (hangi madenler
+  düşecek), `PowerUpManager` (etki üretimi), `ActiveEffectHUDView` (ikon).
+
+### `PowerUpManager.cs`
+`Assets/Scripts/Runtime/PowerUps/`
+
+Maden sisteminin beyni (`PowerUpManager.Instance`). Toplanan madenin etkisini
+üretir, süresi boyunca besler, süre dolunca geri alır.
+
+- **Anlık etki** (`Duration <= 0`) — `ApplyEffect()` çağrılır,
+  `OnInstantEffectApplied` yayınlanır, listeye eklenmez.
+- **Süreli etki** — `ApplyEffect()` + listeye eklenir + `OnEffectStarted`.
+  `Update` içinde `RemainingTime` azalır; sıfırlanınca `RemoveEffect()` +
+  `OnEffectEnded`. Liste sondan başa gezilir (eleman çıkarılıyor).
+- **Aynı tür ikinci kez toplanırsa** etki **üst üste binmez**, yalnızca süre
+  tazelenir. İki Zaman Kristali meteorları %25'e düşürmez, iki Kalkan çift
+  bariyer çizmez. GDD "aynı anda birden fazla maden etkisi aktif olabilir"
+  derken **farklı** türleri kasteder.
+- `GameManager.OnGameStateChanged` dinlenir; `Gameplay` ve `Paused` dışındaki
+  her duruma geçişte `ClearAllEffects()` çalışır — kalkan/yavaşlatma bir sonraki
+  bölüme sarkmasın.
+
+**Etki hedefleri:** Gemiye/sahneye dokunan etkilerin ihtiyaç duyduğu bileşenler
+(`playerShooter`, `shipCollisionHandler`) Inspector'dan buraya bağlanır ve
+`CreateEffect` içinde etkilere verilir. Böylece etki sınıfları singleton aramak
+veya sahnede `Find` yapmak zorunda kalmaz. `CreateEffect` bu yüzden static
+**değildir**. Referans bağlı değilse etki üretilmez ve Console'a hangi alanın
+eksik olduğunu söyleyen bir uyarı yazılır.
+
+`CreateEffect` yeni bir maden eklenirken değiştirilecek **tek** yerdir;
+yazılmamış türler `null` döner ve uyarı basılır.
+
+- **Bağlantı:** `MineController` (`Collect`), `IActiveEffect` + `Effects/`,
+  `GameManager` (durum), `PlayerAutoShooter` / `ShipCollisionHandler` (etki
+  hedefleri), `ActiveEffectHUDView` (event dinleyicisi).
+
+### `MineController.cs`
+`Assets/Scripts/Runtime/PowerUps/`
+
+`IPoolable` uygular. Sağdan sola akar (meteorlardan **yavaş** — oyuncu yetişip
+toplayabilsin), `Mathf.Sin` ile dikeyde salınır, ikonu kendi ekseninde döner.
+Sol kenarı geçince havuza döner.
+
+Görselini ve etkisini `SetData(MineDataSO)` ile alır; havuz aynı objeleri
+döndürdüğü için her üretimde yeniden atanması **şarttır**.
+
+**Salınım merkezi (`baseY`) ilk `Update`'te okunur, `OnSpawned`'da değil:**
+`GameObjectPool.Spawn` konumu `OnSpawned`'dan **sonra** atıyor, `OnSpawned`
+sırasında obje hâlâ bir önceki hayatının konumundadır.
+
+`Collect()` — toplama efekti + sesi oynatır, `PowerUpManager.Collect(data)`
+çağırır, havuza iade eder. `isCollected` bayrağı ve collider'ın anında
+kapatılması aynı karede iki kez toplanmayı engeller.
+
+`static DespawnAll()` — sahnedeki tüm madenleri havuza iade eder; bölüm
+bitince/ölünce `MineSpawner` çağırır. Aktif maden listesi static tutulur çünkü
+madenler havuzdan gelir, Inspector'dan referans verilemez (meteorlarla aynı
+gerekçe).
+
+- **Bağlantı:** `GameObjectPool`/`IPoolable`, `MineDataSO`, `PowerUpManager`,
+  `MineCollector` (toplamayı tetikleyen), `SoundManager` (`PlaySfx`),
+  `GameManager` (guard).
+
+### `MineSpawner.cs`
+`Assets/Scripts/Runtime/PowerUps/`
+
+Madenleri sahneye çıkarır. **Hibrit model** — iki farklı kural bilinçli olarak
+birlikte kullanılır:
+
+- **Ödüller:** `MeteorController.OnMeteorCompleted` dinlenir; ana meteor tüm
+  parçalarıyla yok edildiğinde **o noktada** `rewardDropChance` olasılığıyla
+  düşer. Ödül böylece başarıya bağlanır.
+- **Cezalar:** zamanlayıcıyla (`minCurseInterval`–`maxCurseInterval`) ekranın
+  sağ kenarından girer. Ceza bilinçli olarak başarıya **bağlanmaz** — meteor
+  tamamlamaya bağlansaydı iyi oynamak cezalandırılmış olurdu.
+
+**Gezegen bazlı kademeli açılım:** `PlanetDataSO`'nun `AreRewardMinesEnabled` /
+`AreCurseMinesEnabled` / `MineRateMultiplier` alanları okunur. Çarpan hem ödül
+şansını hem ceza aralığını etkiler (aralık çarpana bölünür). `PlanetDataSO`
+yoksa (test sahnesi) her şey açık kabul edilir.
+
+`GameManager.OnGameStateChanged` dinlenir: oynanış dışına çıkıldığında
+`MineController.DespawnAll()` çağrılır ve ceza sayacı sıfırlanır.
+
+Hangi madenin düşeceği `rewardMines` / `curseMines` dizisinden **eşit
+olasılıkla** seçilir — ağırlıklandırma henüz yok (`YAPILACAKLAR.md` 3.7).
+
+- **Bağlantı:** `GameObjectPool`, `MineController`, `MineDataSO`,
+  `MeteorController` (`OnMeteorCompleted`), `LevelManager` + `PlanetDataSO`,
+  `GameManager`.
+
+### `Effects/StarFragmentEffect.cs`
+`Assets/Scripts/Runtime/PowerUps/Effects/`
+
+**Yıldız Parçası (ödül) — anlık.** `ScoreManager.AddScore(data.Amount)` ile
+anında +10 puan. `Duration` sabit `0` döner; veri dosyasına yanlışlıkla süre
+girilse bile listeye alınmaz, HUD'da görünmez.
+
+- **Bağlantı:** `ScoreManager`.
+
+### `Effects/GoldCrystalEffect.cs`
+`Assets/Scripts/Runtime/PowerUps/Effects/`
+
+**Altın Kristal (ödül) — 10 sn.** `ScoreManager.SetMeteorScoreOverride(Amount)`
+ile meteor puanını 5'ten 10'a sabitler, `RemoveEffect`'te geri alır. Kendisi
+puan **vermez**; kazanç oyuncunun o pencerede kaç meteor bitirdiğine bağlıdır.
+Çarpan yerine sabit değer kullanılması bilinçlidir — GDD "10 puan" diyor ve
+rakam veri dosyasından geliyor.
+
+- **Bağlantı:** `ScoreManager`.
+
+### `Effects/PlasmaFuelEffect.cs`
+`Assets/Scripts/Runtime/PowerUps/Effects/`
+
+**Plazma Yakıtı (ödül) — 10 sn.** `PlayerAutoShooter.SetActiveFirePointCount(
+data.Amount)` ile gemi tek yerine 3 noktadan ateş eder (çoklu atış). Ateş **hızı
+değişmez**; aynı anda daha geniş alan taranır. Yelpaze açısı atış noktalarının
+Inspector'daki rotasyonundan gelir, kodda açı hesabı yoktur.
+
+- **Bağlantı:** `PlayerAutoShooter`.
+
+### `Effects/TimeCrystalEffect.cs`
+`Assets/Scripts/Runtime/PowerUps/Effects/`
+
+**Zaman Kristali (ödül) — 10 sn.** `MeteorController.SetSpeedMultiplier(
+data.Multiplier)` ile tüm meteorları %50 hıza düşürür. Oyunun eğitsel amacına en
+doğrudan hizmet eden ödül: çocuğa çarpanları düşünmek için zaman kazandırır.
+Ekranda uçmakta olan meteorlar da anında yavaşlar.
+
+- **Bağlantı:** `MeteorController` (static hız çarpanı).
+
+### `Effects/ShieldEffect.cs`
+`Assets/Scripts/Runtime/PowerUps/Effects/`
+
+**Koruma Kalkanı (ödül) — 10 sn.** `ShipCollisionHandler.SetShieldActive(bool)`
+ile gemi çevresindeki bariyeri açar/kapatır. Çarpan meteor yine patlar ama puan
+verilmez — yoksa oyuncu ateş etmeyi bırakıp meteorların üzerine sürerek puan
+toplardı, bu da çarpanları çözmeden puan almak demek olurdu.
+
+- **Bağlantı:** `ShipCollisionHandler`.
 
 ---
 
@@ -677,6 +984,55 @@ renklendirilir; hex string'ler `Awake`'de bir kez cache'lenir. Mantık
 içermez, sadece state'i gösterir.
 
 - **Bağlantı:** `ScoreManager` (event kaynağı), TextMeshPro.
+
+### `ActiveEffectHUDView.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Aktif **süreli** etkileri ikon + geri sayım olarak gösterir (GDD: *"maden
+toplandığında ekranda küçük süre göstergesi çıkar, örneğin 6s"*). Mantık
+`PowerUpManager`'da; bu sınıf yalnızca durumu çizer.
+
+`PowerUpManager.OnEffectStarted` / `OnEffectEnded` dinlenir (abonelik `Start`'ta,
+manager'ın `Awake`'i garanti çalışmış olsun diye). Etkiler toplanma sırasında bir
+listede tutulur, `RefreshSlots()` her değişimde tüm diziyi baştan dağıtır —
+ortadaki etki bittiğinde boşluk kalmaz, hizalamayı `Horizontal Layout Group`
+toparlar. `Update` her karede `GetRemainingTime` okuyup slot'a yazar.
+
+Slot sayısı **süreli maden sayısı kadar (7)** olmalıdır; teorik olarak hepsi
+aynı anda aktif olabilir. Anlık etkiler (Yıldız Parçası) burada görünmez —
+gösterilecek süreleri yoktur. Ödül/ceza ayrımı geri sayım rengiyle yapılır
+(`MineDataSO.IsReward`). `Slots` boşsa veya sahnede `PowerUpManager` yoksa
+Console'a uyarı yazılır — gösterge sessizce ölmesin.
+
+- **Bağlantı:** `PowerUpManager` (event kaynağı), `MineDataSO` (ikon + IsReward),
+  `ActiveEffectSlotView`.
+
+### `ActiveEffectSlotView.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Göstergedeki tek kutucuk. `Image` + `CanvasGroup` zorunlu (`[RequireComponent]`).
+
+**Inspector'da hiç alanı yoktur:** slot düzeni her zaman aynı olduğu için
+(`Image` objenin kendisinde, `TMP_Text` altında) referanslar çalışma anında
+bulunur. Çözümleme `Awake`'te **ve** `Show()` içinde yapılır; ikincisi gerekli
+çünkü slot sahnede kapalı başlarsa `Awake` hiç çalışmaz. Geçiş süreleri de
+`const` — kutucuk başına ayarlanacak bir şey yok.
+
+- `Show()` — önce `SetActive(true)`, sonra alpha 0'dan `DOFade(1)`. **Zaten
+  görünürse yeniden solmaz**, yalnızca ikon/renk tazelenir; `RefreshSlots` tüm
+  diziyi yeniden yazdığı için ekranda duran kutucuk boşuna yanıp sönmesin.
+- `Hide()` — `DOFade(0)`, bitince `SetActive(false)`. Obje kapalıysa veya
+  `CanvasGroup` yoksa tween çalışmayacağı için doğrudan gizlenir (yarı saydam
+  donmuş slot kalmasın).
+- `HideImmediate()` — animasyonsuz. Bölüm açılışında kullanılır; oyuncu yedi
+  kutucuğun tek tek solmasını görmemeli.
+- `SetRemainingTime(float)` — yukarı yuvarlar (5.3 sn → "6s"). Yazılar
+  önceden hazırlanmış `SecondLabels` dizisinden okunur ve saniye değişmedikçe
+  `TMP_Text`'e atama yapılmaz — `Update`'te string üretilmez (GC baskısı).
+
+Tween'ler `SetUpdate(true)` ile unscaled çalışır (projedeki diğer UI'larla aynı).
+
+- **Bağlantı:** `ActiveEffectHUDView` (tek kullanıcısı), DOTween, TextMeshPro.
 
 ### `GameplayHUDPanel.cs`
 `Assets/Scripts/Runtime/UI/`
@@ -959,19 +1315,37 @@ event'e abone olmaz; sahnedeki objesiyle birlikte silindiğinde oyun etkilenmez.
 `Assets/Scripts/Editor/`
 
 Editör menü aracı: **Tools > Paye Games > Asal Yolculuk > Generate Planet
-Data**. GDD'deki (`AsalYolculuk_Senaryo.md`) 8 gezegenin min/max sayı
-aralığını `Assets/Scripts/Runtime/ScriptableObjects/` klasöründe
-`Planet_1`...`Planet_8` asset'leri olarak oluşturur/günceller. `priorityNumberList`'e
-dokunmaz (GDD'de somut sayı verilmediği için Inspector'dan elle doldurulur).
+Data**. 8 gezegenin verisini `Assets/Scripts/Runtime/ScriptableObjects/Planets/`
+klasöründe `Planet_1`...`Planet_8` asset'leri olarak oluşturur/günceller:
+min/max sayı aralığı, `priorityNumberList`, `meteorSpawnRate` (0.4 → 1.2) ve
+maden ayarları.
 
-- **Bağlantı:** `PlanetDataSO`.
+Bu araç bu alanların **tek kaynağıdır** — Inspector'dan yapılan elle düzenlemeler
+yeniden üretimde kaybolur; kalıcı değişiklik dosyanın başındaki dizi ve
+`Planets` tablosundan yapılır. `ValidateNumbers` her öncelikli sayının kendi
+aralığında olduğunu ve en fazla 5 asal çarpanı bulunduğunu (GDD kuralı) denetler;
+ihlalleri üretimi durdurmadan tek uyarıda toplar.
+
+`OutputFolder` sabiti asset'lerin gerçek konumuyla aynı kalmalıdır; şaşarsa araç
+yeni GUID'li kopyalar üretir ve sahnedeki `LevelManager` eski asset'lere bağlı
+kaldığı için değişiklikler oyuna hiç yansımaz.
+
+- **Bağlantı:** `PlanetDataSO` (ürettiği asset), `PrimeMathEngine` (çarpan
+  denetimi), `LevelManager` (asset'leri listesinde tutar).
 
 ---
 
 ## Henüz Yok / Planlanan
 Aşağıdakiler `CLAUDE.md`'de hedef mimari olarak tanımlı ama henüz kodlanmadı:
-`PowerUpManager`, `SaveManager`, `UIManager`/`ScreenController`, gezegenlere
-özgü öncelikli sayı listelerinin doldurulması.
+`SaveManager`, `GameConfigSO`, `UIManager`/`ScreenController`.
+
+**Maden sistemi:** Altyapı ve HUD göstergesi bitti; **8 madenin 5'i yazıldı.**
+Yazılanlar: Yıldız Parçası, Altın Kristal, Plazma Yakıtı, Zaman Kristali,
+Koruma Kalkanı — yani **tüm ödüller**. Kalan 3 ceza (`ChaosCore`,
+`GravityStone`, `MeteorCaller`) için `PowerUpManager.CreateEffect` içine birer
+`case` ve `Effects/` altına birer sınıf eklenecek; spawn, toplama, süre yönetimi
+ve HUD tarafında yapılacak bir şey yok. Kararlaştırılan etkiler ve kalan
+maddeler (ağırlıklı drop seçimi, 3 eksik görsel) `YAPILACAKLAR.md` 3.2/3.3/3.7/3.8.
 
 Kayıt tarafı notu: toplam puan şu an `ScoreManager` içinde doğrudan `PlayerPrefs`
 ile saklanıyor (`AsalYolculuk.TotalScore`). `SaveManager`/`SaveData` geldiğinde bu

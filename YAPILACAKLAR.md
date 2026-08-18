@@ -1,6 +1,7 @@
 # Yapılacaklar — Asal Yolculuk
 
-Son güncelleme: 2026-08-07 (ölüm sonrası yeniden başlatma akışı tamamlandı — Faz 1 bitti)
+Son güncelleme: 2026-08-18 (maden altyapısı, HUD göstergesi ve **5 ödül madeninin
+tamamı** bitti; sıradaki iş 3 ceza madeni)
 
 Bu dosya projenin tamamlanmamış işlerini önceliklendirilmiş şekilde listeler.
 Mevcut durum için `SCRIPT_OZETI.md`, hedef tasarım için `AsalYolculuk_Senaryo.md`
@@ -34,7 +35,9 @@ input henüz yok.
 | Oyun sonu paneli (`GameOverPanelView`) + gezegen bilgisi | ✅ Bitti |
 | Ölüm sonrası yeniden başlatma + ana menüye dönüş | ✅ Bitti |
 | Bölüm kaybında puanın toplamdan geri alınması | ✅ Bitti |
-| Maden (PowerUp / Curse) sistemi | ❌ Yok |
+| Maden (PowerUp / Curse) altyapısı + HUD göstergesi | ✅ Bitti |
+| Ödül madenleri (5/5) | ✅ Bitti |
+| Ceza madenleri (0/3) | ❌ Yok |
 | Ekran akışı (Ana Menü, Harita, Yolculuk, Sonuç) | ❌ Yok |
 | Kayıt sistemi (`SaveManager`) | ❌ Yok |
 | Dokunmatik input | ❌ Yok |
@@ -131,10 +134,12 @@ Bölüm kazanma, kaybetme ve her ikisinden de devam etme akışı çalışıyor.
 
   Kalanlar:
   - Sahne kurulumu: `SoundManager` objesi + müzik/SFX `AudioSource` clip atamaları.
+  - Sahne kurulumu: `SoundManager` objesindeki yeni `gameplaySource` alanına bir
+    `AudioSource` bağlanmalı — bağlanmazsa `PlaySfx` sessizce çıkar.
   - Oynanış olaylarına bağlama: ateş, meteor vurma, parçalanma, yok olma,
-    can kaybı, maden toplama, bölüm tamamlama. `SoundManager` şu an yalnızca
-    doğru/yanlış SFX API'si sunuyor; bu olaylar için genel bir `PlaySfx(clip)`
-    girişi eklenecek.
+    can kaybı, bölüm tamamlama. Genel `PlaySfx(AudioClip)` girişi **eklendi**
+    (maden toplama sesi `MineDataSO.pickupClip` üzerinden zaten bunu kullanıyor);
+    kalan olaylara bağlanması gerekiyor.
 
 - [ ] **2.4 — Duraklatma (Pause)**
   `GameState.Paused` enum'da tanımlı ama hiçbir yerden tetiklenmiyor.
@@ -145,33 +150,105 @@ Bölüm kazanma, kaybetme ve her ikisinden de devam etme akışı çalışıyor.
 
 ## 🟡 Faz 3 — Maden Sistemi (PowerUp / Curse)
 
-GDD'nin önemli bir bölümü; görseller `Assets/Arts/Asal_0/Bonus/` altında hazır (5 asset).
+GDD'nin önemli bir bölümü; görseller `Assets/Arts/Asal_0/Bonus/` altında **5 asset**
+var, 8 maden gerekiyor → **3 görsel eksik**.
 
-- [ ] **3.1 — `IActiveEffect` arayüzü ve `PowerUpManager`**
-  Süre bazlı efekt yönetimi (10 sn), aynı anda birden fazla efekt aktif olabilmeli.
-  *Dosyalar:* `PowerUps/IActiveEffect.cs`, `PowerUps/PowerUpManager.cs` (yeni)
+**Tanımsız etkiler:** Senaryo 8 madenin yalnızca 3'ünün etkisini tanımlıyor
+(Altın Kristal, Yıldız Parçası, Koruma Kalkanı). Kalan 5'i için etkiler bu
+projede kararlaştırıldı; aşağıda parantez içinde belirtilmiştir.
 
-- [ ] **3.2 — Ödül madenleri**
-  - `TimeCrystal` — Zaman Kristali
-  - `GoldCrystal` — Altın Kristal (meteor başına +10 puan)
-  - `PlasmaFuel` — Plazma Yakıtı
-  - `Shield` — Koruma Kalkanı (10 sn hasar almaz, gemi çevresinde turkuaz bariyer)
-  - `StarFragment` — Yıldız Parçası (anında +10 puan)
+- [x] **3.1 — `IActiveEffect` arayüzü ve `PowerUpManager`** ✅
+  Süre bazlı efekt yönetimi; aynı anda birden fazla efekt aktif olabiliyor, aynı
+  tür ikinci kez toplanırsa üst üste binmeyip süre tazeleniyor. Bölüm sonu /
+  ölüm durumlarında `GameManager.OnGameStateChanged` ile tüm etkiler temizleniyor.
+  *Dosyalar:* `PowerUps/EffectType.cs`, `PowerUps/IActiveEffect.cs`,
+  `PowerUps/MineDataSO.cs`, `PowerUps/PowerUpManager.cs`
 
-- [ ] **3.3 — Ceza madenleri**
-  - `ChaosCore` — Kaos Çekirdeği
-  - `GravityStone` — Yerçekimi Taşı
-  - `MeteorCaller` — Meteor Çağırıcı
+- [x] **3.2 — Ödül madenleri** ✅ 5/5
+  - [x] `StarFragment` — Yıldız Parçası: anında +10 puan (tek anlık etki) ✅
+  - [x] `GoldCrystal` — Altın Kristal: 10 sn, meteor puanı 5 → 10 ✅
+  - [x] `PlasmaFuel` — Plazma Yakıtı: 10 sn **çoklu atış** (3 noktadan ateş) ✅
+        *Not:* İlk plan "ateş hızı ×2"ydi; çoklu atış görsel olarak çok daha
+        okunaklı olduğu için değiştirildi. Yelpaze açısı atış noktalarının
+        Inspector rotasyonundan gelir, kodda açı hesabı yok.
+  - [x] `TimeCrystal` — Zaman Kristali: 10 sn meteor hızları ×0.5 ✅
+  - [x] `Shield` — Koruma Kalkanı: 10 sn hasar almaz + turkuaz bariyer ✅
+        Bariyer geminin dışında ayrı bir obje (`ShieldBarrier`); yarıçapı
+        gemininkinden büyük olduğu için meteor orada patlar. Gemi collider'ı
+        açık bırakıldı — `MineCollector` onu kullanıyor, kapatılsaydı
+        kalkanlıyken maden toplanamazdı.
+        *Görsel:* "Shield Shader FREE" paketi. Paket 3D olduğu için üzerindeki
+        `SphereCollider` işe yaramaz, `CircleCollider2D` gerekir. Materyal
+        kaydırma `ShieldMatEffect` ile `_Offset` vektör özelliği üzerinden
+        yapılır (`_BaseMap`/`SetTextureOffset` bu shader'da çalışmaz).
 
-- [ ] **3.4 — Maden spawn + toplama**
-  Havuzlanmış maden prefab'ı, drop rate `GameConfigSO`'dan; gemi üzerinden geçince toplanır.
+- [ ] **3.3 — Ceza madenleri** 0/3 ← **SIRADAKİ İŞ**
+  Altyapı hazır: spawn (zamanlayıcı bazlı), toplama, süre yönetimi ve HUD
+  göstergesi çalışıyor. Her ceza için yapılacak yalnızca üç şey:
+  `Effects/` altına bir sınıf, `PowerUpManager.CreateEffect` içine bir `case`,
+  bir `MineDataSO` asset'i + `MineSpawner.curseMines` dizisine eklemek.
+  - [ ] `MeteorCaller` — Meteor Çağırıcı (*10 sn meteor üretimi ×2*) — en kolayı,
+        `MeteorSpawner`'a `MeteorController.SpeedMultiplier` benzeri bir üretim
+        çarpanı eklenerek yapılır
+  - [ ] `GravityStone` — Yerçekimi Taşı (*10 sn gemi hızı %50 + sürekli aşağı çekim*)
+        — `PlayerShipController`'a dokunur, `PowerUpManager`'a yeni bir etki
+        hedefi referansı gerekir
+  - [ ] `ChaosCore` — Kaos Çekirdeği (*10 sn meteor sayıları gizlenir, "?"
+        gösterilir*) — `MeteorController.meteorTxt`'e dokunur; ekranda **uçmakta
+        olan** meteorların da yazısı değişmeli, yani `ActiveMeteors` üzerinden
+        toplu güncelleme veya static bir bayrak gerekir
 
-- [ ] **3.5 — Aktif efekt HUD göstergesi**
-  Toplanan madenin ikonu + geri sayım (örn. "6s"); süre bitince kaybolur.
+- [x] **3.4 — Maden spawn + toplama** ✅
+  Havuzlanmış tek `Mine` prefab'ı 8 madeni de temsil ediyor; hangi maden olduğu
+  üretim anında `SetData(MineDataSO)` ile atanıyor. **Hibrit spawn modeli:**
+  ödüller ana meteor tamamen yok edilince o noktada şansa bağlı düşer (ödül
+  başarıya bağlı), cezalar zamanlayıcıyla sağ kenardan girer (ceza başarıya
+  bağlanmaz). Toplama gemi üzerindeki `MineCollector` ile yapılır — hasar
+  mantığından bilinçli olarak ayrı, kalkanlıyken de maden toplanabilsin diye.
+  **Gezegen bazlı kademeli açılım:** `PlanetDataSO`'ya `areRewardMinesEnabled` /
+  `areCurseMinesEnabled` / `mineRateMultiplier` eklendi; P1 madensiz, P2 sadece
+  ödül, P3+ hepsi, P7 (Kristal) ×2, P8 (final) ×1.5. Değerler
+  `PlanetDataGenerator` tarafından yazılıyor.
+  *Not:* Drop rate şimdilik `MineSpawner` üzerinde; `GameConfigSO` gelince oraya
+  taşınacak (bkz. 4.2).
+  *Dosyalar:* `PowerUps/MineController.cs`, `PowerUps/MineSpawner.cs`,
+  `Player/MineCollector.cs`
 
-- [ ] **3.6 — Kalkan entegrasyonu**
-  `ShipCollisionHandler` kalkan aktifken can eksiltmemeli.
-  *Dosyalar:* `Player/ShipCollisionHandler.cs`
+- [x] **3.5 — Aktif efekt HUD göstergesi** ✅
+  Süreli etkinin ikonu + geri sayım ("6s"); süre bitince kaybolur. 7 slot
+  (süreli maden sayısı kadar), `Horizontal Layout Group` ile dizilir — ortadaki
+  etki bittiğinde boşluk kalmaz. Geri sayım yazıları önceden hazırlanmış diziden
+  okunur ve saniye değişmedikçe yazılmaz (`Update`'te string üretilmez).
+  Ödül/ceza ayrımı yazı rengiyle yapılır. Anlık etkiler (Yıldız Parçası)
+  göstergede çıkmaz.
+  *Dosyalar:* `UI/ActiveEffectHUDView.cs`, `UI/ActiveEffectSlotView.cs`
+
+- [x] **3.6 — Kalkan entegrasyonu** ✅
+  `ShipCollisionHandler.SetShieldActive(bool)` bariyeri açıp kapatır; kalkanlıyken
+  meteor patlar ama ne can eksilir ne de dokunulmazlık penceresi harcanır.
+  Çarpışma normalde gemi dışındaki `ShieldBarrier`'da olur; `ShipCollisionHandler`
+  içindeki kontrol, bariyeri tek karede atlayan hızlı meteorlar için güvenlik ağı.
+  *Dosyalar:* `Player/ShipCollisionHandler.cs`, `Player/ShieldBarrier.cs`,
+  `Player/ShieldMatEffect.cs`
+
+- [ ] **3.7 — Ağırlıklı maden seçimi (`dropWeight`)**
+  Şu an bir maden düştüğünde hangisi olacağı `rewardMines` / `curseMines`
+  dizisinden **eşit olasılıkla** seçiliyor. Ödüller aynı güçte değil: Koruma
+  Kalkanı (10 sn ölümsüzlük) ile Yıldız Parçası (+10 puan) aynı sıklıkta
+  çıkarsa oyun kolaylaşır ve güçlü ödüller sıradanlaşır. Cezalar için de aynı
+  durum (Meteor Çağırıcı, Kaos Çekirdeği'nden yıkıcı).
+  **Yapılacak:** `MineDataSO`'ya `dropWeight` alanı + `MineSpawner`'da ağırlıklı
+  rastgele seçim. Örn. Yıldız Parçası 3, Kalkan 1.
+  Ayrıca `rewardDropChance` (şu an 0.15) tüm ödüller için tek değer — ağırlıklar
+  gelince bu da gözden geçirilecek.
+  **Zamanlama:** 8 madenin hepsi bittikten sonra, denge ayarı aşamasında.
+  *Dosyalar:* `PowerUps/MineDataSO.cs`, `PowerUps/MineSpawner.cs`
+
+- [ ] **3.8 — Maden görselleri (3 eksik)**
+  `Assets/Arts/Asal_0/Bonus/` altında 5 görsel var, 8 maden gerekiyor.
+  Senaryo: ödüller yeşil/mavi/turkuaz/altın sarısı, cezalar kırmızı/mor/koyu gri.
+  Erişilebilirlik notu (6.5): madenler sadece renkle değil **simgeyle de**
+  ayırt edilebilmeli.
 
 ---
 

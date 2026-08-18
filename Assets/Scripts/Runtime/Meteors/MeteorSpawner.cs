@@ -9,6 +9,8 @@ namespace PayeGames.AsalYolculuk.Meteors
     {
         [Header("Üretim")]
         [SerializeField] private GameObjectPool meteorPool;
+        [Tooltip("Yedek üretim hızı (saniyedeki meteor sayısı). Normalde aktif gezegenin " +
+                 "PlanetDataSO değeri kullanılır; bu değer yalnızca gezegen verisi yokken devreye girer.")]
         [SerializeField] private float spawnRate = 1f;
 
         [Header("Meteor Görselleri")]
@@ -32,6 +34,10 @@ namespace PayeGames.AsalYolculuk.Meteors
         private void Awake()
         {
             gameCamera = Camera.main;
+
+            // Hız çarpanı static olduğu için sahne değişiminde (ve Editor'da domain
+            // reload kapalıysa) önceki oturumdan yavaşlamış hâlde kalabilir.
+            MeteorController.ResetSpeedMultiplier();
         }
 
         private void OnEnable()
@@ -45,7 +51,7 @@ namespace PayeGames.AsalYolculuk.Meteors
         }
 
         /// <summary>Tamamen yok edilen sayı bölüm sonuna kadar tekrar üretilmez.</summary>
-        private void HandleMeteorCompleted(int rootNumber)
+        private void HandleMeteorCompleted(int rootNumber, Vector3 position)
         {
             GetNumberPool().RegisterCompleted(rootNumber);
         }
@@ -60,13 +66,30 @@ namespace PayeGames.AsalYolculuk.Meteors
         {
             if (!GameManager.IsGameplayActive) return;
 
+            float currentSpawnRate = GetSpawnRate();
+            if (currentSpawnRate <= 0f) return;
+
             spawnTimer += Time.deltaTime;
 
-            float spawnInterval = 1f / spawnRate;
+            float spawnInterval = 1f / currentSpawnRate;
             if (spawnTimer < spawnInterval) return;
 
             spawnTimer -= spawnInterval;
             SpawnMeteor();
+        }
+
+        /// <summary>
+        /// Aktif gezegenin üretim hızı (saniyedeki meteor sayısı). Bölüm ilerledikçe
+        /// artar; gezegen verisi bağlı değilse Inspector'daki yedek değere düşülür,
+        /// böylece gezegensiz test sahneleri eskisi gibi çalışır.
+        /// </summary>
+        private float GetSpawnRate()
+        {
+            PlanetDataSO planetData = LevelManager.Instance != null ? LevelManager.Instance.CurrentPlanetData : null;
+            if (planetData == null) return spawnRate;
+            if (planetData.MeteorSpawnRate <= 0f) return spawnRate;
+
+            return planetData.MeteorSpawnRate;
         }
 
         private void SpawnMeteor()
