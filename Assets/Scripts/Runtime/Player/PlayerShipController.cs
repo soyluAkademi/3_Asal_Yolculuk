@@ -32,6 +32,9 @@ namespace PayeGames.AsalYolculuk.Player
         private float moveSpeedMultiplier = 1f;
         private float downwardPull;
 
+        // Ekrandaki yön butonlarından gelen girdi; klavye ile toplanır.
+        private Vector2 buttonMoveInput;
+
         private InputAction moveAction;
         private Transform selfTransform;
         private Camera gameCamera;
@@ -61,6 +64,14 @@ namespace PayeGames.AsalYolculuk.Player
         private void OnDisable()
         {
             moveAction.Disable();
+        }
+
+        /// <summary>
+        /// Ekrandaki yön butonlarının ürettiği yön vektörü (TouchMovementPanel).
+        /// </summary>
+        public void SetButtonMoveInput(Vector2 input)
+        {
+            buttonMoveInput = input;
         }
 
         /// <summary>
@@ -98,12 +109,14 @@ namespace PayeGames.AsalYolculuk.Player
             {
                 currentVelocity = Vector2.zero;
                 smoothVelocity = Vector2.zero;
+                buttonMoveInput = Vector2.zero;
                 return;
             }
 
             float effectiveSpeed = moveSpeed * moveSpeedMultiplier;
 
-            Vector2 input = moveAction.ReadValue<Vector2>();
+            // Klavye ve buton aynı anda basılırsa hız artmasın diye normalize edilir.
+            Vector2 input = Vector2.ClampMagnitude(moveAction.ReadValue<Vector2>() + buttonMoveInput, 1f);
             Vector2 targetVelocity = input * effectiveSpeed;
             currentVelocity = Vector2.SmoothDamp(currentVelocity, targetVelocity, ref smoothVelocity, smoothTime);
 

@@ -1,8 +1,8 @@
 # Yapılacaklar — Asal Yolculuk
 
-Son güncelleme: 2026-08-18 (**Faz 3 maden sistemi tamamlandı** — 5 ödül + 2 ceza;
-Kaos Çekirdeği bilinçli olarak kapsam dışı bırakıldı. Kalan: ağırlıklı maden
-seçimi ve 3 eksik görsel.)
+Son güncelleme: 2026-08-18 (**Dokunmatik kontrol eklendi** — ekran yön butonları
+ile gemi kontrolü, klavye fallback duruyor. Faz 3 maden sistemi de tamamlandı;
+kalan: ağırlıklı maden seçimi ve 3 eksik görsel.)
 
 Bu dosya projenin tamamlanmamış işlerini önceliklendirilmiş şekilde listeler.
 Mevcut durum için `SCRIPT_OZETI.md`, hedef tasarım için `AsalYolculuk_Senaryo.md`
@@ -13,8 +13,8 @@ ve `CLAUDE.md` referans alınır.
 ## Mevcut Durum Özeti
 
 Çekirdek gameplay döngüsü kapandı: bölüm kazanma, kaybetme ve iki durumdan da
-devam etme çalışıyor. Meta katman (ekranlar, kayıt, madenler) ve dokunmatik
-input henüz yok.
+devam etme çalışıyor. Dokunmatik kontrol eklendi; meta katmanda ekran akışı ve
+kayıt sistemi hâlâ eksik.
 
 | Sistem | Durum |
 |---|---|
@@ -41,7 +41,7 @@ input henüz yok.
 | Ceza madenleri (2/2, Kaos Çekirdeği kapsam dışı) | ✅ Bitti |
 | Ekran akışı (Ana Menü, Harita, Yolculuk, Sonuç) | ❌ Yok |
 | Kayıt sistemi (`SaveManager`) | ❌ Yok |
-| Dokunmatik input | ❌ Yok |
+| Dokunmatik input (ekran yön butonları) | ✅ Bitti |
 | Ses sistemi (`SoundManager` + ayarlar UI) | 🟡 Altyapı bitti, olaylara bağlanmadı |
 | Ana menü ayarlar paneli (`MenuManager`) | ✅ Bitti |
 
@@ -114,12 +114,19 @@ Bölüm kazanma, kaybetme ve her ikisinden de devam etme akışı çalışıyor.
 
 ## 🟠 Faz 2 — Oynanabilirlik (Yüksek Öncelik)
 
-- [ ] **2.1 — Dokunmatik / fare input**
-  `PlayerShipController` şu an yalnızca klavye (WASD + ok tuşları) destekliyor.
-  GDD birincil kontrolü "parmakla sürükleme" olarak tanımlıyor; hedef platformlar
-  WebGL + mobil + akıllı tahta. **Şu an telefonda oyun oynanamıyor.**
-  Yeni Input System `Pointer` üzerinden sürükleme eklenecek, klavye fallback kalacak.
-  *Dosyalar:* `Player/PlayerShipController.cs`
+- [x] **2.1 — Dokunmatik input (yön butonları)** ✅
+  Ekrana dört yön butonu (`leftBtn` / `rightBtn` / `upBtn` / `downBtn`) eklendi;
+  klavye kontrolü fallback olarak duruyor. Basılı tutma `HoldableButton`
+  (`IPointerDown/Up/Exit`) ile takip ediliyor, `TouchMovementPanel` yön vektörünü
+  `PlayerShipController.SetButtonMoveInput` ile gemiye iletiyor. İki girdi
+  toplanıp `ClampMagnitude(…, 1f)` ile sınırlanıyor, aynı anda basınca hız artmıyor.
+  Panel `GameManager.OnGameStateChanged` ile bölüm sonunda `SetActive(false)`
+  oluyor (score/health panelleriyle aynı davranış).
+  *Not:* GDD'nin "parmakla sürükleme" kontrolü yerine buton tercih edildi —
+  akıllı tahtada ve tek elle telefonda daha güvenilir. Sürükleme istenirse
+  aynı `SetButtonMoveInput` girişinden ikinci bir kaynak olarak eklenebilir.
+  *Dosyalar:* `Player/PlayerShipController.cs`, `Player/TouchMovementPanel.cs` (yeni),
+  `Player/HoldableButton.cs` (yeni)
 
 - [x] **2.2 — `SmoothDamp` kullanım hatası** ✅
   Aynı değişken hem kaynak hem velocity buffer olarak geçiliyordu; ayrı bir
@@ -364,7 +371,7 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 **Faz 2 → 3 → 4 → 5 → 6** (Faz 1 tamamlandı)
 
 Gerekçe: Faz 1 bittiği için oyun baştan sona oynanabiliyor; sıradaki darboğaz
-hedef platform. Faz 2 oyunu oynanabilir hale getiriyor
-(dokunmatik olmadan mobil/tahta testi imkânsız). Faz 3 ve 4 GDD'nin kalan yarısı;
+hedef platform. Faz 2'nin kritik parçası olan dokunmatik kontrol bitti; kalan
+ses bağlamaları ve duraklatma. Faz 3 ve 4 GDD'nin kalan yarısı;
 madenler gameplay'i zenginleştirdiği için ekran akışından önce gelmesi playtest
 açısından daha verimli. Faz 5 ve 6 içerik derinliği ve teslim cilası.

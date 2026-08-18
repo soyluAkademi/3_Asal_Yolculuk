@@ -12,7 +12,7 @@ buraya kısa bir madde eklenir.
 `Assets/Scripts/Runtime/Player/`
 
 Gemiyi klavyeden (yeni Input System, kod içinde tanımlı WASD + ok tuşları
-composite'i) hareket ettirir. Transform tabanlı, `SmoothDamp` ile yumuşatılmış
+composite'i) **ve ekrandaki yön butonlarından** hareket ettirir. Transform tabanlı, `SmoothDamp` ile yumuşatılmış
 hareket (Rigidbody yok). `Camera.main` ile kamerayı otomatik bulur (Inspector'dan
 atama yok). Yatayda `minViewportX` / `maxViewportX` ile hareket alanı sınırlanır
 (0 = ekranın solu, 1 = ekranın sağı); dikeyde tüm ekran serbest ama `ClampToScreen`
@@ -32,7 +32,43 @@ ayarlar. Çekim iki koruma altındadır:
 - Çekim `SmoothDamp`'in **dışında** doğrudan konuma uygulanır. Hız vektörüne
   eklenseydi yumuşatma onu her karede geri emer, etki hissedilmezdi.
 
-- **Bağlantı:** `GameManager` (guard), `GravityStoneEffect` (hız çarpanı + çekim).
+**Buton girdisi:** `SetButtonMoveInput(Vector2)` ile `TouchMovementPanel` her karede
+yön vektörünü iletir. Klavye ve buton girdisi **toplanıp** `ClampMagnitude(…, 1f)`
+ile sınırlanır — ikisi aynı anda basılınca gemi hızlanmaz. Oynanış dışına
+çıkıldığında buton girdisi de sıfırlanır.
+
+- **Bağlantı:** `GameManager` (guard), `GravityStoneEffect` (hız çarpanı + çekim),
+  `TouchMovementPanel` (buton girdisi).
+
+### `TouchMovementPanel.cs`
+`Assets/Scripts/Runtime/Player/`
+
+Yön butonlarının bulunduğu panelin **kendi üzerine** eklenir. Inspector'dan
+`PlayerShipController` ve dört buton (`leftBtn` / `rightBtn` / `upBtn` / `downBtn`)
+bağlanır. `Awake`'te her butona `HoldableButton` bileşenini **otomatik ekler**
+(`EnsureHoldable`), böylece sahne kurulumunda elle eklemek unutulmaz. Her karede
+basılı butonlardan bir `Vector2` üretip `shipController.SetButtonMoveInput` ile
+iletir.
+
+**Görünürlük:** `GameManager.OnGameStateChanged`'e abone olur; `Gameplay`'de panel
+`SetActive(true)`, bölüm bitince `SetActive(false)` olur (`Paused` durumunda
+dokunulmaz — score/health panelleriyle aynı davranış). Abonelik düz bir C# event'i
+olduğu için GameObject kapalıyken de handler çalışır; panel kendini geri açabilir.
+`OnDisable` gemiye sıfır girdi gönderir — buton basılıyken bölüm biterse gemi
+kaymaya devam etmez.
+
+- **Bağlantı:** `PlayerShipController`, `HoldableButton`, `GameManager`.
+
+### `HoldableButton.cs`
+`Assets/Scripts/Runtime/Player/`
+
+Unity `Button`'ı yalnızca "tıklama" verdiği için yön kontrolünde gereken **basılı
+tutma** durumunu takip eden küçük bileşen. `IPointerDownHandler` /
+`IPointerUpHandler` / `IPointerExitHandler` uygular ve `IsPressed` özelliğini
+açar. Parmak butondan kayarsa (`OnPointerExit`) veya nesne kapanırsa
+(`OnDisable`) basılı durum düşer.
+
+- **Bağlantı:** `TouchMovementPanel` (okuyan taraf).
 
 ### `ShipCollisionHandler.cs`
 `Assets/Scripts/Runtime/Player/`
@@ -277,6 +313,14 @@ Tek sahne içinde hangi seviyede/gezegende olunduğunu tutan singleton
 üzerinden `CurrentPlanetData` döner (aralık dışı index'te clamp'lenir, oynanış
 bozulmaz). `SetLevel(int)` ile seviye ilerletilir.
 
+**Kaldığı bölümden devam:** `Awake` içinde `LoadSavedLevel()` çalışır ve
+`PlanetProgress.MaxUnlockedIndex` bölüm index'i olarak yüklenir; oyuncu 2.
+bölümdeyken oyunu kapatıp açtığında 1. bölüme dönmez. Ayrı bir "kalınan bölüm"
+kaydı **bilinçli olarak tutulmaz** — kilitler sırayla açıldığı için açılmış en
+yüksek gezegen zaten oyuncunun henüz bitirmediği bölümdür; ikinci bir anahtar
+iki kaydın birbirinden ayrı düşme riskini getirirdi. Inspector'daki
+`currentLevelIndex` yalnızca editör varsayılanıdır, oyunda üzerine yazılır.
+
 - `IsLastLevel` — son gezegende miyiz. Bölüm sonu paneli ve `LevelFlowController`
   bu bayrakla son bölümde farklı akışa dallanır.
 - `NextPlanetData` — bir sonraki gezegen (son gezegende `null`). Bölüm sonu
@@ -286,7 +330,8 @@ bozulmaz). `SetLevel(int)` ile seviye ilerletilir.
 
 - **Bağlantı:** `PlanetDataSO` (veri kaynağı), `MeteorSpawner`
   (`CurrentPlanetData`), `LevelFlowController` (`SetLevel`),
-  `LevelCompletePanelView` (`CurrentPlanetData` + `NextPlanetData`).
+  `LevelCompletePanelView` (`CurrentPlanetData` + `NextPlanetData`),
+  `PlanetProgress` (açılışta kaldığı bölümü okur).
 
 ### `ScoreManager.cs`
 `Assets/Scripts/Runtime/Core/`
@@ -531,7 +576,13 @@ açılmama" kuralını sessizce bozabilirdi.
 `SaveManager` geldiğinde bu alan oraya taşınacak; anahtar adı korunursa mevcut
 oyuncu ilerlemesi kaybolmaz (bkz. `YAPILACAKLAR.md` 4.1).
 
+Bu değer iki işi birden görür: menüdeki kilitleri açar **ve** oyunun hangi
+bölümden başlayacağını belirler (`LevelManager` açılışta okur). Son bölüm
+bitirildiğinde ilerleme orada durur; oyuncu tekrar oynadığında son bölümden
+başlar (menüde gezegen seçimi olmadığı sürece kasıtlı davranış).
+
 - **Bağlantı:** `LevelFlowController` (`AdvanceLevel` içinde `Unlock`),
+  `LevelManager` (`Awake`'te başlangıç bölümü olarak okur),
   `SelectionManager` (kilit sprite'larını okur), `PlayerPrefs`.
 
 ---
@@ -1340,9 +1391,13 @@ Gezegene tıklayıp o bölümden başlama akışı **henüz yok**; `oynaBtn` her
 oynamadan denemek için yazıldı. Hiçbir sistem bu sınıfa referans vermez, hiçbir
 event'e abone olmaz; sahnedeki objesiyle birlikte silindiğinde oyun etkilenmez.
 
-- `startAtLastLevel` — `Start`'ta `LevelManager.SetLevel(int.MaxValue)` çağırır.
-  `SetLevel` aralığa clamp'lediği için son bölüme oturur; bu sayede `LevelManager`'a
-  bu araç için tek bir üye bile eklenmedi.
+- `useSavedProgress` (varsayılan **açık**) — açıkken `Start` hiçbir şey yapmaz ve
+  oyun normal davranışıyla oyuncunun kaldığı bölümden başlar. Bu bayrak şart:
+  `Start`, `LevelManager.Awake`'ten sonra çalıştığı için müdahale ederse kayıtlı
+  ilerlemeyi her açılışta ezerdi.
+- `startLevel` (1–8 enum) — yalnızca `useSavedProgress` **kapalıyken** geçerlidir;
+  `Start`'ta `LevelManager.SetLevel(startLevel - 1)` çağrılır (enum 1 tabanlı,
+  `SetLevel` 0 tabanlı index bekler). Belirli bir bölümü test etmenin yoludur.
 - `completeLevelKey` (varsayılan F9) — eksik puanı `ScoreManager.AddScore` ile
   bir kerede ekler, yani normal akışın aynısı çalışır (`OnTargetReached` →
   `GameManager` → bölüm sonu sunumu). Klavye odağı Game view'da değilse tuş
