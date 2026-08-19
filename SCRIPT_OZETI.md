@@ -491,11 +491,18 @@ açılır. Sıfırlamanın ekran kapalıyken yapılması bilinçlidir: oyuncu ge
 çağrılır çünkü HUD panellerini geri getiren ve gemiyi başlangıç konumuna alan
 dinleyiciler (`GameplayHUDPanel`, `PlayerLevelCompleteEffect`) bu durumu dinler.
 
-**`GoToMainMenu()`** — oyun sonu panelindeki "Ana Menü" butonuna bağlanır.
-Kaybedilen bölümün puanı toplamdan düşülüp diske yazılır, `Time.timeScale` 1'e
-alınır ve `TransitionManager.LoadLevel(mainMenuSceneName)` ile sahne yüklenir.
-Puanın burada da geri alınması bilinçlidir; aksi halde kaybedip menüye çıkarak
-puan saklamak mümkün olurdu.
+**`GoToMainMenu()`** — oyun sonu panelindeki **ve** duraklatma panelindeki
+"Ana Menü" butonuna bağlanır (`PauseManager` bu metodu çağırır, kendi sahne
+geçişini yazmaz). Yarım kalan bölümün puanı toplamdan düşülüp diske yazılır,
+`SaveCurrentLevel()` ile kalınan bölüm kaydedilir, `Time.timeScale` 1'e alınır
+ve `TransitionManager.LoadLevel(mainMenuSceneName)` ile sahne yüklenir. Puanın
+burada da geri alınması bilinçlidir; aksi halde kaybedip menüye çıkarak puan
+saklamak mümkün olurdu.
+
+`SaveCurrentLevel()` — `PlanetProgress.Unlock(LevelManager.CurrentLevelIndex)`
+çağırarak oyuncunun kaldığı bölümü diske sabitler; oyun yeniden açıldığında
+`LevelManager` bu değerden başlar. `Unlock` yalnızca ileri gittiği için bölüm
+yarıda bırakıldığında ilerleme artmaz, geri de alınmaz.
 
 `TransitionManager` (Mask Transitions paketi) sahnede yoksa iki akış da geçiş
 animasyonu olmadan çalışır — `RestartLevel` doğrudan sıfırlar, `GoToMainMenu`
@@ -1289,6 +1296,44 @@ sahne iki kez yüklenmez.
   `SceneManager` (ana menü sahnesi), `Prefabs/Effects/confetti.prefab`
   (kutlama efekti), TextMeshPro,
   DOTween (`DOAnchorPos`, `DOScale`, `DOFade`, `DOFillAmount`, `DOTween.To`).
+
+### `PauseManager.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Oynanış sahnesindeki duraklatma akışını yönetir. Sahnedeki Canvas'a eklenir —
+**`pausePanel`'in kendisine eklenmemeli**, çünkü panel kapalıyken (`SetActive(false)`)
+script de durur ve `pauseBtn` çalışmaz. Tüm buton `onClick` bağlantıları
+`Awake`'te koddan kurulur (Inspector'daki OnClick listesine ayrıca eklenmemeli).
+
+`Pause()` — `pauseBtn`'e bağlanır. Yalnızca durum `Gameplay` iken çalışır ve
+`GameManager.SetState(GameState.Paused)` çağırır; oyunun durması buradan gelir,
+ayrı bir "hepsini durdur" mantığı yoktur — `GameManager` bu durumda
+`Time.timeScale`'i 0'lar, meteor üretimi / ateş / gemi hareketi / etki sayaçları
+kendiliğinden donar.
+
+`Resume()` — `exitBtn` (panel kapatma) ve `oyunaDonBtn` ikisine de bağlanır;
+`SetState(GameState.Gameplay)` ile oyun **kaldığı yerden** akmaya başlar, panel
+üzerine kapanış animasyonu oynar. Kapanış başlarken `blocksRaycasts` kapatılır ki
+panelin üstündeki tıklama oyuna sızmasın.
+
+**Animasyon:** açılışta `localScale` `hiddenScale` (0.7) → 1 `OutBack` + CanvasGroup
+alpha 0 → 1; kapanışta tersi (`InBack`) ve bitince panel `SetActive(false)`.
+Tween'ler `SetUpdate(true)` ile çalışır — `timeScale` 0 iken animasyonun donmaması
+için zorunludur. `MenuManager`'ın ayarlar paneliyle aynı desendir.
+
+`mainMenuBtn` — kendi sahne geçişini yazmaz, `LevelFlowController.GoToMainMenu()`
+çağırır; böylece puan geri alma, kalınan bölüm kaydı ve maske geçişi oyun sonu
+paneliyle birebir aynı yoldan gider. Sahne değişeceği için panel kapanış
+animasyonu oynatılmaz, yalnızca tıklama kilitlenir.
+
+`OnGameStateChanged` dinlenerek `pauseBtn.interactable` yalnızca `Gameplay`
+durumunda açık tutulur; bölüm bitmiş/kaybedilmişken duraklatılamaz.
+
+**Tık sesi:** her butonun üzerindeki `AudioSource` `Awake`'te `TryGetComponent`
+ile cache'lenir ve `SoundManager.PlayUiSfx` ile çalınır.
+
+- **Bağlantı:** `GameManager` (`SetState`, `OnGameStateChanged`),
+  `LevelFlowController` (`GoToMainMenu`), `SoundManager` (`PlayUiSfx`), DOTween.
 
 ### `SettingsManager.cs`
 `Assets/Scripts/Runtime/UI/`

@@ -2,6 +2,7 @@ using System.Collections;
 using MaskTransitions;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using PayeGames.AsalYolculuk.Meteors;
 using PayeGames.AsalYolculuk.Player;
 using PayeGames.AsalYolculuk.UI;
@@ -34,7 +35,36 @@ namespace PayeGames.AsalYolculuk.Core
         [Tooltip("Ana menü butonunun yükleyeceği sahne")]
         [SerializeField] private string mainMenuSceneName = "MainMenu";
 
+        [Header("Buton Tık Sesi")]
+        [Tooltip("Tıklanınca kendi üzerindeki AudioSource'u çalacak butonlar. Klip " +
+            "butondaki AudioSource'un Clip alanına atanır; Play On Awake kapalı olmalı")]
+        [SerializeField] private Button[] clickSoundButtons;
+
         private bool isTransitioning;
+
+        private void Awake()
+        {
+            RegisterButtonSounds();
+        }
+
+        /// <summary>
+        /// Butonların tık sesini bağlar. Butonun kendi işlevi Inspector'daki onClick
+        /// bağından gelir; buraya yalnızca ses dinleyicisi eklenir. AudioSource
+        /// referansı burada bir kez cache'lenir, tıklama anında GetComponent çağrılmaz.
+        /// </summary>
+        private void RegisterButtonSounds()
+        {
+            if (clickSoundButtons == null) return;
+
+            for (int index = 0; index < clickSoundButtons.Length; index++)
+            {
+                Button button = clickSoundButtons[index];
+                if (button == null) continue;
+                if (!button.TryGetComponent(out AudioSource clickSource)) continue;
+
+                button.onClick.AddListener(() => SoundManager.PlayUiSfx(clickSource));
+            }
+        }
 
         /// <summary>Bölüm sonu panelindeki "Yolculuğa Başla" butonuna bağlanır.</summary>
         public void GoToNextLevel()
@@ -137,8 +167,9 @@ namespace PayeGames.AsalYolculuk.Core
         }
 
         /// <summary>
-        /// Oyun sonu panelindeki "Ana Menü" butonuna bağlanır. Kaybedilen bölümün
-        /// puanı toplamdan düşülüp diske yazılır, ardından geçişle sahne yüklenir.
+        /// Oyun sonu panelindeki ve duraklatma panelindeki "Ana Menü" butonuna
+        /// bağlanır. Yarım kalan bölümün puanı toplamdan düşülüp diske yazılır,
+        /// kalınan bölüm kaydedilir, ardından geçişle sahne yüklenir.
         /// </summary>
         public void GoToMainMenu()
         {
@@ -153,6 +184,8 @@ namespace PayeGames.AsalYolculuk.Core
                 ScoreManager.Instance.SaveTotalScore();
             }
 
+            SaveCurrentLevel();
+
             if (TransitionManager.Instance != null)
             {
                 TransitionManager.Instance.LoadLevel(mainMenuSceneName);
@@ -160,6 +193,18 @@ namespace PayeGames.AsalYolculuk.Core
             }
 
             SceneManager.LoadScene(mainMenuSceneName);
+        }
+
+        /// <summary>
+        /// Oyuncunun kaldığı bölümü diske yazar; oyun yeniden açıldığında
+        /// <see cref="LevelManager"/> bu değerden başlar. Bölüm tamamlanmadığı
+        /// için değer ilerlemez, yalnızca mevcut ilerleme sabitlenir.
+        /// </summary>
+        private static void SaveCurrentLevel()
+        {
+            if (LevelManager.Instance == null) return;
+
+            PlanetProgress.Unlock(LevelManager.Instance.CurrentLevelIndex);
         }
 
         private void AdvanceLevel()
