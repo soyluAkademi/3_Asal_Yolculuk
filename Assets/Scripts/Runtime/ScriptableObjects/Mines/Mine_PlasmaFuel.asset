@@ -18,5 +18,6 @@ MonoBehaviour:
   duration: 10
   amount: 3
   multiplier: 0
-  pickupEffectPrefab: {fileID: 0}
-  pickupClip: {fileID: 0}
+  pickupEffectPrefab: {fileID: 3805699515150157265, guid: f365a3a47e0fc2b4094b70be1d1d0d32,
+    type: 3}
+  pickupClip: {fileID: 8300000, guid: 7fb954e1c1961644d85f884b946f53b0, type: 3}

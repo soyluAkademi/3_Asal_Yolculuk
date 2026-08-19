@@ -41,6 +41,8 @@ namespace PayeGames.AsalYolculuk.Core
 
             source.Stop(); // Play On Awake'i iptal et, ApplyMusicState karar versin
             ApplyMusicState();
+
+            EnsureGameplaySource();
         }
 
         private void Start()
@@ -108,13 +110,36 @@ namespace PayeGames.AsalYolculuk.Core
         /// can kaybı vb.). Klip çağrı bazlı geldiği için ortak bir kaynak kullanılır;
         /// olay başına ayrı AudioSource tutmak sahneyi gereksiz şişirirdi.
         /// </summary>
-        public void PlaySfx(AudioClip clip)
+        /// <param name="volumeScale">Sık tekrarlanan sesleri (ör. mermi) kısmak için ölçek.</param>
+        public void PlaySfx(AudioClip clip, float volumeScale = 1f)
         {
             if (!SfxOn) return;
             if (clip == null) return;
             if (gameplaySource == null) return;
 
-            gameplaySource.PlayOneShot(clip);
+            // Ses verisi belleğe alınmamış bir klipte PlayOneShot sessizce hiçbir şey
+            // yapar. Doğru çözüm klibin import ayarında Preload Audio Data'yı açmaktır;
+            // buradaki yükleme, ayarı unutulmuş yeni kliplere karşı emniyet kemeridir.
+            if (clip.loadState == AudioDataLoadState.Unloaded)
+            {
+                clip.LoadAudioData();
+            }
+
+            gameplaySource.PlayOneShot(clip, volumeScale);
+        }
+
+        /// <summary>
+        /// Oynanış sesleri için ayrı bir kaynak garantiler. Inspector'da atanmadıysa
+        /// runtime'da eklenir; müzik kaynağı loop'lu olduğu için PlayOneShot'ı
+        /// oraya yönlendirmek ses ayarlarını birbirine karıştırırdı.
+        /// </summary>
+        private void EnsureGameplaySource()
+        {
+            if (gameplaySource != null) return;
+
+            gameplaySource = gameObject.AddComponent<AudioSource>();
+            gameplaySource.playOnAwake = false;
+            gameplaySource.loop = false;
         }
 
         private void PlaySfxSource(AudioSource src)

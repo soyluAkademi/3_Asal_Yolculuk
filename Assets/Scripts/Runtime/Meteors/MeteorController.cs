@@ -109,6 +109,7 @@ namespace PayeGames.AsalYolculuk.Meteors
         private MeteorSession session;
         private Sprite currentSprite;
         private GameObject explosionEffectPrefab;
+        private AudioSource explosionSource;
 
         public int Number => number;
         public bool IsPrimeNumber => isPrimeNumber;
@@ -182,6 +183,16 @@ namespace PayeGames.AsalYolculuk.Meteors
 
             currentSprite = sprite;
             meteorSpriteRenderer.sprite = sprite;
+        }
+
+        /// <summary>
+        /// Patlama sesinin çalınacağı kaynağı atar. Kaynak sahnede kalıcı bir obje
+        /// (MeteorSpawner) üzerindedir; meteor patladığı anda havuza döndüğü için
+        /// kendi üzerindeki bir AudioSource sesi kesmiş olurdu.
+        /// </summary>
+        public void SetExplosionAudio(AudioSource source)
+        {
+            explosionSource = source;
         }
 
         private float CalculateEdgeX(float viewportX)
@@ -330,10 +341,14 @@ namespace PayeGames.AsalYolculuk.Meteors
 
         /// <summary>
         /// Meteorun bulunduğu pozisyonda patlama efektini oluşturur. Efekt prefab'ı
-        /// kendini yok ettiği için burada ömrü takip edilmez.
+        /// kendini yok ettiği için burada ömrü takip edilmez. Patlama sesi de efektin
+        /// üzerindeki AudioSource'tan gelir: meteor patladığı anda havuza döndüğü için
+        /// ses meteorun kendi üzerinde çalınamaz, deaktif olan obje sesi keserdi.
         /// </summary>
         private void PlayExplosionEffect()
         {
+            PlayExplosionSfx();
+
             if (explosionEffectPrefab == null) return;
 
             GameObject effect = Instantiate(explosionEffectPrefab, selfTransform.position, Quaternion.identity);
@@ -341,6 +356,20 @@ namespace PayeGames.AsalYolculuk.Meteors
             // Parçalar küçüldüğü için efekt de meteorun güncel boyutuyla orantılı ölçeklenir.
             float sizeRatio = baseScale.x != 0f ? selfTransform.localScale.x / baseScale.x : 1f;
             effect.transform.localScale = Vector3.one * (explosionEffectScale * sizeRatio);
+        }
+
+        /// <summary>
+        /// Ses, kaynağın kendi klibinden PlayOneShot ile çalınır: klip Inspector'da
+        /// atandığı için sahneyle birlikte belleğe alınır, PlayOneShot ise arka arkaya
+        /// patlayan meteorlarda önceki sesi kesmez.
+        /// </summary>
+        private void PlayExplosionSfx()
+        {
+            if (explosionSource == null) return;
+            if (explosionSource.clip == null) return;
+            if (SoundManager.Instance != null && !SoundManager.Instance.SfxOn) return;
+
+            explosionSource.PlayOneShot(explosionSource.clip);
         }
 
         private void HandleBulletHit()
@@ -407,6 +436,7 @@ namespace PayeGames.AsalYolculuk.Meteors
 
                 fragment.SetNumber(primeFactors[index]);
                 fragment.SetVisuals(currentSprite, explosionEffectPrefab);
+                fragment.SetExplosionAudio(explosionSource);
                 fragment.ApplyFragmentSetup(fragmentScale, spread, activeSession);
             }
 

@@ -13,6 +13,15 @@ namespace PayeGames.AsalYolculuk.Combat
         [SerializeField] private Transform[] firePoints;
         [SerializeField] private float fireRate = 4f;
 
+        [Header("Ses")]
+        [Tooltip("Tek noktadan ateş edilirken çalınacak klip")]
+        [SerializeField] private AudioClip fireClip;
+        [Tooltip("Çoklu atış (Plazma Yakıtı) aktifken çalınacak klip; boşsa tekli atış klibi kullanılır")]
+        [SerializeField] private AudioClip multiFireClip;
+        [Tooltip("Atış sesi saniyede birkaç kez tekrarlandığı için varsayılan olarak kısık çalınır")]
+        [Range(0f, 1f)]
+        [SerializeField] private float fireVolume = 0.5f;
+
         private float fireTimer;
 
         // Normalde yalnızca merkez nokta ateş eder; Plazma Yakıtı bunu artırır.
@@ -57,13 +66,33 @@ namespace PayeGames.AsalYolculuk.Combat
             if (bulletPool == null) return;
             if (firePoints == null) return;
 
+            int firedCount = 0;
+
             for (int index = 0; index < activeFirePointCount && index < firePoints.Length; index++)
             {
                 Transform firePoint = firePoints[index];
                 if (firePoint == null) continue;
 
                 bulletPool.Spawn(firePoint.position, firePoint.rotation);
+                firedCount++;
             }
+
+            // Çoklu atışta her nokta için ayrı ses çalmak sesi üst üste bindirir;
+            // salvo başına tek çağrı yapılır.
+            if (firedCount > 0) PlayFireSfx(firedCount);
+        }
+
+        private void PlayFireSfx(int firedCount)
+        {
+            if (SoundManager.Instance == null) return;
+
+            AudioClip clip = firedCount > 1 && multiFireClip != null
+                ? multiFireClip
+                : fireClip;
+
+            if (clip == null) return;
+
+            SoundManager.Instance.PlaySfx(clip, fireVolume);
         }
     }
 }

@@ -20,6 +20,12 @@ namespace PayeGames.AsalYolculuk.Meteors
         [Tooltip("İlk seviyede kaç görselin kullanılabileceği; her seviyede bir tane daha açılır")]
         [SerializeField] private int baseSpriteCount = 3;
 
+        [Header("Patlama Sesi")]
+        [Tooltip("Bu obje üzerindeki ses kaynağı. Klip doğrudan kaynağın Clip alanına " +
+            "atanır; Play On Awake kapalı olmalı. Meteor patlar patlamaz havuza döndüğü " +
+            "için ses meteorun kendi üzerinde çalınamaz, sahnede kalıcı olan bu kaynak kullanılır")]
+        [SerializeField] private AudioSource explosionSource;
+
         [Header("Ekran Sınırları")]
         [Tooltip("Meteorların üretileceği dikey sınır (0 = ekranın altı, 1 = ekranın üstü)")]
         [SerializeField, Range(0f, 1f)] private float minViewportY = 0.05f;
@@ -129,6 +135,7 @@ namespace PayeGames.AsalYolculuk.Meteors
                 int visualIndex = GetRandomVisualIndex();
                 meteorController.SetNumber(GetNumberPool().GetNumber());
                 meteorController.SetVisuals(GetSprite(visualIndex), GetExplosionEffect(visualIndex));
+                meteorController.SetExplosionAudio(explosionSource);
             }
         }
 

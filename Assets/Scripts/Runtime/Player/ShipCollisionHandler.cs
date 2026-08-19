@@ -29,6 +29,11 @@ namespace PayeGames.AsalYolculuk.Player
             "Sahnede KAPALI başlamalı")]
         [SerializeField] private GameObject shieldVisual;
 
+        [Header("Çarpışma Sesi")]
+        [Tooltip("Gemi üzerindeki ses kaynağı. Klip doğrudan bu kaynağın Clip alanına " +
+            "atanır; Play On Awake kapalı olmalı")]
+        [SerializeField] private AudioSource damageSource;
+
         [Header("Kamera Sarsıntısı")]
         [Tooltip("Hasar alındığında kameranın sarsılma süresi (saniye)")]
         [SerializeField] private float shakeDuration = 0.25f;
@@ -103,6 +108,7 @@ namespace PayeGames.AsalYolculuk.Player
             if (HealthManager.Instance == null) return;
 
             HealthManager.Instance.LoseLife();
+            PlayDamageSfx();
             ShakeCamera();
 
             // Son can gittiyse gemi patlama sekansı devreye girer; hasar efekti oynatılmaz.
@@ -122,6 +128,19 @@ namespace PayeGames.AsalYolculuk.Player
             GameObject effect = Instantiate(damageEffectPrefab, selfTransform);
             effect.transform.localPosition = Vector3.zero;
             effect.transform.localScale = Vector3.one * damageEffectScale;
+        }
+
+        /// <summary>
+        /// Hasar sesini geminin kendi kaynağından çalar. Klip kaynağa Inspector'dan
+        /// atandığı için sahneyle birlikte belleğe alınır; SFX ayarı kapalıyken
+        /// çalmaması için <see cref="SoundManager.SfxOn"/> kontrol edilir.
+        /// </summary>
+        private void PlayDamageSfx()
+        {
+            if (damageSource == null) return;
+            if (SoundManager.Instance != null && !SoundManager.Instance.SfxOn) return;
+
+            damageSource.Play();
         }
 
         private void ShakeCamera()
