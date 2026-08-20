@@ -546,12 +546,20 @@ garanti eder.
 `DogruSesiCikar()` / `YanlisSesiCikar()` SFX kapalıysa veya clip bağlı değilse
 sessizce çıkar (guard clause).
 
-**`PlaySfx(AudioClip)`** — oynanış olaylarının tek seferlik sesi için genel
-giriş. Klip çağrı bazlı geldiği için ortak bir kaynak (`gameplaySource`,
-Inspector'dan bağlanır) üzerinden `PlayOneShot` yapılır; olay başına ayrı
-`AudioSource` tutmak sahneyi gereksiz şişirirdi. Şu an yalnızca maden toplama
-(`MineDataSO.pickupClip`) kullanıyor; ateş, meteor vurma, can kaybı ve bölüm
-tamamlama **henüz bağlanmadı** — bkz. `YAPILACAKLAR.md` 2.3.
+**`PlaySfx(AudioClip, volumeScale)`** — oynanış olaylarının tek seferlik sesi için
+genel giriş. Klip çağrı bazlı geldiği için ortak bir kaynak (`gameplaySource`)
+üzerinden `PlayOneShot` yapılır; olay başına ayrı `AudioSource` tutmak sahneyi
+gereksiz şişirirdi. Kaynak Inspector'dan bağlanabilir, boş bırakılırsa
+`EnsureGameplaySource()` `Awake`'te runtime'da ekler — yani atama unutulsa da ses
+çıkar. Preload Audio Data kapalı bir klipte `PlayOneShot` sessizce hiçbir şey
+yapacağı için `AudioDataLoadState.Unloaded` durumunda klip önce yüklenir.
+
+Çağıranlar: ateş (`PlayerAutoShooter`, `volumeScale` ile kısılır), maden toplama
+(`MineController` → `MineDataSO.pickupClip`), bölüm tamamlama
+(`LevelCompletePanelView`), oyun sonu (`GameOverPanelView`), bitiş kutlaması
+(`BitisManager`). Meteor patlaması ve gemi hasarı `PlaySfx` kullanmaz; kendi
+üzerlerindeki `AudioSource`'u çalıp yalnızca `SfxOn` bayrağını kontrol ederler
+(meteor patladığı anda havuza döndüğü için sesin nesneden bağımsız olması gerekir).
 
 **`static void PlayUiSfx(AudioSource)`** — UI tık sesleri için ortak giriş
 noktası. Butonların **kendi üzerlerindeki** `AudioSource` bileşeni dışarıdan
@@ -562,8 +570,10 @@ sağlar (tek merkezi kaynak bunu imkânsız kılardı). Static olmasının sebeb
 `PlayerPrefs`'teki (`SfxPrefKey`) son ayara düşer, yani ses ayarı hiçbir koşulda
 yok sayılmaz.
 
-- **Bağlantı:** `SettingsManager` ve `MenuManager` (UI tarafı + `PlayUiSfx`),
-  `PlayerPrefs`.
+- **Bağlantı:** `SettingsManager`, `MenuManager`, `PauseManager`,
+  `LevelFlowController` (UI tarafı + `PlayUiSfx`); `PlayerAutoShooter`,
+  `MineController`, `LevelCompletePanelView`, `GameOverPanelView`, `BitisManager`
+  (`PlaySfx`); `PlayerPrefs`.
 
 ### `PlanetProgress.cs`
 `Assets/Scripts/Runtime/Core/`
@@ -1186,9 +1196,16 @@ tasarımcının paneli elle ekran dışına taşımasına gerek kalmaz.
   `hedefImg` alanlarına `PlanetSprite` yazılır. Kaynak: `LevelManager`'ın
   `CurrentPlanetData` ve `NextPlanetData` property'leri. Sprite atanmamış
   gezegende mevcut görsel bozulmadan bırakılır.
+- `PlayLevelCompleteSfx()` — `levelCompleteClip`'i `SoundManager.PlaySfx` ile
+  çalar. Giriş sequence'ının içinden `AppendCallback` ile tetiklenir: `showDelay`
+  beklendikten **sonra**, panel kaymaya başladığı karede. Gecikme için ayrı bir
+  alan yok; `showDelay` değişince ses de kendiliğinden kayar. Beklemenin sebebi
+  jingle'ın meteor patlama seslerinin üstüne binmemesi. SFX kapalıyken
+  `PlaySfx` zaten sessiz döner.
 
 - **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (gezegen verisi),
-  `PlanetDataSO`, `LevelFlowController` (`HideToLeft`), TextMeshPro, DOTween.
+  `PlanetDataSO`, `LevelFlowController` (`HideToLeft`), `SoundManager` (jingle),
+  TextMeshPro, DOTween.
 
 ### `GameOverPanelView.cs`
 `Assets/Scripts/Runtime/UI/`
@@ -1221,12 +1238,18 @@ toparlanır.
   Kaynak `LevelManager.CurrentPlanetData`; bölüm kaybedildiğinde seviye
   ilerlemediği için bu her zaman kaybedilen gezegendir.
 
+- `PlayGameOverSfx()` — `gameOverClip`'i `SoundManager.PlaySfx` ile çalar. Giriş
+  sequence'ının içinden `AppendCallback` ile tetiklenir, yani ölüm sekansı bitip
+  `showDelay` de geçtikten sonra; `LevelFailed` anında çalsaydı gemi patlama
+  sesinin üstüne binerdi. SFX kapalıyken `PlaySfx` sessiz döner.
+
 Paneldeki iki buton `LevelFlowController` metotlarına bağlanır:
 `tekrarOynaBtn → RestartLevel()`, `anaMenuBtn → GoToMainMenu()`.
 
 - **Bağlantı:** `PlayerDeathEffect` (`OnDeathSequenceCompleted`), `GameManager`
   (durum event'i), `LevelManager` + `PlanetDataSO` (gezegen bilgisi),
-  `LevelFlowController` (buton hedefi, `Hide`), TextMeshPro, DOTween.
+  `LevelFlowController` (buton hedefi, `Hide`), `SoundManager` (oyun sonu sesi),
+  TextMeshPro, DOTween.
 
 ### `BitisManager.cs`
 `Assets/Scripts/Runtime/UI/`
@@ -1271,6 +1294,11 @@ Stop Action = Destroy ayarına bırakılır; `celebrationLifetime > 0` verilirse
 çözülür (runtime'da arama yapılmaz). `ResetToHiddenState` ve `OnDestroy`
 coroutine'i durdurur, panel yeniden açılırsa efektler baştan başlar.
 
+Kutlama sesi (`celebrationClip`) `StartCelebration()` içinde, ilk konfetiyle
+**aynı karede** bir kez çalar. Çağrı `celebrationEffectPrefab` / `celebrationCamera`
+guard'larından **önce** yapılır: partikül kurulumu eksik olsa bile kutlama duyulur.
+`SoundManager.PlaySfx` üzerinden gittiği için SFX kapalıyken sessiz kalır.
+
 **Özet panelleri:** Gezegen/çizgi sekansı bittikten sonra üç `CanvasGroup` sırayla
 açılır: asal sayı paneli → puan paneli → başla butonu. Üçü de aynı adımı kullandığı
 için tek bir dizide tutulur (`summaryPanels` / `summaryTexts` / `summaryTargetValues`
@@ -1294,7 +1322,7 @@ sahne iki kez yüklenmez.
 - **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (`IsLastLevel`),
   `ScoreManager` (`DiscoveredPrimeCount`, `TotalScore`, `SaveTotalScore`),
   `SceneManager` (ana menü sahnesi), `Prefabs/Effects/confetti.prefab`
-  (kutlama efekti), TextMeshPro,
+  (kutlama efekti), `SoundManager` (kutlama sesi), TextMeshPro,
   DOTween (`DOAnchorPos`, `DOScale`, `DOFade`, `DOFillAmount`, `DOTween.To`).
 
 ### `PauseManager.cs`

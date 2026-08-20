@@ -8605,6 +8605,8 @@ MonoBehaviour:
   celebrationCameraDistance: 10
   celebrationScale: 1
   celebrationLifetime: 0
+  celebrationClip: {fileID: 8300000, guid: f997d203b6828e04bbe9f5895724f496, type: 3}
+  celebrationVolume: 1
   asalSayiPanel: {fileID: 1709715611}
   puanPanel: {fileID: 187373153}
   summaryStartDelay: 0.25
@@ -18021,6 +18023,8 @@ MonoBehaviour:
   exitDuration: 0.5
   exitEase: 26
   hiddenExtraMargin: 100
+  levelCompleteClip: {fileID: 8300000, guid: dc283ad2fa03c764995c2910f4cc2123, type: 3}
+  levelCompleteVolume: 1
 --- !u!1 &1297746775
 GameObject:
   m_ObjectHideFlags: 0
@@ -19217,6 +19221,8 @@ MonoBehaviour:
   slideEase: 27
   fadeDuration: 0.35
   hiddenExtraMargin: 100
+  gameOverClip: {fileID: 8300000, guid: 68b398afdebb92b4391bc815ca9d0ad7, type: 3}
+  gameOverVolume: 1
   fallbackShowDelay: 3
 --- !u!1 &1414704858
 GameObject:
@@ -19664,7 +19670,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1434470125
 MonoBehaviour:
   m_ObjectHideFlags: 0

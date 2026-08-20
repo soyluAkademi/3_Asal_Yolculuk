@@ -1,8 +1,8 @@
 # Yapılacaklar — Asal Yolculuk
 
-Son güncelleme: 2026-08-18 (**Dokunmatik kontrol eklendi** — ekran yön butonları
-ile gemi kontrolü, klavye fallback duruyor. Faz 3 maden sistemi de tamamlandı;
-kalan: ağırlıklı maden seçimi ve 3 eksik görsel.)
+Son güncelleme: 2026-08-20 (**Faz 2 kapandı** — duraklatma paneli ve ses sistemi
+bitti; bölüm tamamlama, oyun sonu ve bitiş kutlaması sesleri bağlandı. Sıradaki
+darboğaz Faz 4: ekran akışı ve kayıt sistemi.)
 
 Bu dosya projenin tamamlanmamış işlerini önceliklendirilmiş şekilde listeler.
 Mevcut durum için `SCRIPT_OZETI.md`, hedef tasarım için `AsalYolculuk_Senaryo.md`
@@ -13,8 +13,8 @@ ve `CLAUDE.md` referans alınır.
 ## Mevcut Durum Özeti
 
 Çekirdek gameplay döngüsü kapandı: bölüm kazanma, kaybetme ve iki durumdan da
-devam etme çalışıyor. Dokunmatik kontrol eklendi; meta katmanda ekran akışı ve
-kayıt sistemi hâlâ eksik.
+devam etme çalışıyor. Dokunmatik kontrol, duraklatma ve ses sistemi bitti;
+meta katmanda ekran akışı ve kayıt sistemi hâlâ eksik.
 
 | Sistem | Durum |
 |---|---|
@@ -42,12 +42,16 @@ kayıt sistemi hâlâ eksik.
 | Ekran akışı (Ana Menü, Harita, Yolculuk, Sonuç) | ❌ Yok |
 | Kayıt sistemi (`SaveManager`) | ❌ Yok |
 | Dokunmatik input (ekran yön butonları) | ✅ Bitti |
-| Ses sistemi (`SoundManager` + ayarlar UI) | 🟡 Altyapı bitti, olaylara bağlanmadı |
+| Ses sistemi (müzik + oynanış/UI SFX) | ✅ Bitti |
+| Duraklatma paneli (`PauseManager`) | ✅ Bitti |
 | Ana menü ayarlar paneli (`MenuManager`) | ✅ Bitti |
 
 Sahne durumu: `Assets/Scenes/GamePlay.unity` (oyun) ve `Assets/Scenes/MainMenu.unity`.
-İkisi de Build Settings'te ekli. **MainMenu şu an GamePlay'in kopyası** — bitiş
-panelindeki "Başla" butonu buraya dönüyor, içeriği 4.4'te yazılacak.
+İkisi de Build Settings'te ekli. MainMenu gerçek menü hâline geldi: `MenuManager`
+(başla / ayarlar), `SettingsManager` (müzik-ses toggle) ve `SelectionManager`
+(gezegen seçim paneli + kilit görselleri) çalışıyor. Bitiş panelindeki "Başla"
+butonu buraya dönüyor. Kalanlar 4.4'te listeli (gezegene tıklayıp o bölümden
+başlama, Devam Et, Sonsuz Yolculuk).
 
 ---
 
@@ -112,7 +116,7 @@ Bölüm kazanma, kaybetme ve her ikisinden de devam etme akışı çalışıyor.
 
 ---
 
-## 🟠 Faz 2 — Oynanabilirlik (Yüksek Öncelik)
+## ✅ Faz 2 — Oynanabilirlik (Tamamlandı)
 
 - [x] **2.1 — Dokunmatik input (yön butonları)** ✅
   Ekrana dört yön butonu (`leftBtn` / `rightBtn` / `upBtn` / `downBtn`) eklendi;
@@ -134,25 +138,28 @@ Bölüm kazanma, kaybetme ve her ikisinden de devam etme akışı çalışıyor.
   (varsayılan 0.12) test edilip yeniden ayarlanabilir.
   *Dosyalar:* `Player/PlayerShipController.cs`
 
-- [ ] **2.3 — Ses sistemi** 🟡 Altyapı bitti
-  `unity-ses-sistemi` skill'i ile `SoundManager` (müzik + SFX, `PlayerPrefs` ile
-  kalıcı aç/kapa, `DontDestroyOnLoad` ile sahneler arası yaşayan) ve ayarlar
-  panelindeki müzik/ses butonlarını yöneten `SettingsManager` eklendi.
-  *Dosyalar:* `Core/SoundManager.cs`, `UI/SettingsManager.cs`
+- [x] **2.3 — Ses sistemi** ✅
+  `SoundManager` (müzik + SFX, `PlayerPrefs` ile kalıcı aç/kapa,
+  `DontDestroyOnLoad` ile sahneler arası yaşayan) ve ayarlar panelindeki
+  müzik/ses butonlarını yöneten `SettingsManager` kuruldu. Arka plan müziği
+  çalışıyor.
+  Bağlanan olaylar: ateş, meteor patlaması, gemi hasarı, maden toplama,
+  UI tık sesleri, **bölüm tamamlama** (`levelUp`), **oyun sonu**
+  (`oyunBitisSes`), **bitiş kutlaması** (`winnerGame`).
+  Son üç ses, panelleri zaten yöneten bileşenlerin içine kondu; zamanlama
+  giriş sequence'ının `AppendCallback`'inden geliyor, yani `showDelay`
+  değişince ses de kendiliğinden kayıyor ve patlama seslerinin üstüne binmiyor.
+  Kutlama sesi konfetiyle aynı karede çalar.
+  `gameplaySource` artık sorun değil — `EnsureGameplaySource()` Inspector'da
+  boşsa runtime'da ekliyor.
+  *Dosyalar:* `Core/SoundManager.cs`, `UI/SettingsManager.cs`,
+  `UI/LevelCompletePanelView.cs`, `UI/GameOverPanelView.cs`, `UI/BitisManager.cs`
 
-  Kalanlar:
-  - Sahne kurulumu: `SoundManager` objesi + müzik/SFX `AudioSource` clip atamaları.
-  - Sahne kurulumu: `SoundManager` objesindeki yeni `gameplaySource` alanına bir
-    `AudioSource` bağlanmalı — bağlanmazsa `PlaySfx` sessizce çıkar.
-  - Oynanış olaylarına bağlama: ateş, meteor vurma, parçalanma, yok olma,
-    can kaybı, bölüm tamamlama. Genel `PlaySfx(AudioClip)` girişi **eklendi**
-    (maden toplama sesi `MineDataSO.pickupClip` üzerinden zaten bunu kullanıyor);
-    kalan olaylara bağlanması gerekiyor.
-
-- [ ] **2.4 — Duraklatma (Pause)**
-  `GameState.Paused` enum'da tanımlı ama hiçbir yerden tetiklenmiyor.
-  HUD'a duraklat butonu + panel; `GameManager` zaten `Paused` durumunda
+- [x] **2.4 — Duraklatma (Pause)** ✅
+  `PauseManager` eklendi: HUD'daki duraklat butonu + panel, ayarlar paneline
+  geçiş, oyuna dönüş ve ana menü çıkışı. `GameManager` `Paused` durumunda
   `Time.timeScale = 0` yapıyor.
+  *Dosyalar:* `UI/PauseManager.cs`
 
 ---
 
@@ -305,7 +312,8 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 - [ ] **4.5 — Harita ekranı**
   8 gezegen; tamamlananlar işaretli, kilitliler gri, aktif olan parlayan çerçeveli.
   `İLERLE` butonu. `PlanetManager` + `LevelManager.SetLevel` buraya bağlanacak.
-  *Görseller:* `Assets/Arts/Asal_0/gezegenler/` (6 adet var, 8 gerekiyor)
+  *Görseller:* `Assets/Arts/Asal_0/gezegenler/` — 8'i de hazır (`1_DunyaGezegeni`
+  … `8_AsalKrallik`), `PlanetDataSO` asset'lerine de bağlı.
 
 - [ ] **4.6 — Yolculuk (geçiş) ekranı**
   Solda mevcut gezegen, sağda hedef gezegen, ortada gemi + yıldız animasyonu.
@@ -368,10 +376,10 @@ GDD 9 ekran tanımlıyor; şu an yalnızca Oyun Ekranı var.
 
 ## Önerilen Sıra
 
-**Faz 2 → 3 → 4 → 5 → 6** (Faz 1 tamamlandı)
+**Faz 4 → 3 → 5 → 6** (Faz 1 ve 2 tamamlandı)
 
-Gerekçe: Faz 1 bittiği için oyun baştan sona oynanabiliyor; sıradaki darboğaz
-hedef platform. Faz 2'nin kritik parçası olan dokunmatik kontrol bitti; kalan
-ses bağlamaları ve duraklatma. Faz 3 ve 4 GDD'nin kalan yarısı;
-madenler gameplay'i zenginleştirdiği için ekran akışından önce gelmesi playtest
-açısından daha verimli. Faz 5 ve 6 içerik derinliği ve teslim cilası.
+Gerekçe: Faz 1 ve 2 bittiği için oyun baştan sona, hedef platformda, sesiyle
+oynanabiliyor. Faz 3'te yalnızca denge işleri kaldı (3.7 ağırlıklı seçim,
+3.8 eksik görsel); bunlar 8 madenin hepsi yerine oturduktan sonra yapılacak
+ayarlar olduğu için Faz 4 öne alınabilir. Faz 4 GDD'nin kalan yarısı ve
+şu anki asıl darboğaz. Faz 5 ve 6 içerik derinliği ve teslim cilası.

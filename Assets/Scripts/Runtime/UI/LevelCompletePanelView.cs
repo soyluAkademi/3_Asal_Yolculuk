@@ -42,6 +42,11 @@ namespace PayeGames.AsalYolculuk.UI
         [Tooltip("Gizli konumun canvas genişliğine ek olarak kaydırılma payı")]
         [SerializeField] private float hiddenExtraMargin = 100f;
 
+        [Header("Ses")]
+        [Tooltip("Bölüm tamamlandığında çalacak kutlama jingle'ı (örn. levelUp)")]
+        [SerializeField] private AudioClip levelCompleteClip;
+        [SerializeField, Range(0f, 1f)] private float levelCompleteVolume = 1f;
+
         private RectTransform rectTransform;
         private CanvasGroup canvasGroup;
         private Vector2 shownAnchoredPosition;
@@ -128,10 +133,23 @@ namespace PayeGames.AsalYolculuk.UI
             // Panel gelirken timeScale değişebileceği için tween zamandan bağımsız çalışır.
             activeSequence = DOTween.Sequence()
                 .AppendInterval(showDelay)
+                .AppendCallback(PlayLevelCompleteSfx)
                 .Append(rectTransform.DOAnchorPos(shownAnchoredPosition, slideDuration).SetEase(slideEase))
                 .Join(canvasGroup.DOFade(1f, fadeDuration))
                 .OnComplete(EnableInteraction)
                 .SetUpdate(true);
+        }
+
+        /// <summary>
+        /// Jingle, patlama sesleri dinsin diye <see cref="showDelay"/> beklendikten
+        /// sonra, panel kaymaya başladığı anda çalar.
+        /// </summary>
+        private void PlayLevelCompleteSfx()
+        {
+            if (levelCompleteClip == null) return;
+            if (SoundManager.Instance == null) return;
+
+            SoundManager.Instance.PlaySfx(levelCompleteClip, levelCompleteVolume);
         }
 
         /// <summary>

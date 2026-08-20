@@ -73,6 +73,9 @@ namespace PayeGames.AsalYolculuk.UI
         [SerializeField] private float celebrationScale = 1f;
         [Tooltip("Efektin kaç saniye sonra yok edileceği; 0 = prefab kendini yok eder")]
         [SerializeField] private float celebrationLifetime = 0f;
+        [Tooltip("Kutlama başlarken bir kez çalacak ses (örn. winnerGame)")]
+        [SerializeField] private AudioClip celebrationClip;
+        [SerializeField, Range(0f, 1f)] private float celebrationVolume = 1f;
 
         [Header("Özet Panelleri")]
         [Tooltip("Keşfedilen asal sayısı paneli; gezegen sekansından sonra ilk açılır")]
@@ -478,6 +481,10 @@ namespace PayeGames.AsalYolculuk.UI
         {
             StopCelebration();
 
+            // Ses partikül kurulumundan bağımsız çalışsın diye guard'lardan önce
+            // tetiklenir; efekt prefab'ı atanmamış olsa da kutlama duyulur.
+            PlayCelebrationSfx();
+
             if (celebrationEffectPrefab == null) return;
             if (celebrationCamera == null) return;
 
@@ -517,6 +524,14 @@ namespace PayeGames.AsalYolculuk.UI
             if (celebrationLifetime <= 0f) return;
 
             Destroy(effect, celebrationLifetime);
+        }
+
+        private void PlayCelebrationSfx()
+        {
+            if (celebrationClip == null) return;
+            if (SoundManager.Instance == null) return;
+
+            SoundManager.Instance.PlaySfx(celebrationClip, celebrationVolume);
         }
 
         private void StopCelebration()

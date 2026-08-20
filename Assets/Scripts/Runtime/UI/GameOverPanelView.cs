@@ -52,6 +52,11 @@ namespace PayeGames.AsalYolculuk.UI
         [Tooltip("Gizli konumun canvas genişliğine ek olarak kaydırılma payı")]
         [SerializeField] private float hiddenExtraMargin = 100f;
 
+        [Header("Ses")]
+        [Tooltip("Canlar bittiğinde çalacak oyun sonu sesi (örn. oyunBitisSes)")]
+        [SerializeField] private AudioClip gameOverClip;
+        [SerializeField, Range(0f, 1f)] private float gameOverVolume = 1f;
+
         [Header("Güvenlik Ağı")]
         [Tooltip("playerDeathEffect bağlı değilken LevelFailed sonrası beklenecek süre")]
         [SerializeField] private float fallbackShowDelay = 3f;
@@ -162,10 +167,23 @@ namespace PayeGames.AsalYolculuk.UI
             // Panel gelirken timeScale değişebileceği için tween zamandan bağımsız çalışır.
             activeSequence = DOTween.Sequence()
                 .AppendInterval(showDelay)
+                .AppendCallback(PlayGameOverSfx)
                 .Append(rectTransform.DOAnchorPos(shownAnchoredPosition, slideDuration).SetEase(slideEase))
                 .Join(canvasGroup.DOFade(1f, fadeDuration))
                 .OnComplete(EnableInteraction)
                 .SetUpdate(true);
+        }
+
+        /// <summary>
+        /// Oyun sonu sesi gemi patlama sesinin üstüne binmesin diye ölüm sekansı
+        /// bittikten ve <see cref="showDelay"/> geçtikten sonra çalar.
+        /// </summary>
+        private void PlayGameOverSfx()
+        {
+            if (gameOverClip == null) return;
+            if (SoundManager.Instance == null) return;
+
+            SoundManager.Instance.PlaySfx(gameOverClip, gameOverVolume);
         }
 
         /// <summary>
