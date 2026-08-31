@@ -49,6 +49,8 @@ namespace PayeGames.AsalYolculuk.Core
             {
                 Instance = null;
             }
+
+            //deneme
         }
 
         public void Shake()
