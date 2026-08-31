@@ -50,7 +50,7 @@ namespace PayeGames.AsalYolculuk.Core
                 Instance = null;
             }
 
-            //deneme
+            //denemee
         }
 
         public void Shake()
