@@ -30,8 +30,11 @@ namespace PayeGames.AsalYolculuk.Data
         [SerializeField] private bool areRewardMinesEnabled = true;
         [Tooltip("Bu gezegende ceza madenleri çıkar mı")]
         [SerializeField] private bool areCurseMinesEnabled = true;
-        [Tooltip("Maden sıklığı çarpanı; Kristal Gezegeni gibi 'yoğun maden' temalı bölümlerde artırılır")]
-        [SerializeField] private float mineRateMultiplier = 1f;
+        [Tooltip("Ödül madeni düşme şansı çarpanı; Kristal Gezegeni gibi 'yoğun maden' temalı bölümlerde artırılır")]
+        [SerializeField, Range(0.25f, 4f)] private float rewardRateMultiplier = 1f;
+        [Tooltip("Ceza madeni sıklığı çarpanı. Ödülden AYRI tutulur: 'bol ödüllü' bir " +
+                 "gezegen otomatik olarak 'bol cezalı' olmamalı. 2 = iki kat sık ceza.")]
+        [SerializeField, Range(0.25f, 2f)] private float curseRateMultiplier = 1f;
 
         public int PlanetId => planetId;
         public string PlanetName => planetName;
@@ -45,6 +48,7 @@ namespace PayeGames.AsalYolculuk.Data
         public IReadOnlyList<int> PriorityNumberList => priorityNumberList;
         public bool AreRewardMinesEnabled => areRewardMinesEnabled;
         public bool AreCurseMinesEnabled => areCurseMinesEnabled;
-        public float MineRateMultiplier => mineRateMultiplier;
+        public float RewardRateMultiplier => rewardRateMultiplier;
+        public float CurseRateMultiplier => curseRateMultiplier;
     }
 }

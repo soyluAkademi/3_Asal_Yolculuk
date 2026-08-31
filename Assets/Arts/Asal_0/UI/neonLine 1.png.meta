@@ -1,0 +1,5421 @@
+fileFormatVersion: 2
+guid: 5968d04fa52f34449964f245cf43a193
+TextureImporter:
+  internalIDToNameTable:
+  - first:
+      213: -8317630096696489963
+    second: neonLine 1_0
+  - first:
+      213: -4076650604213964193
+    second: neonLine 1_1
+  - first:
+      213: -4344881260345248733
+    second: neonLine 1_2
+  - first:
+      213: 2349872214529824172
+    second: neonLine 1_3
+  - first:
+      213: -6356984311030372485
+    second: neonLine 1_4
+  - first:
+      213: 4182061000926337494
+    second: neonLine 1_5
+  - first:
+      213: -1812027087644715064
+    second: neonLine 1_6
+  - first:
+      213: 3719044371949120698
+    second: neonLine 1_7
+  - first:
+      213: -694413416549422429
+    second: neonLine 1_8
+  - first:
+      213: -8126210781606858554
+    second: neonLine 1_9
+  - first:
+      213: 1766344050395583767
+    second: neonLine 1_10
+  - first:
+      213: 5455368608401642526
+    second: neonLine 1_11
+  - first:
+      213: 7994479802968854249
+    second: neonLine 1_12
+  - first:
+      213: -8658120582680890449
+    second: neonLine 1_13
+  - first:
+      213: 6722323354829214602
+    second: neonLine 1_14
+  - first:
+      213: 7996610761555137660
+    second: neonLine 1_15
+  - first:
+      213: 3725382859661266103
+    second: neonLine 1_16
+  - first:
+      213: 4794504309891442923
+    second: neonLine 1_17
+  - first:
+      213: -3153199591534403059
+    second: neonLine 1_18
+  - first:
+      213: 7026809588544681662
+    second: neonLine 1_19
+  - first:
+      213: -6710698656153258295
+    second: neonLine 1_20
+  - first:
+      213: -1905731432538815732
+    second: neonLine 1_21
+  - first:
+      213: -6318289832970665419
+    second: neonLine 1_22
+  - first:
+      213: -8229089046875452811
+    second: neonLine 1_23
+  - first:
+      213: 2857802280209775399
+    second: neonLine 1_24
+  - first:
+      213: -2619214732349637501
+    second: neonLine 1_25
+  - first:
+      213: 3400545400016508652
+    second: neonLine 1_26
+  - first:
+      213: -4720016314362245622
+    second: neonLine 1_27
+  - first:
+      213: 7950719361697642139
+    second: neonLine 1_28
+  - first:
+      213: 1732903122319531724
+    second: neonLine 1_29
+  - first:
+      213: -5926123685351607724
+    second: neonLine 1_30
+  - first:
+      213: -6159118574543931726
+    second: neonLine 1_31
+  - first:
+      213: 8923064430956662759
+    second: neonLine 1_32
+  - first:
+      213: -3085126533485314614
+    second: neonLine 1_33
+  - first:
+      213: 5092394282412819950
+    second: neonLine 1_34
+  - first:
+      213: 2577611389842497985
+    second: neonLine 1_35
+  - first:
+      213: 1662514616614187890
+    second: neonLine 1_36
+  - first:
+      213: 4776327263268270905
+    second: neonLine 1_37
+  - first:
+      213: 4275299022641219937
+    second: neonLine 1_38
+  - first:
+      213: -2082440983963359530
+    second: neonLine 1_39
+  - first:
+      213: -2329169683625729588
+    second: neonLine 1_40
+  - first:
+      213: 5428288881038803659
+    second: neonLine 1_41
+  - first:
+      213: -4146066385898171844
+    second: neonLine 1_42
+  - first:
+      213: 8744924887639564933
+    second: neonLine 1_43
+  - first:
+      213: 1613231665764873045
+    second: neonLine 1_44
+  - first:
+      213: -1676849191455675531
+    second: neonLine 1_45
+  - first:
+      213: -8698381069273998224
+    second: neonLine 1_46
+  - first:
+      213: -1879447734858366041
+    second: neonLine 1_47
+  - first:
+      213: 1172899518777876076
+    second: neonLine 1_48
+  - first:
+      213: -8098504252383921765
+    second: neonLine 1_49
+  - first:
+      213: -5067367127267541606
+    second: neonLine 1_50
+  - first:
+      213: 1740715936415775071
+    second: neonLine 1_51
+  - first:
+      213: -7956362418183149265
+    second: neonLine 1_52
+  - first:
+      213: 3429891422680158975
+    second: neonLine 1_53
+  - first:
+      213: 6484729155459925923
+    second: neonLine 1_54
+  - first:
+      213: 860969698248992065
+    second: neonLine 1_55
+  - first:
+      213: 4402517034543377245
+    second: neonLine 1_56
+  - first:
+      213: -809927528435866470
+    second: neonLine 1_57
+  - first:
+      213: 613967906328362965
+    second: neonLine 1_58
+  - first:
+      213: -4488067313764800136
+    second: neonLine 1_59
+  - first:
+      213: -2711880578990270701
+    second: neonLine 1_60
+  - first:
+      213: 7335220166335896814
+    second: neonLine 1_61
+  - first:
+      213: -3242453539478315756
+    second: neonLine 1_62
+  - first:
+      213: 7119573136018093385
+    second: neonLine 1_63
+  - first:
+      213: -7567742398625860877
+    second: neonLine 1_64
+  - first:
+      213: -6459705527676336147
+    second: neonLine 1_65
+  - first:
+      213: 8122152276902863313
+    second: neonLine 1_66
+  - first:
+      213: -52869803566551890
+    second: neonLine 1_67
+  - first:
+      213: -9120944125224942236
+    second: neonLine 1_68
+  - first:
+      213: -4535886520113038841
+    second: neonLine 1_69
+  - first:
+      213: -4521232831968851143
+    second: neonLine 1_70
+  - first:
+      213: 7309264378106328107
+    second: neonLine 1_71
+  - first:
+      213: 1590669772078184905
+    second: neonLine 1_72
+  - first:
+      213: -3185040087953272584
+    second: neonLine 1_73
+  - first:
+      213: 4887930687235709016
+    second: neonLine 1_74
+  - first:
+      213: -4993372528691180026
+    second: neonLine 1_75
+  - first:
+      213: -8863994866440860091
+    second: neonLine 1_76
+  - first:
+      213: -8835378006742277961
+    second: neonLine 1_77
+  - first:
+      213: 3837172625988873614
+    second: neonLine 1_78
+  - first:
+      213: -2410332013410830054
+    second: neonLine 1_79
+  - first:
+      213: 6233111450619632229
+    second: neonLine 1_80
+  - first:
+      213: 7061251144452939173
+    second: neonLine 1_81
+  - first:
+      213: 4689380420726799884
+    second: neonLine 1_82
+  - first:
+      213: -4539077151806691304
+    second: neonLine 1_83
+  - first:
+      213: -3947650991366846514
+    second: neonLine 1_84
+  - first:
+      213: 5532984166085349288
+    second: neonLine 1_85
+  - first:
+      213: 8132106481636812531
+    second: neonLine 1_86
+  - first:
+      213: 8807382525638991556
+    second: neonLine 1_87
+  - first:
+      213: 1285616216138828359
+    second: neonLine 1_88
+  - first:
+      213: 2211932719882284437
+    second: neonLine 1_89
+  - first:
+      213: 6436014526544512166
+    second: neonLine 1_90
+  - first:
+      213: 2878552126067556105
+    second: neonLine 1_91
+  - first:
+      213: 2039744576137307615
+    second: neonLine 1_92
+  - first:
+      213: -4865337849887337103
+    second: neonLine 1_93
+  - first:
+      213: -7518904641733672858
+    second: neonLine 1_94
+  - first:
+      213: -2613752699732087678
+    second: neonLine 1_95
+  - first:
+      213: -3075348048418070003
+    second: neonLine 1_96
+  - first:
+      213: -2881858324477538071
+    second: neonLine 1_97
+  - first:
+      213: 7068307394623055311
+    second: neonLine 1_98
+  - first:
+      213: -6415190023165194594
+    second: neonLine 1_99
+  - first:
+      213: -7100767922493498962
+    second: neonLine 1_100
+  - first:
+      213: 1372397620866788712
+    second: neonLine 1_101
+  - first:
+      213: -5110980168322952199
+    second: neonLine 1_102
+  - first:
+      213: -1897720299243247132
+    second: neonLine 1_103
+  - first:
+      213: 6997501322981934235
+    second: neonLine 1_104
+  - first:
+      213: 6856003701686188669
+    second: neonLine 1_105
+  - first:
+      213: -1593979009936383492
+    second: neonLine 1_106
+  - first:
+      213: -7571237313754191570
+    second: neonLine 1_107
+  - first:
+      213: -9003466329677876563
+    second: neonLine 1_108
+  - first:
+      213: 5856966562837565887
+    second: neonLine 1_109
+  - first:
+      213: -3143671544761521503
+    second: neonLine 1_110
+  - first:
+      213: 2018390730183954816
+    second: neonLine 1_111
+  - first:
+      213: -8629299523707332500
+    second: neonLine 1_112
+  - first:
+      213: -5234600621444729208
+    second: neonLine 1_113
+  - first:
+      213: -2487853272472007881
+    second: neonLine 1_114
+  - first:
+      213: -1272724182968002707
+    second: neonLine 1_115
+  - first:
+      213: 5090690651657018638
+    second: neonLine 1_116
+  - first:
+      213: 3218324190486774430
+    second: neonLine 1_117
+  - first:
+      213: 1558924653042911599
+    second: neonLine 1_118
+  - first:
+      213: -9158447792472982025
+    second: neonLine 1_119
+  - first:
+      213: 672164156931203053
+    second: neonLine 1_120
+  - first:
+      213: 7929441446326797411
+    second: neonLine 1_121
+  - first:
+      213: -132482789307281627
+    second: neonLine 1_122
+  - first:
+      213: -6184446771975210013
+    second: neonLine 1_123
+  - first:
+      213: -6122421250791388621
+    second: neonLine 1_124
+  - first:
+      213: 5201038728873833734
+    second: neonLine 1_125
+  - first:
+      213: 6967238160193402668
+    second: neonLine 1_126
+  - first:
+      213: 1603923001000117687
+    second: neonLine 1_127
+  - first:
+      213: -3600680996317315212
+    second: neonLine 1_128
+  - first:
+      213: 6571260643374107008
+    second: neonLine 1_129
+  - first:
+      213: -3466517765735836482
+    second: neonLine 1_130
+  - first:
+      213: -6376916426016292616
+    second: neonLine 1_131
+  - first:
+      213: -6078984917472672412
+    second: neonLine 1_132
+  - first:
+      213: 7756516722668691829
+    second: neonLine 1_133
+  - first:
+      213: 5390514501936323052
+    second: neonLine 1_134
+  - first:
+      213: -1284977941950071231
+    second: neonLine 1_135
+  - first:
+      213: 105859021079348954
+    second: neonLine 1_136
+  - first:
+      213: -1150488904598597687
+    second: neonLine 1_137
+  - first:
+      213: 6035437256325371392
+    second: neonLine 1_138
+  - first:
+      213: -114563793089469029
+    second: neonLine 1_139
+  - first:
+      213: 1361996279299168632
+    second: neonLine 1_140
+  - first:
+      213: 1091153944471028049
+    second: neonLine 1_141
+  - first:
+      213: 6037117856466425161
+    second: neonLine 1_142
+  - first:
+      213: -5027609292990949399
+    second: neonLine 1_143
+  - first:
+      213: 4260233629465129210
+    second: neonLine 1_144
+  - first:
+      213: 1005617917857171521
+    second: neonLine 1_145
+  - first:
+      213: -915898325376210714
+    second: neonLine 1_146
+  - first:
+      213: -1397409897540535855
+    second: neonLine 1_147
+  - first:
+      213: 6855033695655744041
+    second: neonLine 1_148
+  - first:
+      213: 6089776572828700279
+    second: neonLine 1_149
+  - first:
+      213: -3072046749594459294
+    second: neonLine 1_150
+  - first:
+      213: -3639756249640914824
+    second: neonLine 1_151
+  - first:
+      213: -3120202081370300789
+    second: neonLine 1_152
+  - first:
+      213: 2445423334447919471
+    second: neonLine 1_153
+  - first:
+      213: 8841714014985257393
+    second: neonLine 1_154
+  - first:
+      213: 7359559585867861926
+    second: neonLine 1_155
+  - first:
+      213: -7519697593637335456
+    second: neonLine 1_156
+  - first:
+      213: 8259629627230404809
+    second: neonLine 1_157
+  - first:
+      213: -6830284600847273600
+    second: neonLine 1_158
+  - first:
+      213: -2706884346778384398
+    second: neonLine 1_159
+  - first:
+      213: -8002677728943458462
+    second: neonLine 1_160
+  - first:
+      213: 3659186744642820051
+    second: neonLine 1_161
+  - first:
+      213: -2813055238785222413
+    second: neonLine 1_162
+  - first:
+      213: 7022190055987889659
+    second: neonLine 1_163
+  - first:
+      213: -2088286132986518510
+    second: neonLine 1_164
+  - first:
+      213: -4473385365726314115
+    second: neonLine 1_165
+  - first:
+      213: 6819212924693498968
+    second: neonLine 1_166
+  - first:
+      213: 7296041887839944660
+    second: neonLine 1_167
+  - first:
+      213: -6151662694545856865
+    second: neonLine 1_168
+  - first:
+      213: -8755801932540544942
+    second: neonLine 1_169
+  - first:
+      213: -9103588373312279512
+    second: neonLine 1_170
+  - first:
+      213: 3361677253227695139
+    second: neonLine 1_171
+  - first:
+      213: 3935694038963019345
+    second: neonLine 1_172
+  - first:
+      213: -3811197875297422361
+    second: neonLine 1_173
+  - first:
+      213: -7215711405659817357
+    second: neonLine 1_174
+  - first:
+      213: -2313503726272775147
+    second: neonLine 1_175
+  - first:
+      213: 4904000394766411291
+    second: neonLine 1_176
+  - first:
+      213: 5976892343750870503
+    second: neonLine 1_177
+  - first:
+      213: 4548064880895710435
+    second: neonLine 1_178
+  - first:
+      213: 3759183801609678549
+    second: neonLine 1_179
+  - first:
+      213: 6090838042441471768
+    second: neonLine 1_180
+  - first:
+      213: 7335062293949404370
+    second: neonLine 1_181
+  - first:
+      213: -447867927329030520
+    second: neonLine 1_182
+  - first:
+      213: -5376086470112043830
+    second: neonLine 1_183
+  - first:
+      213: 7619313010055851678
+    second: neonLine 1_184
+  - first:
+      213: -96844045983410334
+    second: neonLine 1_185
+  - first:
+      213: 435670139469868486
+    second: neonLine 1_186
+  - first:
+      213: 4174479124642558456
+    second: neonLine 1_187
+  - first:
+      213: 1429831572780606174
+    second: neonLine 1_188
+  - first:
+      213: -5200916858786665486
+    second: neonLine 1_189
+  - first:
+      213: -6980547092203119438
+    second: neonLine 1_190
+  - first:
+      213: 1083613759315875645
+    second: neonLine 1_191
+  - first:
+      213: 3059496461111318227
+    second: neonLine 1_192
+  - first:
+      213: -2963063819383190024
+    second: neonLine 1_193
+  - first:
+      213: -9182286739190514911
+    second: neonLine 1_194
+  - first:
+      213: 3340980080418844154
+    second: neonLine 1_195
+  - first:
+      213: 1109609316183062496
+    second: neonLine 1_196
+  - first:
+      213: -6157304936324536496
+    second: neonLine 1_197
+  - first:
+      213: 3801664595607698653
+    second: neonLine 1_198
+  - first:
+      213: 4804999460417710981
+    second: neonLine 1_199
+  - first:
+      213: -2526049666147296519
+    second: neonLine 1_200
+  - first:
+      213: 4799894471425623410
+    second: neonLine 1_201
+  - first:
+      213: 5875182875477660528
+    second: neonLine 1_202
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 1
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 1
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 4
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 4
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: neonLine 1_0
+      rect:
+        serializedVersion: 2
+        x: 909
+        y: 1489
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 518ce49ee77d19c80800000000000000
+      internalID: -8317630096696489963
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_1
+      rect:
+        serializedVersion: 2
+        x: 1803
+        y: 1491
+        width: 21
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f52f17edfd3dc67c0800000000000000
+      internalID: -4076650604213964193
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_2
+      rect:
+        serializedVersion: 2
+        x: 1841
+        y: 1489
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 324bedd8381e3b3c0800000000000000
+      internalID: -4344881260345248733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_3
+      rect:
+        serializedVersion: 2
+        x: 2507
+        y: 1489
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ca55c96345c6c9020800000000000000
+      internalID: 2349872214529824172
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_4
+      rect:
+        serializedVersion: 2
+        x: 2620
+        y: 1485
+        width: 11
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b77ad4a237477c7a0800000000000000
+      internalID: -6356984311030372485
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_5
+      rect:
+        serializedVersion: 2
+        x: 2764
+        y: 1485
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d99a35a25aa90a30800000000000000
+      internalID: 4182061000926337494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_6
+      rect:
+        serializedVersion: 2
+        x: 1668
+        y: 1472
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8c71d8dd6f26ad6e0800000000000000
+      internalID: -1812027087644715064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_7
+      rect:
+        serializedVersion: 2
+        x: 1773
+        y: 1469
+        width: 6
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: abc61f5e623bc9330800000000000000
+      internalID: 3719044371949120698
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_8
+      rect:
+        serializedVersion: 2
+        x: 2393
+        y: 1473
+        width: 11
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3aa6e434da2fc56f0800000000000000
+      internalID: -694413416549422429
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_9
+      rect:
+        serializedVersion: 2
+        x: 2410
+        y: 1476
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6c0bf504956e93f80800000000000000
+      internalID: -8126210781606858554
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_10
+      rect:
+        serializedVersion: 2
+        x: 2720
+        y: 1475
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 71514fa2e80538810800000000000000
+      internalID: 1766344050395583767
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_11
+      rect:
+        serializedVersion: 2
+        x: 2737
+        y: 1475
+        width: 14
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e14d89678dc55bb40800000000000000
+      internalID: 5455368608401642526
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_12
+      rect:
+        serializedVersion: 2
+        x: 2753
+        y: 1469
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9ee4ef3360912fe60800000000000000
+      internalID: 7994479802968854249
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_13
+      rect:
+        serializedVersion: 2
+        x: 1687
+        y: 1463
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fa3bec6e33d28d780800000000000000
+      internalID: -8658120582680890449
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_14
+      rect:
+        serializedVersion: 2
+        x: 1836
+        y: 1468
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a8358ed897d7a4d50800000000000000
+      internalID: 6722323354829214602
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_15
+      rect:
+        serializedVersion: 2
+        x: 2408
+        y: 1443
+        width: 14
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c745f89ae1ba9fe60800000000000000
+      internalID: 7996610761555137660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_16
+      rect:
+        serializedVersion: 2
+        x: 2426
+        y: 1453
+        width: 11
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7bc407219f733b330800000000000000
+      internalID: 3725382859661266103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_17
+      rect:
+        serializedVersion: 2
+        x: 2443
+        y: 1460
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: be8a8297440898240800000000000000
+      internalID: 4794504309891442923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_18
+      rect:
+        serializedVersion: 2
+        x: 2587
+        y: 1460
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d026fa88da59d34d0800000000000000
+      internalID: -3153199591534403059
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_19
+      rect:
+        serializedVersion: 2
+        x: 2208
+        y: 1445
+        width: 18
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb6b385571e348160800000000000000
+      internalID: 7026809588544681662
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_20
+      rect:
+        serializedVersion: 2
+        x: 2397
+        y: 1460
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c63b45802fced2a0800000000000000
+      internalID: -6710698656153258295
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_21
+      rect:
+        serializedVersion: 2
+        x: 47
+        y: 168
+        width: 4750
+        height: 1288
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c034a3eeb5b7d85e0800000000000000
+      internalID: -1905731432538815732
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_22
+      rect:
+        serializedVersion: 2
+        x: 4812
+        y: 995
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 53242d56fdce058a0800000000000000
+      internalID: -6318289832970665419
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_23
+      rect:
+        serializedVersion: 2
+        x: 4777
+        y: 919
+        width: 22
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57a4ee78c176ccd80800000000000000
+      internalID: -8229089046875452811
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_24
+      rect:
+        serializedVersion: 2
+        x: 4802
+        y: 913
+        width: 20
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 72b74365804f8a720800000000000000
+      internalID: 2857802280209775399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_25
+      rect:
+        serializedVersion: 2
+        x: 4796
+        y: 907
+        width: 14
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 38c74dff31ea6abd0800000000000000
+      internalID: -2619214732349637501
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_26
+      rect:
+        serializedVersion: 2
+        x: 37
+        y: 898
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce69292460a213f20800000000000000
+      internalID: 3400545400016508652
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_27
+      rect:
+        serializedVersion: 2
+        x: 4803
+        y: 894
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a0ec3687b222f7eb0800000000000000
+      internalID: -4720016314362245622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_28
+      rect:
+        serializedVersion: 2
+        x: 4791
+        y: 875
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b96fece7221a65e60800000000000000
+      internalID: 7950719361697642139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_29
+      rect:
+        serializedVersion: 2
+        x: 20
+        y: 858
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cce550c55328c0810800000000000000
+      internalID: 1732903122319531724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_30
+      rect:
+        serializedVersion: 2
+        x: 4783
+        y: 846
+        width: 15
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 452b697f7ed22cda0800000000000000
+      internalID: -5926123685351607724
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_31
+      rect:
+        serializedVersion: 2
+        x: 4825
+        y: 822
+        width: 5
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2b67cc2f94a668aa0800000000000000
+      internalID: -6159118574543931726
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_32
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 814
+        width: 5
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7ef4813d2d715db70800000000000000
+      internalID: 8923064430956662759
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_33
+      rect:
+        serializedVersion: 2
+        x: 4775
+        y: 737
+        width: 24
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acdb97473cd6f25d0800000000000000
+      internalID: -3085126533485314614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_34
+      rect:
+        serializedVersion: 2
+        x: 4777
+        y: 760
+        width: 22
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ee542738e91dba640800000000000000
+      internalID: 5092394282412819950
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_35
+      rect:
+        serializedVersion: 2
+        x: 4803
+        y: 754
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1c1209cf6e385c320800000000000000
+      internalID: 2577611389842497985
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_36
+      rect:
+        serializedVersion: 2
+        x: 4812
+        y: 754
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 273fe254c30721710800000000000000
+      internalID: 1662514616614187890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_37
+      rect:
+        serializedVersion: 2
+        x: 16
+        y: 731
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9337e12075ce84240800000000000000
+      internalID: 4776327263268270905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_38
+      rect:
+        serializedVersion: 2
+        x: 31
+        y: 739
+        width: 12
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 169ca114fc9e45b30800000000000000
+      internalID: 4275299022641219937
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_39
+      rect:
+        serializedVersion: 2
+        x: 32
+        y: 704
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6d6262555fea913e0800000000000000
+      internalID: -2082440983963359530
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_40
+      rect:
+        serializedVersion: 2
+        x: 4808
+        y: 657
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cc121e163802dafd0800000000000000
+      internalID: -2329169683625729588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_41
+      rect:
+        serializedVersion: 2
+        x: 4796
+        y: 634
+        width: 9
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bc2458c1af7255b40800000000000000
+      internalID: 5428288881038803659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_42
+      rect:
+        serializedVersion: 2
+        x: 1742
+        y: 163
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c321a5db6963676c0800000000000000
+      internalID: -4146066385898171844
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_43
+      rect:
+        serializedVersion: 2
+        x: 1811
+        y: 160
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 582aa3b4ad63c5970800000000000000
+      internalID: 8744924887639564933
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_44
+      rect:
+        serializedVersion: 2
+        x: 1896
+        y: 164
+        width: 14
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 553b35a17a9536610800000000000000
+      internalID: 1613231665764873045
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_45
+      rect:
+        serializedVersion: 2
+        x: 1929
+        y: 160
+        width: 15
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 57b22617b82aab8e0800000000000000
+      internalID: -1676849191455675531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_46
+      rect:
+        serializedVersion: 2
+        x: 1980
+        y: 160
+        width: 6
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 07cd0f4e084294780800000000000000
+      internalID: -8698381069273998224
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_47
+      rect:
+        serializedVersion: 2
+        x: 1983
+        y: 143
+        width: 24
+        height: 32
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7a3cadd2e3cdae5e0800000000000000
+      internalID: -1879447734858366041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_48
+      rect:
+        serializedVersion: 2
+        x: 2097
+        y: 152
+        width: 22
+        height: 28
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c6e5bf5e5e9f64010800000000000000
+      internalID: 1172899518777876076
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_49
+      rect:
+        serializedVersion: 2
+        x: 2127
+        y: 164
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b997aa84a455c9f80800000000000000
+      internalID: -8098504252383921765
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_50
+      rect:
+        serializedVersion: 2
+        x: 2149
+        y: 164
+        width: 18
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9df9b022781da9b0800000000000000
+      internalID: -5067367127267541606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_51
+      rect:
+        serializedVersion: 2
+        x: 2174
+        y: 160
+        width: 10
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f597ce4ebe3482810800000000000000
+      internalID: 1740715936415775071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_52
+      rect:
+        serializedVersion: 2
+        x: 2180
+        y: 166
+        width: 38
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f29ece70982559190800000000000000
+      internalID: -7956362418183149265
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_53
+      rect:
+        serializedVersion: 2
+        x: 2212
+        y: 167
+        width: 19
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ff2920b931c699f20800000000000000
+      internalID: 3429891422680158975
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_54
+      rect:
+        serializedVersion: 2
+        x: 2271
+        y: 127
+        width: 31
+        height: 43
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3a7cecf2fc26ef950800000000000000
+      internalID: 6484729155459925923
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_55
+      rect:
+        serializedVersion: 2
+        x: 2446
+        y: 163
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 145a1820167c2fb00800000000000000
+      internalID: 860969698248992065
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_56
+      rect:
+        serializedVersion: 2
+        x: 2457
+        y: 159
+        width: 26
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d5b6099dae1e81d30800000000000000
+      internalID: 4402517034543377245
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_57
+      rect:
+        serializedVersion: 2
+        x: 2494
+        y: 151
+        width: 21
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a9425cd343f82c4f0800000000000000
+      internalID: -809927528435866470
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_58
+      rect:
+        serializedVersion: 2
+        x: 2519
+        y: 160
+        width: 23
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5df3130de80458800800000000000000
+      internalID: 613967906328362965
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_59
+      rect:
+        serializedVersion: 2
+        x: 2575
+        y: 164
+        width: 14
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 879e1039e8e27b1c0800000000000000
+      internalID: -4488067313764800136
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_60
+      rect:
+        serializedVersion: 2
+        x: 2599
+        y: 167
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 31711084bf67d5ad0800000000000000
+      internalID: -2711880578990270701
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_61
+      rect:
+        serializedVersion: 2
+        x: 2620
+        y: 164
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eec9bbba0efebc560800000000000000
+      internalID: 7335220166335896814
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_62
+      rect:
+        serializedVersion: 2
+        x: 2629
+        y: 167
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 41ddfa26fad7003d0800000000000000
+      internalID: -3242453539478315756
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_63
+      rect:
+        serializedVersion: 2
+        x: 2684
+        y: 164
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 945b5cccb0ecdc260800000000000000
+      internalID: 7119573136018093385
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_64
+      rect:
+        serializedVersion: 2
+        x: 2705
+        y: 160
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f23e32526af9f690800000000000000
+      internalID: -7567742398625860877
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_65
+      rect:
+        serializedVersion: 2
+        x: 2746
+        y: 166
+        width: 13
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: de7893d2c048a56a0800000000000000
+      internalID: -6459705527676336147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_66
+      rect:
+        serializedVersion: 2
+        x: 2762
+        y: 165
+        width: 16
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d1ec6c767ea7b070800000000000000
+      internalID: 8122152276902863313
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_67
+      rect:
+        serializedVersion: 2
+        x: 2772
+        y: 164
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eac221b913b244ff0800000000000000
+      internalID: -52869803566551890
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_68
+      rect:
+        serializedVersion: 2
+        x: 2781
+        y: 164
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 46508c794a5eb6180800000000000000
+      internalID: -9120944125224942236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_69
+      rect:
+        serializedVersion: 2
+        x: 2796
+        y: 156
+        width: 16
+        height: 16
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 70afd2bfd3b4d01c0800000000000000
+      internalID: -4535886520113038841
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_70
+      rect:
+        serializedVersion: 2
+        x: 2813
+        y: 151
+        width: 47
+        height: 37
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 93bc9af91ba5141c0800000000000000
+      internalID: -4521232831968851143
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_71
+      rect:
+        serializedVersion: 2
+        x: 2852
+        y: 164
+        width: 15
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b24b17ac939bf6560800000000000000
+      internalID: 7309264378106328107
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_72
+      rect:
+        serializedVersion: 2
+        x: 2873
+        y: 163
+        width: 25
+        height: 23
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c9fbafdab1331610800000000000000
+      internalID: 1590669772078184905
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_73
+      rect:
+        serializedVersion: 2
+        x: 2899
+        y: 160
+        width: 19
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f09a224ae67cc3d0800000000000000
+      internalID: -3185040087953272584
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_74
+      rect:
+        serializedVersion: 2
+        x: 2928
+        y: 161
+        width: 15
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8585a6b001b65d340800000000000000
+      internalID: 4887930687235709016
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_75
+      rect:
+        serializedVersion: 2
+        x: 2945
+        y: 167
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 60e0b24242af3bab0800000000000000
+      internalID: -4993372528691180026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_76
+      rect:
+        serializedVersion: 2
+        x: 3023
+        y: 167
+        width: 37
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 54e08e6e1a3ccf480800000000000000
+      internalID: -8863994866440860091
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_77
+      rect:
+        serializedVersion: 2
+        x: 3067
+        y: 167
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b0e3d3c38e626580800000000000000
+      internalID: -8835378006742277961
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_78
+      rect:
+        serializedVersion: 2
+        x: 3143
+        y: 164
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e8d6be15c20604530800000000000000
+      internalID: 3837172625988873614
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_79
+      rect:
+        serializedVersion: 2
+        x: 3167
+        y: 163
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: a1935e5edc7cc8ed0800000000000000
+      internalID: -2410332013410830054
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_80
+      rect:
+        serializedVersion: 2
+        x: 3181
+        y: 167
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 56a5a9307d5708650800000000000000
+      internalID: 6233111450619632229
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_81
+      rect:
+        serializedVersion: 2
+        x: 3463
+        y: 167
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5ad10f6f08a9ef160800000000000000
+      internalID: 7061251144452939173
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_82
+      rect:
+        serializedVersion: 2
+        x: 3543
+        y: 167
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c0eb712b5a6041140800000000000000
+      internalID: 4689380420726799884
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_83
+      rect:
+        serializedVersion: 2
+        x: 3611
+        y: 167
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 81868762165f101c0800000000000000
+      internalID: -4539077151806691304
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_84
+      rect:
+        serializedVersion: 2
+        x: 3721
+        y: 160
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ec74c52c6502739c0800000000000000
+      internalID: -3947650991366846514
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_85
+      rect:
+        serializedVersion: 2
+        x: 1652
+        y: 150
+        width: 20
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8afc067b8cb19cc40800000000000000
+      internalID: 5532984166085349288
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_86
+      rect:
+        serializedVersion: 2
+        x: 1685
+        y: 156
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f62d9162cb0bd070800000000000000
+      internalID: 8132106481636812531
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_87
+      rect:
+        serializedVersion: 2
+        x: 1886
+        y: 151
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4ced1b95ebb1a3a70800000000000000
+      internalID: 8807382525638991556
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_88
+      rect:
+        serializedVersion: 2
+        x: 1955
+        y: 151
+        width: 11
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 74acf68132d67d110800000000000000
+      internalID: 1285616216138828359
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_89
+      rect:
+        serializedVersion: 2
+        x: 2014
+        y: 152
+        width: 10
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 59da5a3e61d52be10800000000000000
+      internalID: 2211932719882284437
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_90
+      rect:
+        serializedVersion: 2
+        x: 2030
+        y: 160
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6a480f7cc11515950800000000000000
+      internalID: 6436014526544512166
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_91
+      rect:
+        serializedVersion: 2
+        x: 2043
+        y: 160
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 90fb3bd48eba2f720800000000000000
+      internalID: 2878552126067556105
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_92
+      rect:
+        serializedVersion: 2
+        x: 2054
+        y: 143
+        width: 14
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fd5a13d82e0ae4c10800000000000000
+      internalID: 2039744576137307615
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_93
+      rect:
+        serializedVersion: 2
+        x: 2068
+        y: 151
+        width: 16
+        height: 15
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 175d331d009da7cb0800000000000000
+      internalID: -4865337849887337103
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_94
+      rect:
+        serializedVersion: 2
+        x: 2161
+        y: 156
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 660cd61b01c77a790800000000000000
+      internalID: -7518904641733672858
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_95
+      rect:
+        serializedVersion: 2
+        x: 2220
+        y: 151
+        width: 19
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 28c20c194c51abbd0800000000000000
+      internalID: -2613752699732087678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_96
+      rect:
+        serializedVersion: 2
+        x: 2246
+        y: 157
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d02a95d6e3b2255d0800000000000000
+      internalID: -3075348048418070003
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_97
+      rect:
+        serializedVersion: 2
+        x: 2431
+        y: 160
+        width: 14
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e093846f159108d0800000000000000
+      internalID: -2881858324477538071
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_98
+      rect:
+        serializedVersion: 2
+        x: 2481
+        y: 160
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fc526cb302ca71260800000000000000
+      internalID: 7068307394623055311
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_99
+      rect:
+        serializedVersion: 2
+        x: 2553
+        y: 158
+        width: 15
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9ecb9eb9aaa8f6a0800000000000000
+      internalID: -6415190023165194594
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_100
+      rect:
+        serializedVersion: 2
+        x: 2575
+        y: 143
+        width: 17
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ea9594b2231057d90800000000000000
+      internalID: -7100767922493498962
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_101
+      rect:
+        serializedVersion: 2
+        x: 2608
+        y: 160
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 86d2b5a6d5cbb0310800000000000000
+      internalID: 1372397620866788712
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_102
+      rect:
+        serializedVersion: 2
+        x: 2621
+        y: 146
+        width: 15
+        height: 17
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9f35b05bd962219b0800000000000000
+      internalID: -5110980168322952199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_103
+      rect:
+        serializedVersion: 2
+        x: 2650
+        y: 148
+        width: 15
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4e9ee804171f9a5e0800000000000000
+      internalID: -1897720299243247132
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_104
+      rect:
+        serializedVersion: 2
+        x: 2672
+        y: 148
+        width: 26
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b940aaff06e1c1160800000000000000
+      internalID: 6997501322981934235
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_105
+      rect:
+        serializedVersion: 2
+        x: 2730
+        y: 151
+        width: 15
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d7ab4c1ca0b652f50800000000000000
+      internalID: 6856003701686188669
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_106
+      rect:
+        serializedVersion: 2
+        x: 2755
+        y: 156
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: cf12055298c01e9e0800000000000000
+      internalID: -1593979009936383492
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_107
+      rect:
+        serializedVersion: 2
+        x: 2949
+        y: 148
+        width: 19
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e29af7bf6cf8de690800000000000000
+      internalID: -7571237313754191570
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_108
+      rect:
+        serializedVersion: 2
+        x: 3017
+        y: 152
+        width: 6
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: da23c5853134d0380800000000000000
+      internalID: -9003466329677876563
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_109
+      rect:
+        serializedVersion: 2
+        x: 3084
+        y: 160
+        width: 14
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: fb1164fae00284150800000000000000
+      internalID: 5856966562837565887
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_110
+      rect:
+        serializedVersion: 2
+        x: 3674
+        y: 156
+        width: 11
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1aa6cfbc26f6f54d0800000000000000
+      internalID: -3143671544761521503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_111
+      rect:
+        serializedVersion: 2
+        x: 3834
+        y: 160
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0815e8adca3c20c10800000000000000
+      internalID: 2018390730183954816
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_112
+      rect:
+        serializedVersion: 2
+        x: 3894
+        y: 160
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c681afc9dc19e3880800000000000000
+      internalID: -8629299523707332500
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_113
+      rect:
+        serializedVersion: 2
+        x: 1970
+        y: 143
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8867fb90876fa57b0800000000000000
+      internalID: -5234600621444729208
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_114
+      rect:
+        serializedVersion: 2
+        x: 2182
+        y: 143
+        width: 11
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 73b430141ae597dd0800000000000000
+      internalID: -2487853272472007881
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_115
+      rect:
+        serializedVersion: 2
+        x: 2208
+        y: 148
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d6794294910665ee0800000000000000
+      internalID: -1272724182968002707
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_116
+      rect:
+        serializedVersion: 2
+        x: 2241
+        y: 148
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e0d1b611d24c5a640800000000000000
+      internalID: 5090690651657018638
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_117
+      rect:
+        serializedVersion: 2
+        x: 2291
+        y: 124
+        width: 16
+        height: 35
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e92c202ccc8c9ac20800000000000000
+      internalID: 3218324190486774430
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_118
+      rect:
+        serializedVersion: 2
+        x: 2313
+        y: 148
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f69c83066b962a510800000000000000
+      internalID: 1558924653042911599
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_119
+      rect:
+        serializedVersion: 2
+        x: 2426
+        y: 137
+        width: 21
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7fdffab9148a6e080800000000000000
+      internalID: -9158447792472982025
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_120
+      rect:
+        serializedVersion: 2
+        x: 2447
+        y: 132
+        width: 17
+        height: 24
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: def52ac4db1045900800000000000000
+      internalID: 672164156931203053
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_121
+      rect:
+        serializedVersion: 2
+        x: 2526
+        y: 128
+        width: 16
+        height: 26
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3648193cbf80b0e60800000000000000
+      internalID: 7929441446326797411
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_122
+      rect:
+        serializedVersion: 2
+        x: 2540
+        y: 148
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 52f8c74ea93592ef0800000000000000
+      internalID: -132482789307281627
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_123
+      rect:
+        serializedVersion: 2
+        x: 2552
+        y: 142
+        width: 24
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3eb3b107d6e6c2aa0800000000000000
+      internalID: -6184446771975210013
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_124
+      rect:
+        serializedVersion: 2
+        x: 2596
+        y: 143
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 33ac6457f4ac80ba0800000000000000
+      internalID: -6122421250791388621
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_125
+      rect:
+        serializedVersion: 2
+        x: 2604
+        y: 152
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 605f299ea2dcd2840800000000000000
+      internalID: 5201038728873833734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_126
+      rect:
+        serializedVersion: 2
+        x: 2612
+        y: 148
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: c27bfd3513a90b060800000000000000
+      internalID: 6967238160193402668
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_127
+      rect:
+        serializedVersion: 2
+        x: 2637
+        y: 151
+        width: 11
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7b5c0b1b877424610800000000000000
+      internalID: 1603923001000117687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_128
+      rect:
+        serializedVersion: 2
+        x: 2776
+        y: 151
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 47fb10906bfc70ec0800000000000000
+      internalID: -3600680996317315212
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_129
+      rect:
+        serializedVersion: 2
+        x: 2798
+        y: 151
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 08981d63dbec13b50800000000000000
+      internalID: 6571260643374107008
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_130
+      rect:
+        serializedVersion: 2
+        x: 2806
+        y: 143
+        width: 12
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: eb41cbd557474efc0800000000000000
+      internalID: -3466517765735836482
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_131
+      rect:
+        serializedVersion: 2
+        x: 2941
+        y: 143
+        width: 6
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f002f00c44a087a0800000000000000
+      internalID: -6376916426016292616
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_132
+      rect:
+        serializedVersion: 2
+        x: 2975
+        y: 151
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4658517ec6b13aba0800000000000000
+      internalID: -6078984917472672412
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_133
+      rect:
+        serializedVersion: 2
+        x: 3025
+        y: 151
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5716b0d0ddea4ab60800000000000000
+      internalID: 7756516722668691829
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_134
+      rect:
+        serializedVersion: 2
+        x: 3046
+        y: 148
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ce9918c1164feca40800000000000000
+      internalID: 5390514501936323052
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_135
+      rect:
+        serializedVersion: 2
+        x: 3662
+        y: 148
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14e7ad1be57da2ee0800000000000000
+      internalID: -1284977941950071231
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_136
+      rect:
+        serializedVersion: 2
+        x: 1697
+        y: 140
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ad684b30836187100800000000000000
+      internalID: 105859021079348954
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_137
+      rect:
+        serializedVersion: 2
+        x: 1723
+        y: 136
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9cf4f53df64a800f0800000000000000
+      internalID: -1150488904598597687
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_138
+      rect:
+        serializedVersion: 2
+        x: 1862
+        y: 137
+        width: 10
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0069e6f153e22c350800000000000000
+      internalID: 6035437256325371392
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_139
+      rect:
+        serializedVersion: 2
+        x: 2009
+        y: 143
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b95e7c056dcf86ef0800000000000000
+      internalID: -114563793089469029
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_140
+      rect:
+        serializedVersion: 2
+        x: 2106
+        y: 136
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 879d70d5668c6e210800000000000000
+      internalID: 1361996279299168632
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_141
+      rect:
+        serializedVersion: 2
+        x: 2156
+        y: 136
+        width: 24
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15146773bbe842f00800000000000000
+      internalID: 1091153944471028049
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_142
+      rect:
+        serializedVersion: 2
+        x: 2191
+        y: 128
+        width: 33
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 94559d554b628c350800000000000000
+      internalID: 6037117856466425161
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_143
+      rect:
+        serializedVersion: 2
+        x: 2237
+        y: 139
+        width: 12
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9e752d54cf75a3ab0800000000000000
+      internalID: -5027609292990949399
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_144
+      rect:
+        serializedVersion: 2
+        x: 2544
+        y: 128
+        width: 19
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: af031701ae36f1b30800000000000000
+      internalID: 4260233629465129210
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_145
+      rect:
+        serializedVersion: 2
+        x: 2650
+        y: 143
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 14805a51b2ca4fd00800000000000000
+      internalID: 1005617917857171521
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_146
+      rect:
+        serializedVersion: 2
+        x: 2751
+        y: 140
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6e8639163531a43f0800000000000000
+      internalID: -915898325376210714
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_147
+      rect:
+        serializedVersion: 2
+        x: 2776
+        y: 136
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1d93b7b1a176b9ce0800000000000000
+      internalID: -1397409897540535855
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_148
+      rect:
+        serializedVersion: 2
+        x: 2831
+        y: 140
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 922d4e0a3d8f12f50800000000000000
+      internalID: 6855033695655744041
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_149
+      rect:
+        serializedVersion: 2
+        x: 2928
+        y: 143
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 77e43f8278b338450800000000000000
+      internalID: 6089776572828700279
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_150
+      rect:
+        serializedVersion: 2
+        x: 2954
+        y: 136
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2636705f1c5ed55d0800000000000000
+      internalID: -3072046749594459294
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_151
+      rect:
+        serializedVersion: 2
+        x: 3058
+        y: 136
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8703527a9fcfc7dc0800000000000000
+      internalID: -3639756249640914824
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_152
+      rect:
+        serializedVersion: 2
+        x: 3122
+        y: 143
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b8e1d701db0d2b4d0800000000000000
+      internalID: -3120202081370300789
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_153
+      rect:
+        serializedVersion: 2
+        x: 3190
+        y: 116
+        width: 10
+        height: 30
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f613837f093efe120800000000000000
+      internalID: 2445423334447919471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_154
+      rect:
+        serializedVersion: 2
+        x: 1756
+        y: 132
+        width: 19
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 1b10acc1d0414ba70800000000000000
+      internalID: 8841714014985257393
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_155
+      rect:
+        serializedVersion: 2
+        x: 1971
+        y: 136
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6af89f26378622660800000000000000
+      internalID: 7359559585867861926
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_156
+      rect:
+        serializedVersion: 2
+        x: 2220
+        y: 128
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 06e03e031eaa4a790800000000000000
+      internalID: -7519697593637335456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_157
+      rect:
+        serializedVersion: 2
+        x: 2246
+        y: 132
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9c04c53726910a270800000000000000
+      internalID: 8259629627230404809
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_158
+      rect:
+        serializedVersion: 2
+        x: 2417
+        y: 127
+        width: 16
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0817dab0854f531a0800000000000000
+      internalID: -6830284600847273600
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_159
+      rect:
+        serializedVersion: 2
+        x: 2484
+        y: 112
+        width: 20
+        height: 27
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2f7853e37073f6ad0800000000000000
+      internalID: -2706884346778384398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_160
+      rect:
+        serializedVersion: 2
+        x: 2523
+        y: 128
+        width: 7
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 267356a6107c0f090800000000000000
+      internalID: -8002677728943458462
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_161
+      rect:
+        serializedVersion: 2
+        x: 2726
+        y: 128
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d7d04105fa08c230800000000000000
+      internalID: 3659186744642820051
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_162
+      rect:
+        serializedVersion: 2
+        x: 2843
+        y: 130
+        width: 9
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3f8b7ae1a2506f8d0800000000000000
+      internalID: -2813055238785222413
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_163
+      rect:
+        serializedVersion: 2
+        x: 2857
+        y: 121
+        width: 10
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: bf5407896a4d37160800000000000000
+      internalID: 7022190055987889659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_164
+      rect:
+        serializedVersion: 2
+        x: 2882
+        y: 119
+        width: 21
+        height: 20
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 214e6f583dae403e0800000000000000
+      internalID: -2088286132986518510
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_165
+      rect:
+        serializedVersion: 2
+        x: 2916
+        y: 121
+        width: 11
+        height: 18
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d71c37cf5b75be1c0800000000000000
+      internalID: -4473385365726314115
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_166
+      rect:
+        serializedVersion: 2
+        x: 1718
+        y: 128
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 85ccb187606b2ae50800000000000000
+      internalID: 6819212924693498968
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_167
+      rect:
+        serializedVersion: 2
+        x: 1925
+        y: 124
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 4dff11fd07fb04560800000000000000
+      internalID: 7296041887839944660
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_168
+      rect:
+        serializedVersion: 2
+        x: 1955
+        y: 128
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: f9662994f57e0aaa0800000000000000
+      internalID: -6151662694545856865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_169
+      rect:
+        serializedVersion: 2
+        x: 1967
+        y: 128
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 258fd3758842d7680800000000000000
+      internalID: -8755801932540544942
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_170
+      rect:
+        serializedVersion: 2
+        x: 2258
+        y: 120
+        width: 19
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 82c685b7b9e89a180800000000000000
+      internalID: -9103588373312279512
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_171
+      rect:
+        serializedVersion: 2
+        x: 2309
+        y: 124
+        width: 6
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 32cc520a6a317ae20800000000000000
+      internalID: 3361677253227695139
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_172
+      rect:
+        serializedVersion: 2
+        x: 2781
+        y: 128
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 15e530150e46e9630800000000000000
+      internalID: 3935694038963019345
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_173
+      rect:
+        serializedVersion: 2
+        x: 2814
+        y: 121
+        width: 7
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e37c2a99b7eb1bc0800000000000000
+      internalID: -3811197875297422361
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_174
+      rect:
+        serializedVersion: 2
+        x: 2279
+        y: 112
+        width: 14
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 37a79eff4b4acdb90800000000000000
+      internalID: -7215711405659817357
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_175
+      rect:
+        serializedVersion: 2
+        x: 2317
+        y: 116
+        width: 14
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 51cf7f05e98c4efd0800000000000000
+      internalID: -2313503726272775147
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_176
+      rect:
+        serializedVersion: 2
+        x: 2511
+        y: 120
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: b166d6460628e0440800000000000000
+      internalID: 4904000394766411291
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_177
+      rect:
+        serializedVersion: 2
+        x: 2840
+        y: 120
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 7e5c5027bef22f250800000000000000
+      internalID: 5976892343750870503
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_178
+      rect:
+        serializedVersion: 2
+        x: 3349
+        y: 116
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3e4d73999e8fd1f30800000000000000
+      internalID: 4548064880895710435
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_179
+      rect:
+        serializedVersion: 2
+        x: 1664
+        y: 104
+        width: 11
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 5dee85420cd4b2430800000000000000
+      internalID: 3759183801609678549
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_180
+      rect:
+        serializedVersion: 2
+        x: 2258
+        y: 112
+        width: 11
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 817d820dde0078450800000000000000
+      internalID: 6090838042441471768
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_181
+      rect:
+        serializedVersion: 2
+        x: 2532
+        y: 112
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2d457342b406bc560800000000000000
+      internalID: 7335062293949404370
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_182
+      rect:
+        serializedVersion: 2
+        x: 2688
+        y: 112
+        width: 10
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 88e33453e7ad8c9f0800000000000000
+      internalID: -447867927329030520
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_183
+      rect:
+        serializedVersion: 2
+        x: 2701
+        y: 112
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: acc1033d6dd4465b0800000000000000
+      internalID: -5376086470112043830
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_184
+      rect:
+        serializedVersion: 2
+        x: 2717
+        y: 112
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: e9e24e450dc3db960800000000000000
+      internalID: 7619313010055851678
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_185
+      rect:
+        serializedVersion: 2
+        x: 2852
+        y: 112
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2671c807ad0f7aef0800000000000000
+      internalID: -96844045983410334
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_186
+      rect:
+        serializedVersion: 2
+        x: 3307
+        y: 107
+        width: 7
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 6cda85efeafcb0600800000000000000
+      internalID: 435670139469868486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_187
+      rect:
+        serializedVersion: 2
+        x: 3358
+        y: 107
+        width: 10
+        height: 11
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8f17a9285aabee930800000000000000
+      internalID: 4174479124642558456
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_188
+      rect:
+        serializedVersion: 2
+        x: 2296
+        y: 104
+        width: 6
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ed2e9386d38c7d310800000000000000
+      internalID: 1429831572780606174
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_189
+      rect:
+        serializedVersion: 2
+        x: 2755
+        y: 104
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2fb2ead2ca1a2d7b0800000000000000
+      internalID: -5200916858786665486
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_190
+      rect:
+        serializedVersion: 2
+        x: 3272
+        y: 88
+        width: 16
+        height: 22
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2bcd857776d102f90800000000000000
+      internalID: -6980547092203119438
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_191
+      rect:
+        serializedVersion: 2
+        x: 1486
+        y: 87
+        width: 61
+        height: 12
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: d379fbd09f4c90f00800000000000000
+      internalID: 1083613759315875645
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_192
+      rect:
+        serializedVersion: 2
+        x: 1912
+        y: 96
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3d6da1c42d3857a20800000000000000
+      internalID: 3059496461111318227
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_193
+      rect:
+        serializedVersion: 2
+        x: 2123
+        y: 86
+        width: 13
+        height: 13
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 8fd4adeb72511e6d0800000000000000
+      internalID: -2963063819383190024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_194
+      rect:
+        serializedVersion: 2
+        x: 1735
+        y: 80
+        width: 23
+        height: 14
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 12bf4cc4cd6f19080800000000000000
+      internalID: -9182286739190514911
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_195
+      rect:
+        serializedVersion: 2
+        x: 2068
+        y: 80
+        width: 7
+        height: 7
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: afd650f8eab8d5e20800000000000000
+      internalID: 3340980080418844154
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_196
+      rect:
+        serializedVersion: 2
+        x: 2383
+        y: 78
+        width: 12
+        height: 9
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 0e73e8a4bcf166f00800000000000000
+      internalID: 1109609316183062496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_197
+      rect:
+        serializedVersion: 2
+        x: 1908
+        y: 55
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 057ed9088cbdc8aa0800000000000000
+      internalID: -6157304936324536496
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_198
+      rect:
+        serializedVersion: 2
+        x: 2393
+        y: 44
+        width: 14
+        height: 19
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: ddc3060cec932c430800000000000000
+      internalID: 3801664595607698653
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_199
+      rect:
+        serializedVersion: 2
+        x: 2431
+        y: 44
+        width: 23
+        height: 10
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 58b24202d89cea240800000000000000
+      internalID: 4804999460417710981
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_200
+      rect:
+        serializedVersion: 2
+        x: 1668
+        y: 0
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 9fadb44563ba1fcd0800000000000000
+      internalID: -2526049666147296519
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_201
+      rect:
+        serializedVersion: 2
+        x: 2532
+        y: 0
+        width: 7
+        height: 6
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 2758fa04796ac9240800000000000000
+      internalID: 4799894471425623410
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: neonLine 1_202
+      rect:
+        serializedVersion: 2
+        x: 2578
+        y: 3
+        width: 6
+        height: 8
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 073dd4b72b7d88150800000000000000
+      internalID: 5875182875477660528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    customData: 
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    spriteCustomMetadata:
+      entries: []
+    nameFileIdTable:
+      neonLine 1_0: -8317630096696489963
+      neonLine 1_1: -4076650604213964193
+      neonLine 1_10: 1766344050395583767
+      neonLine 1_100: -7100767922493498962
+      neonLine 1_101: 1372397620866788712
+      neonLine 1_102: -5110980168322952199
+      neonLine 1_103: -1897720299243247132
+      neonLine 1_104: 6997501322981934235
+      neonLine 1_105: 6856003701686188669
+      neonLine 1_106: -1593979009936383492
+      neonLine 1_107: -7571237313754191570
+      neonLine 1_108: -9003466329677876563
+      neonLine 1_109: 5856966562837565887
+      neonLine 1_11: 5455368608401642526
+      neonLine 1_110: -3143671544761521503
+      neonLine 1_111: 2018390730183954816
+      neonLine 1_112: -8629299523707332500
+      neonLine 1_113: -5234600621444729208
+      neonLine 1_114: -2487853272472007881
+      neonLine 1_115: -1272724182968002707
+      neonLine 1_116: 5090690651657018638
+      neonLine 1_117: 3218324190486774430
+      neonLine 1_118: 1558924653042911599
+      neonLine 1_119: -9158447792472982025
+      neonLine 1_12: 7994479802968854249
+      neonLine 1_120: 672164156931203053
+      neonLine 1_121: 7929441446326797411
+      neonLine 1_122: -132482789307281627
+      neonLine 1_123: -6184446771975210013
+      neonLine 1_124: -6122421250791388621
+      neonLine 1_125: 5201038728873833734
+      neonLine 1_126: 6967238160193402668
+      neonLine 1_127: 1603923001000117687
+      neonLine 1_128: -3600680996317315212
+      neonLine 1_129: 6571260643374107008
+      neonLine 1_13: -8658120582680890449
+      neonLine 1_130: -3466517765735836482
+      neonLine 1_131: -6376916426016292616
+      neonLine 1_132: -6078984917472672412
+      neonLine 1_133: 7756516722668691829
+      neonLine 1_134: 5390514501936323052
+      neonLine 1_135: -1284977941950071231
+      neonLine 1_136: 105859021079348954
+      neonLine 1_137: -1150488904598597687
+      neonLine 1_138: 6035437256325371392
+      neonLine 1_139: -114563793089469029
+      neonLine 1_14: 6722323354829214602
+      neonLine 1_140: 1361996279299168632
+      neonLine 1_141: 1091153944471028049
+      neonLine 1_142: 6037117856466425161
+      neonLine 1_143: -5027609292990949399
+      neonLine 1_144: 4260233629465129210
+      neonLine 1_145: 1005617917857171521
+      neonLine 1_146: -915898325376210714
+      neonLine 1_147: -1397409897540535855
+      neonLine 1_148: 6855033695655744041
+      neonLine 1_149: 6089776572828700279
+      neonLine 1_15: 7996610761555137660
+      neonLine 1_150: -3072046749594459294
+      neonLine 1_151: -3639756249640914824
+      neonLine 1_152: -3120202081370300789
+      neonLine 1_153: 2445423334447919471
+      neonLine 1_154: 8841714014985257393
+      neonLine 1_155: 7359559585867861926
+      neonLine 1_156: -7519697593637335456
+      neonLine 1_157: 8259629627230404809
+      neonLine 1_158: -6830284600847273600
+      neonLine 1_159: -2706884346778384398
+      neonLine 1_16: 3725382859661266103
+      neonLine 1_160: -8002677728943458462
+      neonLine 1_161: 3659186744642820051
+      neonLine 1_162: -2813055238785222413
+      neonLine 1_163: 7022190055987889659
+      neonLine 1_164: -2088286132986518510
+      neonLine 1_165: -4473385365726314115
+      neonLine 1_166: 6819212924693498968
+      neonLine 1_167: 7296041887839944660
+      neonLine 1_168: -6151662694545856865
+      neonLine 1_169: -8755801932540544942
+      neonLine 1_17: 4794504309891442923
+      neonLine 1_170: -9103588373312279512
+      neonLine 1_171: 3361677253227695139
+      neonLine 1_172: 3935694038963019345
+      neonLine 1_173: -3811197875297422361
+      neonLine 1_174: -7215711405659817357
+      neonLine 1_175: -2313503726272775147
+      neonLine 1_176: 4904000394766411291
+      neonLine 1_177: 5976892343750870503
+      neonLine 1_178: 4548064880895710435
+      neonLine 1_179: 3759183801609678549
+      neonLine 1_18: -3153199591534403059
+      neonLine 1_180: 6090838042441471768
+      neonLine 1_181: 7335062293949404370
+      neonLine 1_182: -447867927329030520
+      neonLine 1_183: -5376086470112043830
+      neonLine 1_184: 7619313010055851678
+      neonLine 1_185: -96844045983410334
+      neonLine 1_186: 435670139469868486
+      neonLine 1_187: 4174479124642558456
+      neonLine 1_188: 1429831572780606174
+      neonLine 1_189: -5200916858786665486
+      neonLine 1_19: 7026809588544681662
+      neonLine 1_190: -6980547092203119438
+      neonLine 1_191: 1083613759315875645
+      neonLine 1_192: 3059496461111318227
+      neonLine 1_193: -2963063819383190024
+      neonLine 1_194: -9182286739190514911
+      neonLine 1_195: 3340980080418844154
+      neonLine 1_196: 1109609316183062496
+      neonLine 1_197: -6157304936324536496
+      neonLine 1_198: 3801664595607698653
+      neonLine 1_199: 4804999460417710981
+      neonLine 1_2: -4344881260345248733
+      neonLine 1_20: -6710698656153258295
+      neonLine 1_200: -2526049666147296519
+      neonLine 1_201: 4799894471425623410
+      neonLine 1_202: 5875182875477660528
+      neonLine 1_21: -1905731432538815732
+      neonLine 1_22: -6318289832970665419
+      neonLine 1_23: -8229089046875452811
+      neonLine 1_24: 2857802280209775399
+      neonLine 1_25: -2619214732349637501
+      neonLine 1_26: 3400545400016508652
+      neonLine 1_27: -4720016314362245622
+      neonLine 1_28: 7950719361697642139
+      neonLine 1_29: 1732903122319531724
+      neonLine 1_3: 2349872214529824172
+      neonLine 1_30: -5926123685351607724
+      neonLine 1_31: -6159118574543931726
+      neonLine 1_32: 8923064430956662759
+      neonLine 1_33: -3085126533485314614
+      neonLine 1_34: 5092394282412819950
+      neonLine 1_35: 2577611389842497985
+      neonLine 1_36: 1662514616614187890
+      neonLine 1_37: 4776327263268270905
+      neonLine 1_38: 4275299022641219937
+      neonLine 1_39: -2082440983963359530
+      neonLine 1_4: -6356984311030372485
+      neonLine 1_40: -2329169683625729588
+      neonLine 1_41: 5428288881038803659
+      neonLine 1_42: -4146066385898171844
+      neonLine 1_43: 8744924887639564933
+      neonLine 1_44: 1613231665764873045
+      neonLine 1_45: -1676849191455675531
+      neonLine 1_46: -8698381069273998224
+      neonLine 1_47: -1879447734858366041
+      neonLine 1_48: 1172899518777876076
+      neonLine 1_49: -8098504252383921765
+      neonLine 1_5: 4182061000926337494
+      neonLine 1_50: -5067367127267541606
+      neonLine 1_51: 1740715936415775071
+      neonLine 1_52: -7956362418183149265
+      neonLine 1_53: 3429891422680158975
+      neonLine 1_54: 6484729155459925923
+      neonLine 1_55: 860969698248992065
+      neonLine 1_56: 4402517034543377245
+      neonLine 1_57: -809927528435866470
+      neonLine 1_58: 613967906328362965
+      neonLine 1_59: -4488067313764800136
+      neonLine 1_6: -1812027087644715064
+      neonLine 1_60: -2711880578990270701
+      neonLine 1_61: 7335220166335896814
+      neonLine 1_62: -3242453539478315756
+      neonLine 1_63: 7119573136018093385
+      neonLine 1_64: -7567742398625860877
+      neonLine 1_65: -6459705527676336147
+      neonLine 1_66: 8122152276902863313
+      neonLine 1_67: -52869803566551890
+      neonLine 1_68: -9120944125224942236
+      neonLine 1_69: -4535886520113038841
+      neonLine 1_7: 3719044371949120698
+      neonLine 1_70: -4521232831968851143
+      neonLine 1_71: 7309264378106328107
+      neonLine 1_72: 1590669772078184905
+      neonLine 1_73: -3185040087953272584
+      neonLine 1_74: 4887930687235709016
+      neonLine 1_75: -4993372528691180026
+      neonLine 1_76: -8863994866440860091
+      neonLine 1_77: -8835378006742277961
+      neonLine 1_78: 3837172625988873614
+      neonLine 1_79: -2410332013410830054
+      neonLine 1_8: -694413416549422429
+      neonLine 1_80: 6233111450619632229
+      neonLine 1_81: 7061251144452939173
+      neonLine 1_82: 4689380420726799884
+      neonLine 1_83: -4539077151806691304
+      neonLine 1_84: -3947650991366846514
+      neonLine 1_85: 5532984166085349288
+      neonLine 1_86: 8132106481636812531
+      neonLine 1_87: 8807382525638991556
+      neonLine 1_88: 1285616216138828359
+      neonLine 1_89: 2211932719882284437
+      neonLine 1_9: -8126210781606858554
+      neonLine 1_90: 6436014526544512166
+      neonLine 1_91: 2878552126067556105
+      neonLine 1_92: 2039744576137307615
+      neonLine 1_93: -4865337849887337103
+      neonLine 1_94: -7518904641733672858
+      neonLine 1_95: -2613752699732087678
+      neonLine 1_96: -3075348048418070003
+      neonLine 1_97: -2881858324477538071
+      neonLine 1_98: 7068307394623055311
+      neonLine 1_99: -6415190023165194594
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

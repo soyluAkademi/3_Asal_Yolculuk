@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.PowerUps.MineDataSO
   effectType: 7
   displayName: Meteor Cagirici
-  icon: {fileID: -8641131878381523309, guid: ee47017c25203564f92983d390f8ee0b, type: 3}
+  icon: {fileID: 21300000, guid: 968f827e3121a924493e439680eb448c, type: 3}
   duration: 10
   amount: 0
   multiplier: 2

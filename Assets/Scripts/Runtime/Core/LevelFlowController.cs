@@ -216,6 +216,10 @@ namespace PayeGames.AsalYolculuk.Core
             // Yeni gezegen ana menüdeki seçim panelinde kilitsiz görünsün diye
             // ilerleme SetLevel sonrasındaki (clamp'lenmiş) index'ten okunur.
             PlanetProgress.Unlock(LevelManager.Instance.CurrentLevelIndex);
+
+            // Seçim de yeni gezegene taşınır; kilit açıldıktan sonra çağrılır,
+            // aksi halde henüz kilitli olan index seçilemezdi.
+            PlanetProgress.Select(LevelManager.Instance.CurrentLevelIndex);
         }
 
         /// <summary>

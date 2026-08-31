@@ -85,13 +85,15 @@ namespace PayeGames.AsalYolculuk.EditorTools
 
         // Maden kademeli açılımı: 1. gezegende hiç maden yok (oyuncu önce temel
         // döngüyü öğrenir), 2.'de yalnızca ödüller, 3.'ten itibaren cezalar da girer.
-        // Kristal Gezegeni GDD'de "yoğun maden kullanımı" olarak tanımlı, Asal
-        // Krallığı ise tüm mekaniklerin birleştiği final bölgesi.
-        private static readonly MineSettings NoMines = new MineSettings(false, false, 1f);
-        private static readonly MineSettings RewardsOnly = new MineSettings(true, false, 1f);
-        private static readonly MineSettings AllMines = new MineSettings(true, true, 1f);
-        private static readonly MineSettings DenseMines = new MineSettings(true, true, 2f);
-        private static readonly MineSettings FinalMines = new MineSettings(true, true, 1.5f);
+        // Kristal Gezegeni GDD'de "ödül madenlerinin sık görüldüğü bölüm" olarak
+        // tanımlı — bu yüzden yalnızca ÖDÜL çarpanı yükseltilir, ceza normalde kalır.
+        // Asal Krallığı final bölgesi olduğu için ceza da ölçülü biçimde artar.
+        // Parametre sırası: (ödüller açık, cezalar açık, ödül çarpanı, ceza çarpanı)
+        private static readonly MineSettings NoMines = new MineSettings(false, false, 1f, 1f);
+        private static readonly MineSettings RewardsOnly = new MineSettings(true, false, 1f, 1f);
+        private static readonly MineSettings AllMines = new MineSettings(true, true, 1f, 1f);
+        private static readonly MineSettings DenseMines = new MineSettings(true, true, 2f, 1f);
+        private static readonly MineSettings FinalMines = new MineSettings(true, true, 1.5f, 1.25f);
 
         // Meteor üretim hızı (saniyedeki meteor sayısı). Artış sona doğru bilinçli
         // olarak yavaşlar: ileri gezegenlerde sayılar da büyüdüğü ve daha çok parçaya
@@ -220,21 +222,25 @@ namespace PayeGames.AsalYolculuk.EditorTools
         {
             serializedObject.FindProperty("areRewardMinesEnabled").boolValue = mines.AreRewardsEnabled;
             serializedObject.FindProperty("areCurseMinesEnabled").boolValue = mines.AreCursesEnabled;
-            serializedObject.FindProperty("mineRateMultiplier").floatValue = mines.RateMultiplier;
+            serializedObject.FindProperty("rewardRateMultiplier").floatValue = mines.RewardRateMultiplier;
+            serializedObject.FindProperty("curseRateMultiplier").floatValue = mines.CurseRateMultiplier;
         }
 
         private readonly struct MineSettings
         {
-            public MineSettings(bool areRewardsEnabled, bool areCursesEnabled, float rateMultiplier)
+            public MineSettings(bool areRewardsEnabled, bool areCursesEnabled,
+                float rewardRateMultiplier, float curseRateMultiplier)
             {
                 AreRewardsEnabled = areRewardsEnabled;
                 AreCursesEnabled = areCursesEnabled;
-                RateMultiplier = rateMultiplier;
+                RewardRateMultiplier = rewardRateMultiplier;
+                CurseRateMultiplier = curseRateMultiplier;
             }
 
             public bool AreRewardsEnabled { get; }
             public bool AreCursesEnabled { get; }
-            public float RateMultiplier { get; }
+            public float RewardRateMultiplier { get; }
+            public float CurseRateMultiplier { get; }
         }
 
         private readonly struct PlanetDefinition

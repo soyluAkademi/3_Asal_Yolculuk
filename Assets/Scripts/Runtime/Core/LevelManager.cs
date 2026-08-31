@@ -31,14 +31,14 @@ namespace PayeGames.AsalYolculuk.Core
         }
 
         /// <summary>
-        /// Oyuncunun kaldığı bölümden başlatır. Kilitler sırayla açıldığı için
-        /// açılmış en yüksek gezegen, aynı zamanda oyuncunun henüz bitirmediği
-        /// bölümdür; ayrı bir "kalınan bölüm" kaydı tutmaya gerek yoktur.
+        /// Seçim panelinde işaretlenen gezegenden başlatır. Seçim yoksa ya da
+        /// artık kilitliyse <see cref="PlanetProgress.SelectedIndex"/> zaten
+        /// açılmış en yüksek gezegene düşer, yani oyuncu kaldığı yerden devam eder.
         /// Sahnedeki <see cref="currentLevelIndex"/> yalnızca editör varsayılanıdır.
         /// </summary>
         private void LoadSavedLevel()
         {
-            SetLevel(PlanetProgress.MaxUnlockedIndex);
+            SetLevel(PlanetProgress.SelectedIndex);
         }
 
         public PlanetDataSO CurrentPlanetData

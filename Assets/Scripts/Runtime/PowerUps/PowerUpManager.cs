@@ -43,6 +43,13 @@ namespace PayeGames.AsalYolculuk.PowerUps
         {
             if (Instance != null && Instance != this)
             {
+                // Sessizce silmek yerine uyarılır: hangi kopyanın hayatta kalacağı
+                // script execution order'a kalır. Gemi gibi bölüm içinde kapanabilen
+                // bir objedeki kopya kazanırsa etki süre sayacı (Update) durur.
+                Debug.LogWarning($"[PowerUpManager] Sahnede birden fazla PowerUpManager var; " +
+                    $"'{name}' üzerindeki fazlalık kopya kaldırıldı. " +
+                    $"Yaşayan kopya: '{Instance.name}'.", this);
+
                 Destroy(this);
                 return;
             }

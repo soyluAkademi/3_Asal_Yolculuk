@@ -621,7 +621,12 @@ meteor sayısı; 0.4 = 2.5 sn'de bir meteor). Bölüm ilerledikçe 0.4'ten 1.2'y
 sayılar da büyüyüp daha çok parçaya ayrıldığı için sıklık aynı tempoda artarsa
 final bölüm oynanamaz hale gelir. Değerlerin tek kaynağı `PlanetDataGenerator`.
 Maden ayarları (`areRewardMinesEnabled`, `areCurseMinesEnabled`,
-`mineRateMultiplier`) da aynı şekilde gezegen başına tutulur.
+`rewardRateMultiplier`, `curseRateMultiplier`) da aynı şekilde gezegen başına
+tutulur. **Ödül ve ceza çarpanı bilinçli olarak ayrıdır:** tek çarpan
+kullanıldığında "bol ödüllü" bir gezegen zorunlu olarak "bol cezalı" oluyordu —
+Kristal Gezegeni GDD'de *ödül* madenlerinin sık göründüğü bölüm olarak tanımlı
+olmasına rağmen cezaları da iki katına çıkarıyordu. Şu anki değerler: P1–P6
+1/1, P7 (Kristal) ödül ×2 / ceza ×1, P8 (final) ödül ×1.5 / ceza ×1.25.
 
 `DisplayName` property'si arayüzde gösterilen numaralı adı üretir
 (`"2. Asteroit Kuşağı"`). Numaralandırma bilinçli olarak veri katmanındadır;
@@ -945,6 +950,13 @@ eksik olduğunu söyleyen bir uyarı yazılır.
 `CreateEffect` yeni bir maden eklenirken değiştirilecek **tek** yerdir;
 yazılmamış türler `null` döner ve uyarı basılır.
 
+**Çift kopya koruması:** `Awake` fazlalık kopyayı yok ederken artık sessiz
+kalmaz, hangi objedeki kopyanın silindiğini ve hangisinin yaşadığını Console'a
+yazar. Hangi kopyanın hayatta kalacağı script execution order'a bağlıdır; gemi
+gibi bölüm içinde kapanabilen bir objedeki kopya kazanırsa etki süre sayacı
+(`Update`) durur ve belirti yalnızca "etkiler bazen donuyor" olarak görünür.
+Sahnede tek kopya, kendi adını taşıyan `PowerUpManager` objesinde durmalıdır.
+
 - **Bağlantı:** `MineController` (`Collect`), `IActiveEffect` + `Effects/`,
   `GameManager` (durum), `PlayerAutoShooter` / `ShipCollisionHandler` (etki
   hedefleri), `ActiveEffectHUDView` (event dinleyicisi).
@@ -990,9 +1002,17 @@ birlikte kullanılır:
   tamamlamaya bağlansaydı iyi oynamak cezalandırılmış olurdu.
 
 **Gezegen bazlı kademeli açılım:** `PlanetDataSO`'nun `AreRewardMinesEnabled` /
-`AreCurseMinesEnabled` / `MineRateMultiplier` alanları okunur. Çarpan hem ödül
-şansını hem ceza aralığını etkiler (aralık çarpana bölünür). `PlanetDataSO`
-yoksa (test sahnesi) her şey açık kabul edilir.
+`AreCurseMinesEnabled` / `RewardRateMultiplier` / `CurseRateMultiplier` alanları
+okunur. Ödül çarpanı `rewardDropChance` ile çarpılır, ceza çarpanı ise ceza
+aralığını **böler**. İki çarpan ayrı tutulur (bkz. `PlanetDataSO`).
+`PlanetDataSO` yoksa (test sahnesi) her şey açık kabul edilir.
+
+**Ceza aralığı taban sınırı (`curseIntervalFloor`, 10 sn):** `ScheduleNextCurse`
+çarpanla böldükten **sonra** `Mathf.Max` uygular. Aralık ceza etki süresinden
+(10 sn) kısalırsa cezalar üst üste biner ve oyuncu yavaşlatmadan/meteor
+yağmurundan hiç çıkamaz — ceza değil felç olur. Taban sınır olmadan P7'de aralık
+4-5 sn'ye düşüyordu. Sahnedeki aralık 12-18 sn; script varsayılanı (15-20) fazla
+seyrek kaldığı için düşürüldü ama taban sınırın altına inmez.
 
 `GameManager.OnGameStateChanged` dinlenir: oynanış dışına çıkıldığında
 `MineController.DespawnAll()` çağrılır ve ceza sayacı sıfırlanır.
@@ -1495,7 +1515,9 @@ Editör menü aracı: **Tools > Paye Games > Asal Yolculuk > Generate Planet
 Data**. 8 gezegenin verisini `Assets/Scripts/Runtime/ScriptableObjects/Planets/`
 klasöründe `Planet_1`...`Planet_8` asset'leri olarak oluşturur/günceller:
 min/max sayı aralığı, `priorityNumberList`, `meteorSpawnRate` (0.4 → 1.2) ve
-maden ayarları.
+maden ayarları. Maden ayarları `MineSettings` hazır tanımlarından gelir
+(`NoMines` / `RewardsOnly` / `AllMines` / `DenseMines` / `FinalMines`); ödül ve
+ceza çarpanı **ayrı** parametrelerdir — `DenseMines` yalnızca ödülü ×2 yapar.
 
 Bu araç bu alanların **tek kaynağıdır** — Inspector'dan yapılan elle düzenlemeler
 yeniden üretimde kaybolur; kalıcı değişiklik dosyanın başındaki dizi ve
