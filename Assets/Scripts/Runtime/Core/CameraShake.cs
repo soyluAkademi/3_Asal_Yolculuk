@@ -23,6 +23,7 @@ namespace PayeGames.AsalYolculuk.Core
 
         private Transform selfTransform;
         private Vector3 basePosition;
+        //deneme
 
         private void Awake()
         {
