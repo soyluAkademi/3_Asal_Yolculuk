@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,8 +13,8 @@ namespace PayeGames.AsalYolculuk.Core
         public static ScoreManager Instance { get; private set; }
 
         [Header("Puan Ayarları")]
-        [Tooltip("Bölümü tamamlamak için gereken puan")]
-        [SerializeField] private int targetScore = 100;
+        [Tooltip("Bölüm bazlı hedef puanlar; index 0 = 1. bölüm. Liste bittiğinde son değer kullanılır.")]
+        [SerializeField] private int[] levelTargetScores = { 100, 120, 150, 200, 250, 300, 350, 400 };
         [Tooltip("Ana meteor yok edildiğinde kazanılan puan")]
         [SerializeField] private int scorePerMeteor = 5;
 
@@ -25,7 +25,25 @@ namespace PayeGames.AsalYolculuk.Core
         public event Action OnTargetReached;
 
         public int CurrentScore { get; private set; }
-        public int TargetScore => targetScore;
+
+        /// <summary>
+        /// Oynanan bölümün hedef puanı. Bölüm index'i <see cref="LevelManager"/>'dan
+        /// anlık okunur; böylece bölüm değiştiğinde ayrıca senkronize etmek gerekmez.
+        /// Liste boşsa ya da index aralık dışıysa son değere düşülür.
+        /// </summary>
+        public int TargetScore
+        {
+            get
+            {
+                if (levelTargetScores == null || levelTargetScores.Length == 0) return DefaultTargetScore;
+
+                int levelIndex = LevelManager.Instance != null ? LevelManager.Instance.CurrentLevelIndex : 0;
+                return levelTargetScores[Mathf.Clamp(levelIndex, 0, levelTargetScores.Length - 1)];
+            }
+        }
+
+        /// <summary>Hedef puan listesi boş bırakılırsa kullanılan güvenlik değeri.</summary>
+        private const int DefaultTargetScore = 100;
 
         // Yolculuk boyunca keşfedilen FARKLI asallar. SortedSet olduğu için aynı
         // asal kaç kez çıkarsa çıksın bir kez sayılır ve liste sıralı gelir.
@@ -132,7 +150,7 @@ namespace PayeGames.AsalYolculuk.Core
             if (amount == 0) return;
 
             CurrentScore = Mathf.Max(0, CurrentScore + amount);
-            OnScoreChanged?.Invoke(CurrentScore, targetScore);
+            OnScoreChanged?.Invoke(CurrentScore, TargetScore);
 
             AddTotalScore(amount);
             TryRaiseTargetReached();
@@ -186,7 +204,7 @@ namespace PayeGames.AsalYolculuk.Core
             // puanla başlar (PowerUpManager de etkileri ayrıca temizler).
             ClearMeteorScoreOverride();
 
-            OnScoreChanged?.Invoke(CurrentScore, targetScore);
+            OnScoreChanged?.Invoke(CurrentScore, TargetScore);
         }
 
         /// <summary>
@@ -215,7 +233,7 @@ namespace PayeGames.AsalYolculuk.Core
         private void TryRaiseTargetReached()
         {
             if (isTargetReached) return;
-            if (CurrentScore < targetScore) return;
+            if (CurrentScore < TargetScore) return;
 
             isTargetReached = true;
             OnTargetReached?.Invoke();

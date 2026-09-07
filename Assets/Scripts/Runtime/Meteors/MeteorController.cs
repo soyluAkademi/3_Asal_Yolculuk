@@ -365,11 +365,7 @@ namespace PayeGames.AsalYolculuk.Meteors
         /// </summary>
         private void PlayExplosionSfx()
         {
-            if (explosionSource == null) return;
-            if (explosionSource.clip == null) return;
-            if (SoundManager.Instance != null && !SoundManager.Instance.SfxOn) return;
-
-            explosionSource.PlayOneShot(explosionSource.clip);
+            SoundManager.PlaySfxOnSource(explosionSource);
         }
 
         private void HandleBulletHit()

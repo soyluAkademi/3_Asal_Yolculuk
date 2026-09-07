@@ -5,26 +5,37 @@ namespace PayeGames.AsalYolculuk.Core
     [RequireComponent(typeof(AudioSource))]
     public class SoundManager : MonoBehaviour
     {
-        public const string MusicPrefKey = "music_on";
-        public const string SfxPrefKey   = "sfx_on";
+        public const string MusicVolumePrefKey  = "music_volume";
+        public const string EffectVolumePrefKey = "effect_volume";
+        public const string BulletVolumePrefKey = "bullet_volume";
 
         public static SoundManager Instance { get; private set; }
 
         [Header("SFX Sources")]
-        [SerializeField] private AudioSource dogruSource;
-        [SerializeField] private AudioSource yanlisSource;
         [Tooltip("Oynanış olaylarının (maden toplama, patlama vb.) tek seferlik seslerini çalan ortak kaynak")]
         [SerializeField] private AudioSource gameplaySource;
 
         private AudioSource source;
 
-        public bool MusicOn { get; private set; } = true;
-        public bool SfxOn   { get; private set; } = true;
+        /// <summary>0-1 aralığındaki intro/arka plan müziği seviyesi.</summary>
+        public float MusicVolume { get; private set; } = 1f;
+
+        /// <summary>0-1 aralığındaki efekt seviyesi; intro ve mermi dışındaki sesleri kapsar.</summary>
+        public float EffectVolume { get; private set; } = 1f;
+
+        /// <summary>0-1 aralığındaki mermi ateş sesi seviyesi.</summary>
+        public float BulletVolume { get; private set; } = 1f;
 
         private void Awake()
         {
             if (Instance != null && Instance != this)
             {
+                // Fazladan kopya Play On Awake ile çalmaya başlamış olabilir; yok
+                // edilmesi kare sonunda gerçekleştiği için önce susturulur, yoksa
+                // ayarlanmış seviyeyi hiçe sayan bir ses sızar.
+                if (TryGetComponent(out AudioSource duplicateSource))
+                    duplicateSource.Stop();
+
                 Destroy(gameObject);
                 return;
             }
@@ -34,75 +45,90 @@ namespace PayeGames.AsalYolculuk.Core
 
             source = GetComponent<AudioSource>();
             source.loop = true;
-            source.playOnAwake = false;
 
-            MusicOn = PlayerPrefs.GetInt(MusicPrefKey, 1) == 1;
-            SfxOn   = PlayerPrefs.GetInt(SfxPrefKey,   1) == 1;
+            MusicVolume  = ReadStoredVolume(SoundChannel.Music);
+            EffectVolume = ReadStoredVolume(SoundChannel.Effect);
+            BulletVolume = ReadStoredVolume(SoundChannel.Bullet);
+            source.volume = MusicVolume;
 
-            source.Stop(); // Play On Awake'i iptal et, ApplyMusicState karar versin
-            ApplyMusicState();
+            PlayMusic();
 
             EnsureGameplaySource();
         }
 
-        private void Start()
+        public float GetVolume(SoundChannel channel) => channel switch
         {
-            ApplyMusicState();
-        }
+            SoundChannel.Music  => MusicVolume,
+            SoundChannel.Effect => EffectVolume,
+            SoundChannel.Bullet => BulletVolume,
+            _ => 1f
+        };
 
-        public void ToggleMusic()
+        /// <summary>
+        /// Kanalın seviyesini günceller. Slider sürükleme sırasında her karede
+        /// çağrıldığı için disk yazımı yapmaz; kalıcılık için sürükleme bitiminde
+        /// <see cref="SaveVolume"/> çağrılır.
+        /// </summary>
+        public void SetVolume(SoundChannel channel, float volume)
         {
-            SetMusic(!MusicOn);
-        }
+            float clamped = Mathf.Clamp01(volume);
 
-        public void SetMusic(bool on)
-        {
-            MusicOn = on;
-            PlayerPrefs.SetInt(MusicPrefKey, on ? 1 : 0);
-            PlayerPrefs.Save();
-            ApplyMusicState();
-        }
-
-        public void ToggleSfx()
-        {
-            SetSfx(!SfxOn);
-        }
-
-        public void SetSfx(bool on)
-        {
-            SfxOn = on;
-            PlayerPrefs.SetInt(SfxPrefKey, on ? 1 : 0);
-            PlayerPrefs.Save();
-        }
-
-        private void ApplyMusicState()
-        {
-            if (source == null) return;
-
-            if (MusicOn)
+            switch (channel)
             {
-                if (source.clip != null && !source.isPlaying)
-                {
-                    if (source.time > 0f)
-                        source.UnPause();
-                    else
-                        source.Play();
-                }
-            }
-            else
-            {
-                source.Pause();
+                case SoundChannel.Music:
+                    MusicVolume = clamped;
+
+                    if (source != null)
+                        source.volume = MusicVolume;
+                    break;
+
+                case SoundChannel.Effect:
+                    EffectVolume = clamped;
+                    break;
+
+                case SoundChannel.Bullet:
+                    BulletVolume = clamped;
+                    break;
             }
         }
 
-        public void DogruSesiCikar()
+        public void SaveVolume(SoundChannel channel)
         {
-            PlaySfxSource(dogruSource);
+            PlayerPrefs.SetFloat(GetVolumePrefKey(channel), GetVolume(channel));
+            PlayerPrefs.Save();
         }
 
-        public void YanlisSesiCikar()
+        public static string GetVolumePrefKey(SoundChannel channel) => channel switch
         {
-            PlaySfxSource(yanlisSource);
+            SoundChannel.Music  => MusicVolumePrefKey,
+            SoundChannel.Effect => EffectVolumePrefKey,
+            SoundChannel.Bullet => BulletVolumePrefKey,
+            _ => MusicVolumePrefKey
+        };
+
+        /// <summary>
+        /// Kanalın kayıtlı seviyesi. SoundManager henüz sahnede yoksa doğrudan
+        /// PlayerPrefs'ten okunur.
+        /// </summary>
+        public static float ReadStoredVolume(SoundChannel channel)
+        {
+            if (Instance != null)
+                return Instance.GetVolume(channel);
+
+            return Mathf.Clamp01(PlayerPrefs.GetFloat(GetVolumePrefKey(channel), 1f));
+        }
+
+        /// <summary>
+        /// Müziği başlatır. Akış hiç durdurulmaz; sessizlik artık volume = 0
+        /// demektir, böylece slider sıfırdan geri açıldığında parça kaldığı
+        /// yerden duyulur.
+        /// </summary>
+        private void PlayMusic()
+        {
+            if (source == null || source.clip == null) return;
+            if (source.isPlaying) return;
+
+            source.Play();
         }
 
         /// <summary>
@@ -110,10 +136,10 @@ namespace PayeGames.AsalYolculuk.Core
         /// can kaybı vb.). Klip çağrı bazlı geldiği için ortak bir kaynak kullanılır;
         /// olay başına ayrı AudioSource tutmak sahneyi gereksiz şişirirdi.
         /// </summary>
-        /// <param name="volumeScale">Sık tekrarlanan sesleri (ör. mermi) kısmak için ölçek.</param>
-        public void PlaySfx(AudioClip clip, float volumeScale = 1f)
+        /// <param name="volumeScale">Klibe özel ölçek; kanal seviyesiyle çarpılır.</param>
+        /// <param name="channel">Sesin bağlı olduğu ayar kanalı.</param>
+        public void PlaySfx(AudioClip clip, float volumeScale = 1f, SoundChannel channel = SoundChannel.Effect)
         {
-            if (!SfxOn) return;
             if (clip == null) return;
             if (gameplaySource == null) return;
 
@@ -125,46 +151,48 @@ namespace PayeGames.AsalYolculuk.Core
                 clip.LoadAudioData();
             }
 
-            gameplaySource.PlayOneShot(clip, volumeScale);
+            gameplaySource.PlayOneShot(clip, volumeScale * GetVolume(channel));
         }
 
         /// <summary>
-        /// Oynanış sesleri için ayrı bir kaynak garantiler. Inspector'da atanmadıysa
-        /// runtime'da eklenir; müzik kaynağı loop'lu olduğu için PlayOneShot'ı
-        /// oraya yönlendirmek ses ayarlarını birbirine karıştırırdı.
+        /// Oynanış sesleri için müzikten ayrı bir kaynak garantiler. Kaynak müzik
+        /// AudioSource'u ile aynı olursa müzik seviyesi efektleri de kısar; bu yüzden
+        /// atanmamış ya da yanlışlıkla müzik kaynağına bağlanmış olması durumunda
+        /// runtime'da ayrı bir AudioSource eklenir.
         /// </summary>
         private void EnsureGameplaySource()
         {
-            if (gameplaySource != null) return;
+            if (gameplaySource != null && gameplaySource != source) return;
+
+            if (gameplaySource == source)
+            {
+                Debug.LogWarning(
+                    "[SoundManager] Gameplay Source müzik kaynağına atanmış; " +
+                    "efektler için ayrı bir AudioSource oluşturuldu.", this);
+            }
 
             gameplaySource = gameObject.AddComponent<AudioSource>();
             gameplaySource.playOnAwake = false;
             gameplaySource.loop = false;
-        }
-
-        private void PlaySfxSource(AudioSource src)
-        {
-            if (!SfxOn) return;
-            if (src == null || src.clip == null) return;
-            src.PlayOneShot(src.clip);
+            gameplaySource.volume = 1f;
         }
 
         /// <summary>
-        /// UI elemanlarının üzerindeki AudioSource'u SFX ayarına saygı duyarak çalar.
-        /// SoundManager henüz sahnede yoksa (ör. doğrudan MainMenu'den başlatma)
-        /// PlayerPrefs'teki son ayara düşer.
+        /// Kendi AudioSource'u üzerinden çalan sesleri (UI tıkları, meteor patlaması,
+        /// gemi hasarı) efekt seviyesine saygı duyarak çalar. SoundManager henüz
+        /// sahnede yoksa PlayerPrefs'teki son ayara düşer.
         /// </summary>
-        public static void PlayUiSfx(AudioSource src)
+        public static void PlaySfxOnSource(AudioSource src, float volumeScale = 1f)
         {
             if (src == null || src.clip == null) return;
 
-            bool sfxOn = Instance != null
-                ? Instance.SfxOn
-                : PlayerPrefs.GetInt(SfxPrefKey, 1) == 1;
+            src.PlayOneShot(src.clip, volumeScale * ReadStoredVolume(SoundChannel.Effect));
+        }
 
-            if (!sfxOn) return;
-
-            src.PlayOneShot(src.clip);
+        /// <summary>UI butonlarının tık sesi için okunabilir kısayol.</summary>
+        public static void PlayUiSfx(AudioSource src)
+        {
+            PlaySfxOnSource(src);
         }
     }
 }

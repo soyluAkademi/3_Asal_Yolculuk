@@ -18,12 +18,41 @@ namespace PayeGames.AsalYolculuk.Core
         /// <summary>Seçim panelinde işaretlenen ve oynanacak gezegen.</summary>
         public const string SelectedIndexKey = "AsalYolculuk.SelectedPlanetIndex";
 
+        /// <summary>
+        /// Tamamlanmış bölüm sayısı. Kilit açma (<see cref="MaxUnlockedIndexKey"/>)
+        /// ile ayrı tutulur: son bölüm bitince açılacak yeni bölüm olmadığı için
+        /// kilit index'i ilerlemez, ama bölüm tamamlanmıştır.
+        /// </summary>
+        public const string CompletedCountKey = "AsalYolculuk.CompletedPlanetCount";
+
         /// <summary>İlk gezegen oyunun başında açıktır.</summary>
         private const int FirstUnlockedIndex = 0;
 
         public static int MaxUnlockedIndex => PlayerPrefs.GetInt(MaxUnlockedIndexKey, FirstUnlockedIndex);
 
         public static bool IsUnlocked(int planetIndex) => planetIndex >= 0 && planetIndex <= MaxUnlockedIndex;
+
+        /// <summary>
+        /// Tamamlanmış bölüm sayısı. Varsayılanı <see cref="MaxUnlockedIndex"/>'tir;
+        /// bu alan eklenmeden önce oynamış oyuncularda tamamlanan bölüm sayısı
+        /// açılmış en yüksek index'e eşit olduğu için ilerleme kaybolmaz.
+        /// </summary>
+        public static int CompletedCount => PlayerPrefs.GetInt(CompletedCountKey, MaxUnlockedIndex);
+
+        public static bool IsCompleted(int planetIndex) => planetIndex >= 0 && planetIndex < CompletedCount;
+
+        /// <summary>
+        /// Bölümü tamamlandı olarak işaretler. Değer yalnızca <b>ileri</b> gider;
+        /// bitmiş bir bölüm tekrar oynandığında sayaç geri düşmez.
+        /// </summary>
+        public static void MarkCompleted(int planetIndex)
+        {
+            int completedCount = planetIndex + 1;
+            if (completedCount <= CompletedCount) return;
+
+            PlayerPrefs.SetInt(CompletedCountKey, completedCount);
+            PlayerPrefs.Save();
+        }
 
         /// <summary>
         /// Oyuncunun seçim panelinde işaretlediği gezegen. Kayıt yoksa ya da
@@ -69,6 +98,7 @@ namespace PayeGames.AsalYolculuk.Core
         {
             PlayerPrefs.SetInt(MaxUnlockedIndexKey, FirstUnlockedIndex);
             PlayerPrefs.SetInt(SelectedIndexKey, FirstUnlockedIndex);
+            PlayerPrefs.SetInt(CompletedCountKey, 0);
             PlayerPrefs.Save();
         }
     }

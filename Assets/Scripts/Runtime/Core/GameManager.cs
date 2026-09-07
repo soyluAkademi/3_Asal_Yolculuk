@@ -76,6 +76,13 @@ namespace PayeGames.AsalYolculuk.Core
 
         private void HandleTargetReached()
         {
+            // Bölümün bittiği tek nokta burası; son bölümde yeni kilit açılmadığı
+            // için tamamlanma ayrıca işaretlenir (seçim panelindeki yeşil işaret).
+            if (LevelManager.Instance != null)
+            {
+                PlanetProgress.MarkCompleted(LevelManager.Instance.CurrentLevelIndex);
+            }
+
             SetState(GameState.LevelComplete);
         }
 

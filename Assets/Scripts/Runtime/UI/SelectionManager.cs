@@ -1,3 +1,4 @@
+using System;
 using PayeGames.AsalYolculuk.Core;
 using UnityEngine;
 using UnityEngine.UI;
@@ -5,81 +6,84 @@ using UnityEngine.UI;
 namespace PayeGames.AsalYolculuk.UI
 {
     /// <summary>
-    /// Seçim panelindeki gezegen butonlarını yönetir: kilit görselleri, hover
-    /// efektinin açık/kapalı olması, tıklanabilirlik ve hangi gezegenin seçili
-    /// olduğunu gösteren chooseImg işareti.
+    /// Seçim panelindeki 8 bölüm butonunun durum görsellerini ve bölüm seçimini
+    /// yönetir. Her buton için üç durum objesinden her zaman yalnızca biri açıktır:
     ///
-    /// Dizilerdeki sıra gezegen sırasıdır: index 0 = 1. gezegen. Kilitler sırayla
-    /// açılır — ilerleme <see cref="PlanetProgress"/> üzerinden okunduğu için
-    /// sırası gelmeyen gezegen hiçbir koşulda açık görünmez veya seçilemez.
+    /// - Tamamlanmış bölümler        -> greenObject
+    /// - Sıradaki (oynanmamış) bölüm -> unlockedLockObject (açık kilit)
+    /// - Henüz gelmemiş bölümler     -> lockedLockObject (kapalı kilit)
+    ///
+    /// Açık olan bölümler (tamamlananlar + sıradaki) tıklanabilir; tıklanan
+    /// bölümün chooseImg'i açılır, diğerlerininki kapanır ve seçim
+    /// <see cref="PlanetProgress"/> üzerinden PlayerPrefs'e yazılır. Oyna
+    /// butonuyla GamePlay sahnesine geçildiğinde <see cref="LevelManager"/>
+    /// bu kaydı okuyup seçilen bölümü başlatır.
     /// </summary>
     public class SelectionManager : MonoBehaviour
     {
-        [Header("Kilitler (1. gezegenden 8.'ye sıralı)")]
-        [SerializeField] private Image[] lockImages;
+        [Serializable]
+        private struct PlanetSlot
+        {
+            [Tooltip("Bölümün kendi butonu; kilitliyken interactable kapatılır.")]
+            public Button button;
 
-        [Header("Gezegen Butonları (kilitlerle aynı sırada)")]
-        [SerializeField] private Button[] planetButtons;
+            [Tooltip("Bölüm tamamlandığında açılan yeşil daire.")]
+            public GameObject greenObject;
 
-        [Header("Seçim İşaretleri / chooseImg (kilitlerle aynı sırada)")]
-        [SerializeField] private GameObject[] chooseImages;
+            [Tooltip("Sıradaki oynanacak bölümde açılan açık kilit objesi.")]
+            public GameObject unlockedLockObject;
 
-        [Header("Kilit Sprite'ları")]
-        [SerializeField] private Sprite lockedSprite;
-        [SerializeField] private Sprite unlockedSprite;
+            [Tooltip("Henüz sırası gelmemiş bölümlerde açılan kapalı kilit objesi.")]
+            public GameObject lockedLockObject;
 
-        // Kilit Image'ı derin bir child (btn_x/1.Gezegen/rectImg/kilitImg) olduğu
-        // için hover efekti kilidin üstündeki ilk UIHoverFloat'tan bulunur;
-        // böylece Inspector'da ikinci bir dizi doldurmaya gerek kalmaz.
-        private UIHoverFloat[] hoverEffects;
+            [Tooltip("Bu bölüm seçiliyken açılan seçim işareti (chooseImg).")]
+            public GameObject chooseObject;
+        }
+
+        [Header("Bölüm Butonları (1. bölümden 8.'ye sıralı)")]
+        [SerializeField] private PlanetSlot[] planetSlots;
 
         private void Awake()
         {
-            CacheHoverEffects();
-            RegisterPlanetButtons();
+            RegisterButtons();
         }
 
         private void OnEnable()
         {
-            RefreshLocks();
+            RefreshSlots();
         }
 
         /// <summary>
-        /// Kilit sprite'ını, hover efektini ve tıklanabilirliği açık/kapalı
-        /// durumuna göre yazar; ardından seçimi açılmış **son** gezegene alır.
-        /// Panel her açıldığında çalışır, yani oyuncu hiçbir gezegene tıklamadan
-        /// Oyna'ya basarsa sıradaki (kaldığı) bölüm başlar.
+        /// Tüm butonların durum görsellerini ve tıklanabilirliğini kayıtlı
+        /// ilerlemeye göre yeniden yazar; ardından seçimi kayıtlı bölüme alır.
+        /// Panel her açıldığında çalışır, yani bölüm bitirilip menüye dönüldüğünde
+        /// güncel durum görünür.
         /// </summary>
-        public void RefreshLocks()
+        public void RefreshSlots()
         {
-            if (lockImages == null) return;
+            if (planetSlots == null) return;
 
-            int maxUnlockedIndex = PlanetProgress.MaxUnlockedIndex;
+            int completedCount = PlanetProgress.CompletedCount;
+            int currentIndex = PlanetProgress.MaxUnlockedIndex;
 
-            for (int i = 0; i < lockImages.Length; i++)
+            for (int i = 0; i < planetSlots.Length; i++)
             {
-                bool isUnlocked = i <= maxUnlockedIndex;
+                // Tamamlanma ayrı sayılır: son bölüm bitince kilit index'i
+                // ilerlemez, o bölüm de yeşil görünmelidir.
+                bool isCompleted = i < completedCount;
+                bool isCurrent = !isCompleted && i == currentIndex;
 
-                ApplyHoverState(i, isUnlocked);
-                ApplyButtonState(i, isUnlocked);
-
-                Image lockImage = lockImages[i];
-                if (lockImage == null) continue;
-
-                Sprite targetSprite = isUnlocked ? unlockedSprite : lockedSprite;
-                if (targetSprite == null) continue;
-
-                lockImage.sprite = targetSprite;
+                ApplySlotState(planetSlots[i], isCompleted, isCurrent);
             }
 
-            // Panel her açılışta varsayılana döner: seçim, açılmış son gezegen.
-            SelectPlanet(maxUnlockedIndex);
+            // Oyuncu hiçbir şeye tıklamadan Oyna'ya basarsa kayıtlı seçim geçerli
+            // olsun diye görsel işaret de o bölüme çekilir.
+            ApplySelectionVisual(PlanetProgress.SelectedIndex);
         }
 
         /// <summary>
-        /// Gezegen butonuna basıldığında çağrılır: seçim kaydedilir ve yalnızca
-        /// o gezegenin chooseImg'i açık kalır. Oyna butonu bu kayıttan hangi
-        /// bölümün yükleneceğini okur (bkz. <see cref="LevelManager"/>).
+        /// Bölüm butonuna basıldığında çağrılır. Kilitli bölüm seçilemez;
+        /// seçim PlayerPrefs'e yazılır ve yalnızca o bölümün chooseImg'i açık kalır.
         /// </summary>
         public void SelectPlanet(int planetIndex)
         {
@@ -91,49 +95,37 @@ namespace PayeGames.AsalYolculuk.UI
 
         private void ApplySelectionVisual(int selectedIndex)
         {
-            if (chooseImages == null) return;
+            if (planetSlots == null) return;
 
-            for (int i = 0; i < chooseImages.Length; i++)
+            for (int i = 0; i < planetSlots.Length; i++)
             {
-                GameObject chooseImage = chooseImages[i];
-                if (chooseImage == null) continue;
-
-                chooseImage.SetActive(i == selectedIndex);
+                SetActiveSafe(planetSlots[i].chooseObject, i == selectedIndex);
             }
         }
 
-        private void ApplyHoverState(int index, bool isUnlocked)
+        private static void ApplySlotState(PlanetSlot slot, bool isCompleted, bool isCurrent)
         {
-            if (hoverEffects == null || index >= hoverEffects.Length) return;
+            SetActiveSafe(slot.greenObject, isCompleted);
+            SetActiveSafe(slot.unlockedLockObject, isCurrent);
+            SetActiveSafe(slot.lockedLockObject, !isCompleted && !isCurrent);
 
-            UIHoverFloat hoverEffect = hoverEffects[index];
-            if (hoverEffect == null) return;
+            if (slot.button == null) return;
 
-            hoverEffect.SetHoverAllowed(isUnlocked);
-        }
-
-        private void ApplyButtonState(int index, bool isUnlocked)
-        {
-            if (planetButtons == null || index >= planetButtons.Length) return;
-
-            Button planetButton = planetButtons[index];
-            if (planetButton == null) return;
-
-            planetButton.interactable = isUnlocked;
+            slot.button.interactable = isCompleted || isCurrent;
         }
 
         /// <summary>
-        /// Tıklama davranışını bir kez bağlar; index closure ile yakalandığı
-        /// için her buton kendi gezegenini seçer. Butonda AudioSource varsa
-        /// tık sesi de çalınır (referans burada cache'lenir, tıklamada değil).
+        /// Tıklama davranışını bir kez bağlar; index closure ile yakalandığı için
+        /// her buton kendi bölümünü seçer. Butonda AudioSource varsa tık sesi de
+        /// çalınır (referans tıklamada değil, burada bir kez alınır).
         /// </summary>
-        private void RegisterPlanetButtons()
+        private void RegisterButtons()
         {
-            if (planetButtons == null) return;
+            if (planetSlots == null) return;
 
-            for (int i = 0; i < planetButtons.Length; i++)
+            for (int i = 0; i < planetSlots.Length; i++)
             {
-                Button planetButton = planetButtons[i];
+                Button planetButton = planetSlots[i].button;
                 if (planetButton == null) continue;
 
                 int planetIndex = i;
@@ -147,23 +139,12 @@ namespace PayeGames.AsalYolculuk.UI
             }
         }
 
-        private void CacheHoverEffects()
+        private static void SetActiveSafe(GameObject target, bool isActive)
         {
-            if (lockImages == null)
-            {
-                hoverEffects = new UIHoverFloat[0];
-                return;
-            }
+            if (target == null) return;
+            if (target.activeSelf == isActive) return;
 
-            hoverEffects = new UIHoverFloat[lockImages.Length];
-
-            for (int i = 0; i < lockImages.Length; i++)
-            {
-                Image lockImage = lockImages[i];
-                if (lockImage == null) continue;
-
-                hoverEffects[i] = lockImage.GetComponentInParent<UIHoverFloat>(true);
-            }
+            target.SetActive(isActive);
         }
     }
 }

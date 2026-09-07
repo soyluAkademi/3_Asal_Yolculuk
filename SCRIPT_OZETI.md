@@ -1189,28 +1189,60 @@ gizlenirken `hideOffset` kadar kayıp `CanvasGroup` alpha'sı 0'a solar (offset
 
 - **Bağlantı:** `GameManager` (durum event'i), DOTween.
 
+### `SlidingPanelView.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Ekranın **sağından girip soluna doğru çıkan** panellerin ortak taban sınıfı.
+`RectTransform` + `CanvasGroup` zorunlu. Kendi başına da kullanılabilir
+(`detayPanel` bunu doğrudan kullanır) ya da türetilir (`LevelCompletePanelView`).
+
+**Konumlandırma:** Panel sahnede **görünür yerinde** bırakılır; `Awake`'te bu
+konum `shownAnchoredPosition` olarak cache'lenir, gizli ve çıkış konumları root
+canvas genişliğine göre hesaplanır (`± canvasWidth + hiddenExtraMargin`). Anchor
+veya pivot ayarı ne olursa olsun panel ekran dışında başlar; tasarımcının paneli
+elle ekran dışına taşımasına gerek yoktur.
+
+- `ShowFromRight()` — sağdaki gizli konumdan görünür konuma kaydırır, alpha 0→1;
+  bitince `interactable` / `blocksRaycasts` açılır.
+- `ShowFromRight(delay, onSlideStart)` — aynı işi gecikmeli yapar; `onSlideStart`
+  gecikme bitip panel kaymaya başladığı karede çağrılır (jingle vb. için).
+- `HideToLeft(onComplete)` — paneli **sola** çıkarır ve çıkış biter bitmez sağdaki
+  gizli konuma geri yerleştirir; böylece her açılışta yine sağdan girer. Geri
+  çağrı yeni bir animasyon başlatabildiği için biten sequence referansı
+  callback'ten **önce** bırakılır.
+- `Hide()` — animasyonsuz olarak sağdaki gizli konuma alır.
+- Tween'ler `SetUpdate(true)` ile kurulur: panel açıkken `Time.timeScale`
+  değişse de animasyon durmaz.
+
+- **Bağlantı:** DOTween. Türeten: `LevelCompletePanelView`. Doğrudan kullanan:
+  `detayPanel` (bkz. `AsalDetayManager`).
+
 ### `LevelCompletePanelView.cs`
 `Assets/Scripts/Runtime/UI/`
 
-Bölüm sonu paneli (`bolumPanel`). `RectTransform` + `CanvasGroup` zorunlu.
-
-**Konumlandırma:** Panel sahnede **görünür yerinde** bırakılır; `Awake`'te bu
-konum `shownAnchoredPosition` olarak cache'lenir ve gizli/çıkış konumları root
-canvas genişliğine göre otomatik hesaplanır (`± canvasWidth + hiddenExtraMargin`).
-Böylece anchor/pivot ayarı ne olursa olsun panel ekran dışında başlar ve
-tasarımcının paneli elle ekran dışına taşımasına gerek kalmaz.
+Bölüm sonu paneli (`bolumPanel`). **`SlidingPanelView`'dan türer**; kayma,
+konum hesabı ve `Show/Hide` davranışı tabandan gelir. Bu sınıf yalnızca gezegen
+bilgisini, kutlama jingle'ını ve detay paneli geçişini ekler.
 
 - `Show()` — `GameManager.OnGameStateChanged` → `LevelComplete`'te çağrılır
   (`LevelManager.IsLastLevel` ise **açılmaz**; son gezegen için ayrı panel
-  gelecek). `showDelay` sonrası sağdan sola kayarak girer, `CanvasGroup` alpha
-  0→1; animasyon bitince `interactable`/`blocksRaycasts` açılır.
-- `HideToLeft(onComplete)` — `LevelFlowController` çağırır. Panel **sola** doğru
-  çıkar, çıkış biter bitmez sağdaki gizli konuma geri yerleştirilir; böylece
-  giriş yönü bozulmaz, bir sonraki bölüm sonunda yine sağdan girer. Geri çağrı
-  yeni bölümü başlatıp `Hide()` tetikleyebildiği için biten sequence referansı
-  callback'ten **önce** bırakılır.
-- `Hide()` — animasyonsuz olarak sağdaki gizli konuma alır; `Gameplay`
-  durumunda otomatik çağrılır.
+  gelecek). Gezegen bilgisini doldurup tabandaki
+  `ShowFromRight(showDelay, PlayLevelCompleteSfx)` çağrısını yapar.
+- `HideToLeft(onComplete)` — tabandan gelir; `LevelFlowController` çağırır.
+- `Hide()` — tabandan gelir; `Gameplay` durumunda otomatik çağrılır, detay paneli
+  de birlikte gizlenir.
+- `OpenDetailPanel()` — `detayBtn`'e basılınca: bolumPanel **sola** çıkar, tamamen
+  çıktığında `detailPanel` sağdan girer (`HideToLeft(detailPanel.ShowFromRight)`).
+  İki panel hiçbir anda birlikte ekranda olmaz.
+- `CloseDetailPanel()` — `geriDonBtn`'e basılınca tersi:
+  `detailPanel.HideToLeft(ShowFromRight)`. Dönüşte `showDelay` beklenmez ve
+  jingle tekrar çalmaz; onlar yalnızca `Show()` yolunda vardır.
+- `RegisterButton(button, onClick)` — `MenuManager` ile aynı desen: butonun
+  üzerinde `AudioSource` varsa tık sesi `SoundManager.PlayUiSfx` ile çalınır,
+  referans `Awake`'te cache'lenir. Ses seviyesi ayarlardan okunduğu için efektler
+  kapalıyken tık duyulmaz. `OnDestroy`'da listener'lar `RemoveAllListeners` ile
+  toplu kaldırılır (tık sesi lambda ile eklendiği için tek tek kaldırılamaz;
+  Inspector'dan bağlanmış kalıcı listener'lar bundan etkilenmez).
 - `FillPlanetInfo()` — panel her açıldığında `kaldiginGezegenTxt` /
   `hedefGezegenTxt` alanlarına `PlanetDataSO.DisplayName`, `kaldiginImg` /
   `hedefImg` alanlarına `PlanetSprite` yazılır. Kaynak: `LevelManager`'ın
@@ -1223,9 +1255,69 @@ tasarımcının paneli elle ekran dışına taşımasına gerek kalmaz.
   jingle'ın meteor patlama seslerinin üstüne binmemesi. SFX kapalıyken
   `PlaySfx` zaten sessiz döner.
 
-- **Bağlantı:** `GameManager` (durum event'i), `LevelManager` (gezegen verisi),
-  `PlanetDataSO`, `LevelFlowController` (`HideToLeft`), `SoundManager` (jingle),
-  TextMeshPro, DOTween.
+- **Bağlantı:** `SlidingPanelView` (taban), `GameManager` (durum event'i),
+  `LevelManager` (gezegen verisi), `PlanetDataSO`, `LevelFlowController`
+  (`HideToLeft`), `SoundManager` (jingle + tık sesi), `detayPanel`
+  (`SlidingPanelView` referansı), TextMeshPro, DOTween.
+
+### `AsalDetayManager.cs`
+`Assets/Scripts/Runtime/UI/`
+
+`detayPanel` üzerinde durur. Bölüm boyunca **tamamen parçalanan her ana meteor
+için** detay listesine bir satır (`asalDetayHolder` prefabı) ekler.
+
+- Kaynak event: `MeteorController.OnMeteorCompleted(rootNumber, position)`. Bu
+  event bir ana meteorun **tüm parçalarıyla birlikte** yok edildiği anda
+  tetiklenir; bölünme ağacını `MeteorSession` zaten takip ettiği için burada ek
+  bir zincir takibi yapılmaz. Konum bu liste için kullanılmaz.
+- Dinleyici `Awake`'te bağlanır (`OnEnable` değil): panel `CanvasGroup` alpha ile
+  gizlendiğinden GameObject aktif kalır ve panel kapalıyken de kayıt sürer.
+  `detayPanel` **`SetActive(false)` ile kapatılmamalıdır**, kayıtlar kaçar.
+- `MeteorDetay` (iç `readonly struct`) — satırın verisi: `Order` (1'den başlayan
+  vuruş sırası), `Number`, `PrimeFactors` (`PrimeMathEngine.GetPrimeFactors`,
+  artan sırada), `IsPrime`. `Details` property'si ile dışarı açılır.
+- `SpawnHolder()` — prefabı `content` altına üretir, adını
+  `asalDetayHolder_{sıra}_{sayı}` yapar (hiyerarşide satır ayırt edilsin diye) ve
+  üzerinde `AsalDetayHolderView` varsa `Bind` eder.
+- `ClearList()` — yeni bölüm başında satırları `Destroy` eder ve kayıtları siler.
+  **Dikkat:** duraklatmadan dönüşte de `GameState.Gameplay`'e geçilir; liste
+  yalnızca bir önceki durum `Paused` **değilken** sıfırlanır, yoksa oyuncu her
+  pause sonrası listeyi kaybederdi.
+- Inspector: `content` (ScrollRect içeriği; **Vertical Layout Group + Content
+  Size Fitter** gerekir), `asalDetayHolderPrefab`.
+
+- **Bağlantı:** `MeteorController` (event), `PrimeMathEngine` (çarpanlar),
+  `GameManager` (bölüm başı temizliği), `AsalDetayHolderView` (satır dolumu).
+
+### `AsalDetayHolderView.cs`
+`Assets/Scripts/Runtime/UI/`
+
+Detay listesindeki **tek bir satır** (`asalDetayHolder` prefabı). Veriyi
+`AsalDetayManager.Bind` üzerinden alır.
+
+- `siraTxt` → vuruş sırası, `asalSayiTxt` → meteorun sayısı,
+  `carpanlaraAyirTxt` → `154 = 2 × 7 × 11` biçiminde renkli çarpanlar.
+- Renklendirme TMP **rich text** (`<color=#...>`) ile yapılır; satır metni ortak
+  bir `static StringBuilder` üzerinde kurulur ve renkler `Awake`'te bir kez hex'e
+  çevrilip cache'lenir.
+- Renk asalın **büyüklük sırasına** göre seçilir (2 turuncu, 3 kırmızı, 5 yeşil,
+  7 mor, 11 camgöbeği, 13 fıstık, 17 açık mavi, 19 pembe, 23 turkuaz, 29 lila).
+  Böylece aynı asal her satırda aynı renkte çıkar ve `49 = 7 × 7` gibi tekrar
+  eden çarpanlar gözle ayırt edilir. Palette karşılığı olmayan büyük asallar
+  renkleri döngüsel kullanır.
+- `descendingFactors` — kapalı (varsayılan): çarpanlar **küçükten büyüğe**
+  (`10 = 2 × 5`). Açıkken tersten yazılır; liste kopyalanmaz, indeks tersten
+  okunur.
+- Meteorun kendisi asalsa `37 = 37` yerine yeşil **`ASAL`** etiketi yazılır
+  (`primeLabel`).
+- `asalHolderImg` — satır zemini vuruş sırasına göre boyanır: tek sıralar
+  `#122045`, çift sıralar `#0E1938`. Uzun listede göz satır kaydırmasın diye.
+- Inspector'da ayarlanabilir: `equalsSeparator` (` = `), `factorSeparator`
+  (` × `), `factorColors`, `operatorColor`, `numberColor`, `primeLabelColor`,
+  satır zemini renkleri.
+
+- **Bağlantı:** `AsalDetayManager` (veri kaynağı), TextMeshPro (rich text açık
+  olmalı).
 
 ### `GameOverPanelView.cs`
 `Assets/Scripts/Runtime/UI/`

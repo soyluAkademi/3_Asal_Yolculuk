@@ -144,3 +144,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PayeGames.AsalYolculuk.Core.SoundManager
   dogruSource: {fileID: 0}
   yanlisSource: {fileID: 0}
+  gameplaySource: {fileID: 1989935954830302437}

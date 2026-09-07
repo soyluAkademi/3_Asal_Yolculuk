@@ -133,14 +133,11 @@ namespace PayeGames.AsalYolculuk.Player
         /// <summary>
         /// Hasar sesini geminin kendi kaynağından çalar. Klip kaynağa Inspector'dan
         /// atandığı için sahneyle birlikte belleğe alınır; SFX ayarı kapalıyken
-        /// çalmaması için <see cref="SoundManager.SfxOn"/> kontrol edilir.
+        /// çalması efekt kanalının seviyesine tabidir.
         /// </summary>
         private void PlayDamageSfx()
         {
-            if (damageSource == null) return;
-            if (SoundManager.Instance != null && !SoundManager.Instance.SfxOn) return;
-
-            damageSource.Play();
+            SoundManager.PlaySfxOnSource(damageSource);
         }
 
         private void ShakeCamera()

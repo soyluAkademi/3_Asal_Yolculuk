@@ -22,7 +22,16 @@ namespace PayeGames.AsalYolculuk.Combat
         [Range(0f, 1f)]
         [SerializeField] private float fireVolume = 0.5f;
 
+        [Header("Görsel")]
+        [Tooltip("Gemi sprite'ını çizen renderer; boşsa bu objede ve alt objelerde aranır")]
+        [SerializeField] private SpriteRenderer shipRenderer;
+        [Tooltip("Çoklu atış (Plazma Yakıtı) aktifken gösterilecek gemi sprite'ı")]
+        [SerializeField] private Sprite multiShotSprite;
+
         private float fireTimer;
+
+        // Etki bittiğinde geri dönülecek varsayılan gemi görseli.
+        private Sprite defaultShipSprite;
 
         // Normalde yalnızca merkez nokta ateş eder; Plazma Yakıtı bunu artırır.
         private int activeFirePointCount = 1;
@@ -36,11 +45,37 @@ namespace PayeGames.AsalYolculuk.Combat
             if (firePoints == null || firePoints.Length == 0) return;
 
             activeFirePointCount = Mathf.Clamp(count, 1, firePoints.Length);
+            ApplyShipSprite();
         }
 
         public void ResetFirePointCount()
         {
             activeFirePointCount = 1;
+            ApplyShipSprite();
+        }
+
+        /// <summary>
+        /// Aktif atış noktası sayısına göre gemi görselini seçer: çoklu atışta
+        /// güçlendirilmiş sprite, normalde başlangıçtaki sprite gösterilir.
+        /// </summary>
+        private void ApplyShipSprite()
+        {
+            if (shipRenderer == null) return;
+
+            bool isMultiShot = activeFirePointCount > 1;
+            Sprite targetSprite = isMultiShot && multiShotSprite != null
+                ? multiShotSprite
+                : defaultShipSprite;
+
+            if (targetSprite == null) return;
+
+            shipRenderer.sprite = targetSprite;
+        }
+
+        private void Awake()
+        {
+            if (shipRenderer == null) shipRenderer = GetComponentInChildren<SpriteRenderer>();
+            if (shipRenderer != null) defaultShipSprite = shipRenderer.sprite;
         }
 
         private void Update()
@@ -92,7 +127,7 @@ namespace PayeGames.AsalYolculuk.Combat
 
             if (clip == null) return;
 
-            SoundManager.Instance.PlaySfx(clip, fireVolume);
+            SoundManager.Instance.PlaySfx(clip, fireVolume, SoundChannel.Bullet);
         }
     }
 }

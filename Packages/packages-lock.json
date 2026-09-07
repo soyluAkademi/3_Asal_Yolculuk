@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.edinylcnn.hapticbridge": {
+      "version": "https://github.com/edinylcnn/HapticBridgeForUnity.git?path=/unity-package",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "b505b813015af1d02e83ef66048179377e7cdeed"
+    },
     "com.unity.2d.animation": {
       "version": "13.0.4",
       "depth": 0,
